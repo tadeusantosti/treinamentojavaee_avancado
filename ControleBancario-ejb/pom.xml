@@ -17,6 +17,15 @@
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- Codificação utilizada no projeto -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Versão do Hibernate - EntityManager -->
+        <hibernate.entity.manager.version>5.1.10.Final</hibernate.entity.manager.version>
+
+        <!-- Versão do Hibernate - Bean Validation -->
+        <hiberante.bean.validation.version>5.2.1.Final</hiberante.bean.validation.version>
+
     </properties>
 
     <dependencies>
@@ -42,6 +51,7 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
             <version>5.1.10.Final</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.openejb</groupId>

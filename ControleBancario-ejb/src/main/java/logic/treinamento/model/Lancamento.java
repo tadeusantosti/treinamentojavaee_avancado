@@ -8,9 +8,11 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import logic.treinamento.dao.TipoLancamentoEnum;
 
 @Entity
+@Table(name="Lancamento")
 public class Lancamento {
 
     @Id

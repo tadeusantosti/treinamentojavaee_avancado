@@ -8,7 +8,7 @@ import logic.treinamento.request.LancarContasDoMesRequisicao;
 
 @Local
 public interface InterfaceGestaoContas {
-
+    
     public void lancarContasDoMes(LancarContasDoMesRequisicao lancarContasDoMesRequisicao) throws Exception;
     
     public List<Lancamento> pesquisarLancamentoPorTipoDeLancamento(int idtipolancamento) throws Exception;
@@ -17,7 +17,7 @@ public interface InterfaceGestaoContas {
 
     public List<Lancamento> pesquisarLancamentoPorPeriodo(String dataInicial, String dataFinal) throws Exception;
 
-    public void excluirLancamento(int idLancamento) throws Exception;
+    public void excluirLancamento(long idLancamento) throws Exception;
 
     public void atualizarLancamento(AtualizarLancamentoRequisicao atualizarLancamentoRequisicao) throws Exception;
 

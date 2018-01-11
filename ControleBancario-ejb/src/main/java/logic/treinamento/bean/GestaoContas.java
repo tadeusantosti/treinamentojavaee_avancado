@@ -1,8 +1,8 @@
 package logic.treinamento.bean;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.sql.Date;
 import java.util.List;
 import javax.annotation.Resource;
@@ -19,7 +19,7 @@ import logic.treinamento.request.LancarContasDoMesRequisicao;
 import utilitarios.Formatadores;
 
 @Stateless
-public class GestaoContas implements InterfaceGestaoContas {
+public class GestaoContas implements InterfaceGestaoContas, Serializable {
 
     @EJB
     private InterfaceLancamentoDao lancamentoDao;
@@ -72,7 +72,7 @@ public class GestaoContas implements InterfaceGestaoContas {
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void excluirLancamento(int idLancamento) throws SQLException {
+    public void excluirLancamento(long idLancamento) throws SQLException {
         try {
             if (idLancamento >= 0) {
                 lancamentoDao.excluirLancamento(idLancamento);
@@ -147,11 +147,7 @@ public class GestaoContas implements InterfaceGestaoContas {
     }
 
     private boolean validarTipoLancamentoInformado(TipoLancamentoEnum tipoLancamento) {
-        if (tipoLancamento.getId() < 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return tipoLancamento.getId() < 0;
     }
 
 }

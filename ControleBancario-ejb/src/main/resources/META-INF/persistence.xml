@@ -10,9 +10,8 @@
    <property name="javax.persistence.jdbc.url"      value="jdbc:hsqldb:file:C:/banco/dbControleBancario"    />
    <property name="javax.persistence.jdbc.user"     value="SA"                                  />
    <property name="javax.persistence.jdbc.password" value=""                                    />
-
-   <property name="jboss.as.jpa.providerModule"     value="org.hibernate:5.1.10.Final"                   />
-   <property name="hibernate.hbm2ddl.auto"          value="update"                              />
+   
+   <property name="hibernate.hbm2ddl.auto"          value="update" />
    <property name="hibernate.show_sql"              value="true"                                />
    <property name="hibernate.format_sql"            value="false"                               />
    <property name="hibernate.dialect"               value="org.hibernate.dialect.HSQLDialect"   />

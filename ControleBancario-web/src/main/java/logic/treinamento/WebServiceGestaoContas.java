@@ -21,8 +21,12 @@ public class WebServiceGestaoContas {
     @WebMethod(operationName = "lancarContasDoMes")
     @WebResult(name = "resultado")
     public String lancarContasDoMes(@WebParam(name = "requisicao") LancarContasDoMesRequisicao lancarContasDoMesRequisicao) throws Exception {
-        gestaoContaBean.lancarContasDoMes(lancarContasDoMesRequisicao);
+        try {
+        gestaoContaBean.lancarContasDoMes(lancarContasDoMesRequisicao);            
         return Response.Status.OK.getReasonPhrase();
+        } catch (Exception e) {
+            return Response.Status.EXPECTATION_FAILED.getReasonPhrase();
+        }
     }
 
     @WebMethod(operationName = "atualizarLancamento")

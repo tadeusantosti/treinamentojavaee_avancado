@@ -41,7 +41,7 @@ public class GestaoContasTest extends TestCase {
     public EjbJar beans() {
         EjbJar ejbJar = new EjbJar();
         ejbJar.addEnterpriseBean(new StatelessBean(GestaoContas.class));
-        ejbJar.addEnterpriseBean(new StatelessBean(LancamentoDao.class));
+        ejbJar.addEnterpriseBean(new StatelessBean(LancamentoDao.class));        
         ejbJar.addEnterpriseBean(new StatelessBean(Formatadores.class));
         return ejbJar;
 
@@ -202,7 +202,7 @@ public class GestaoContasTest extends TestCase {
             fail("O lancamento bancario nao foi salvo!");
         }
 
-        gestaoContaBean.excluirLancamento(3);
+        gestaoContaBean.excluirLancamento(lancNovo.get(0).getId());
     }
 
     /**
@@ -266,7 +266,7 @@ public class GestaoContasTest extends TestCase {
             fail("O lancamento bancario nao foi atualizado!");
         }
 
-        gestaoContaBean.excluirLancamento(4);
+        gestaoContaBean.excluirLancamento(lancamentoAtualizado.get(0).getId());
     }
 
     /**
@@ -302,7 +302,7 @@ public class GestaoContasTest extends TestCase {
             fail("O lancamento bancario nao foi salvo!");
         }
 
-        gestaoContaBean.excluirLancamento(2);
+        gestaoContaBean.excluirLancamento(lancNovo.get(0).getId());
 
         List<Lancamento> lancExcluido = gestaoContaBean.pesquisarLancamentoPorNome("Albert");
 
@@ -346,7 +346,7 @@ public class GestaoContasTest extends TestCase {
             fail("O lancamento bancario nao foi encontrado!");
         }
 
-        gestaoContaBean.excluirLancamento(1);
+        gestaoContaBean.excluirLancamento(lancamentoDeSaque.get(0).getId());
     }
 
     /**
@@ -405,8 +405,8 @@ public class GestaoContasTest extends TestCase {
             fail("O lancamento bancario nao foi encontrado!");
         }
 
-        gestaoContaBean.excluirLancamento(5);
-        gestaoContaBean.excluirLancamento(6);
+        gestaoContaBean.excluirLancamento(lancamentoDeSaque.get(0).getId());
+        gestaoContaBean.excluirLancamento(lancamentoDeSaque.get(1).getId());
     }
 
 }
