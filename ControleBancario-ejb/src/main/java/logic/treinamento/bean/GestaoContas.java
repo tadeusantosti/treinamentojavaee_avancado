@@ -6,11 +6,12 @@ import java.sql.SQLException;
 import java.sql.Date;
 import java.util.List;
 import javax.annotation.Resource;
-import javax.ejb.EJB;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+import javax.inject.Named;
 import logic.treinamento.dao.InterfaceLancamentoDao;
 import logic.treinamento.model.Lancamento;
 import logic.treinamento.dao.TipoLancamentoEnum;
@@ -18,11 +19,19 @@ import logic.treinamento.request.AtualizarLancamentoRequisicao;
 import logic.treinamento.request.LancarContasDoMesRequisicao;
 import utilitarios.Formatadores;
 
+/**
+ *
+ * @author tadpi
+ */
 @Stateless
+@Named
 public class GestaoContas implements InterfaceGestaoContas, Serializable {
 
-    @EJB
-    private InterfaceLancamentoDao lancamentoDao;
+    /**
+     *
+     */
+    @Inject
+    public InterfaceLancamentoDao lancamentoDao;
 
     @Resource
     private SessionContext context;

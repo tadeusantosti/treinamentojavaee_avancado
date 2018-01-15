@@ -3,10 +3,16 @@ package logic.treinamento.dao;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
+import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+/**
+ *
+ * @author tadpi
+ */
+@Named
 public class JPAUtil {
 
     private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("dbControleBancario");

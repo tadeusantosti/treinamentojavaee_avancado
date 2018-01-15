@@ -6,13 +6,18 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 import javax.ejb.Stateless;
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import utilitarios.Formatadores;
 
+/**
+ *
+ * @author tadpi
+ */
 @Stateless
+@Named
 public class LancamentoDao implements InterfaceLancamentoDao, Serializable {
 
     /**

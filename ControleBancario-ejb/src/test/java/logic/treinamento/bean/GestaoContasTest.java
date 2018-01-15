@@ -10,6 +10,7 @@ import org.apache.openejb.junit.ApplicationComposer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import javax.ejb.EJB;
+import javax.inject.Inject;
 import logic.treinamento.model.Lancamento;
 import logic.treinamento.dao.LancamentoDao;
 import logic.treinamento.dao.TipoLancamentoEnum;
@@ -34,8 +35,11 @@ public class GestaoContasTest extends TestCase {
         }
     }
 
-    @EJB
-    private InterfaceGestaoContas gestaoContaBean;
+    /**
+     *
+     */
+    @Inject
+    public InterfaceGestaoContas gestaoContaBean;
 
     @org.apache.openejb.testing.Module
     public EjbJar beans() {
