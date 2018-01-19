@@ -1,5 +1,6 @@
 package logic.treinamento.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
 import javax.persistence.Entity;
@@ -13,7 +14,7 @@ import logic.treinamento.dao.TipoLancamentoEnum;
 
 @Entity
 @Table(name="Lancamento")
-public class Lancamento {
+public class Lancamento implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

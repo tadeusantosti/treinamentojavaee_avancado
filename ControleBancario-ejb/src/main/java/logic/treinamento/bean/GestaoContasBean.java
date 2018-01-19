@@ -6,12 +6,12 @@ import java.sql.SQLException;
 import java.sql.Date;
 import java.util.List;
 import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-import javax.inject.Named;
+import javax.enterprise.event.Observes;
 import logic.treinamento.dao.InterfaceLancamentoDao;
 import logic.treinamento.model.Lancamento;
 import logic.treinamento.dao.TipoLancamentoEnum;
@@ -24,21 +24,22 @@ import utilitarios.Formatadores;
  * @author tadpi
  */
 @Stateless
-@Named
-public class GestaoContas implements InterfaceGestaoContas, Serializable {
+public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
 
-    /**
-     *
-     */
-    @Inject
-    public InterfaceLancamentoDao lancamentoDao;
+    @EJB
+    private InterfaceLancamentoDao lancamentoDao;
 
     @Resource
     private SessionContext context;
 
+    /**
+     *
+     * @param lancarContasDoMesRequisicao
+     * @throws Exception
+     */
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void lancarContasDoMes(LancarContasDoMesRequisicao lancarContasDoMesRequisicao) throws Exception {
+    public void lancarContasDoMes(@Observes LancarContasDoMesRequisicao lancarContasDoMesRequisicao) throws Exception {
         try {
 
             Lancamento lanc = new Lancamento();

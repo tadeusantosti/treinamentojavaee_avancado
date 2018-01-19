@@ -10,10 +10,10 @@ import org.apache.openejb.junit.ApplicationComposer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import javax.ejb.EJB;
-import javax.inject.Inject;
 import logic.treinamento.model.Lancamento;
 import logic.treinamento.dao.LancamentoDao;
 import logic.treinamento.dao.TipoLancamentoEnum;
+import logic.treinamento.observer.EventosGestaoContas;
 import logic.treinamento.request.AtualizarLancamentoRequisicao;
 import logic.treinamento.request.LancarContasDoMesRequisicao;
 import org.apache.openejb.jee.EjbJar;
@@ -23,6 +23,7 @@ import utilitarios.Formatadores;
 
 @RunWith(ApplicationComposer.class)
 public class GestaoContasTest extends TestCase {
+
 
     @AfterClass
     public static void after() {
@@ -38,13 +39,16 @@ public class GestaoContasTest extends TestCase {
     /**
      *
      */
-    @Inject
+    @EJB
     public InterfaceGestaoContas gestaoContaBean;
+    @EJB    
+    EventosGestaoContas eventosGestaoContas;
 
     @org.apache.openejb.testing.Module
     public EjbJar beans() {
         EjbJar ejbJar = new EjbJar();
-        ejbJar.addEnterpriseBean(new StatelessBean(GestaoContas.class));
+        ejbJar.addEnterpriseBean(new StatelessBean(GestaoContasBean.class));
+        ejbJar.addEnterpriseBean(new StatelessBean(EventosGestaoContas.class));
         ejbJar.addEnterpriseBean(new StatelessBean(LancamentoDao.class));        
         ejbJar.addEnterpriseBean(new StatelessBean(Formatadores.class));
         return ejbJar;
@@ -412,5 +416,30 @@ public class GestaoContasTest extends TestCase {
         gestaoContaBean.excluirLancamento(lancamentoDeSaque.get(0).getId());
         gestaoContaBean.excluirLancamento(lancamentoDeSaque.get(1).getId());
     }
+    
+    @Test
+    public void testeEvento() throws Exception{
+        
+        LancarContasDoMesRequisicao lancRequisicao = new LancarContasDoMesRequisicao();
+        lancRequisicao.setNome("Albert Einstein");
+        lancRequisicao.setValor(new BigDecimal(1234.56));
+        lancRequisicao.setData(Formatadores.formatoDataInterface.format(new java.util.Date()));
+        lancRequisicao.setIdTipoLancamento(TipoLancamentoEnum.DEPOSITO.getId());
+        eventosGestaoContas.lancarContas(lancRequisicao);
+        
+        List<Lancamento> lancNovo = gestaoContaBean.pesquisarLancamentoPorNome("Albert");
 
+        if (!lancNovo.isEmpty()) {
+            for (Lancamento lancamentoConsultado : lancNovo) {
+                assertEquals(lancRequisicao.getNome(), lancamentoConsultado.getNome());
+                assertEquals(lancRequisicao.getValor().doubleValue(), lancamentoConsultado.getValor().doubleValue());
+                assertEquals(lancRequisicao.getData(), Formatadores.formatoDataInterface.format(lancamentoConsultado.getData()));
+                assertEquals(TipoLancamentoEnum.getByCodigo(lancRequisicao.getIdTipoLancamento()), lancamentoConsultado.getTipoLancamento());
+            }
+        } else {
+            fail("O lancamento bancario nao foi salvo!");
+        }
+
+        gestaoContaBean.excluirLancamento(lancNovo.get(0).getId());
+    }
 }
