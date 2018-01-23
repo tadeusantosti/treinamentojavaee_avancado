@@ -427,7 +427,7 @@ public class GestaoContasTest extends TestCase {
         lancRequisicao.setIdTipoLancamento(TipoLancamentoEnum.DEPOSITO.getId());
         eventosGestaoContas.lancarContas(lancRequisicao);
         
-        List<Lancamento> lancNovo = gestaoContaBean.pesquisarLancamentoPorNome("Albert");
+        List<Lancamento> lancNovo =  gestaoContaBean.pesquisarLancamentoPorNome("Albert");
 
         if (!lancNovo.isEmpty()) {
             for (Lancamento lancamentoConsultado : lancNovo) {

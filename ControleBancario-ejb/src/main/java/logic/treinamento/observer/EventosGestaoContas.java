@@ -1,19 +1,20 @@
 package logic.treinamento.observer;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import logic.treinamento.model.Lancamento;
 import logic.treinamento.request.LancarContasDoMesRequisicao;
 
 @Stateless
 public class EventosGestaoContas implements Serializable{
 
     @Inject
-    Event<LancarContasDoMesRequisicao> evento;
+    Event<LancarContasDoMesRequisicao> eventoLancar;
     
     public void lancarContas(LancarContasDoMesRequisicao lancamento){
-        evento.fire(lancamento);
+        eventoLancar.fire(lancamento);
     }
-
 }
