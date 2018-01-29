@@ -10,6 +10,7 @@ import javax.jws.WebService;
 import javax.ws.rs.core.Response;
 import logic.treinamento.bean.InterfaceGestaoContas;
 import logic.treinamento.model.Lancamento;
+import logic.treinamento.observer.EventosGestaoContas;
 import logic.treinamento.request.AtualizarLancamentoRequisicao;
 
 @WebService(name = "gestaoContas")
@@ -17,13 +18,15 @@ public class WebServiceGestaoContas {
 
     @EJB
     private InterfaceGestaoContas gestaoContaBean;
+    @EJB
+    EventosGestaoContas eventosGestaoContas;
 
     @WebMethod(operationName = "lancarContasDoMes")
     @WebResult(name = "resultado")
     public String lancarContasDoMes(@WebParam(name = "requisicao") LancarContasDoMesRequisicao lancarContasDoMesRequisicao) throws Exception {
         try {
-        gestaoContaBean.lancarContasDoMes(lancarContasDoMesRequisicao);            
-        return Response.Status.OK.getReasonPhrase();
+            eventosGestaoContas.lancarContas(lancarContasDoMesRequisicao);
+            return Response.Status.OK.getReasonPhrase();
         } catch (Exception e) {
             return Response.Status.EXPECTATION_FAILED.getReasonPhrase();
         }
@@ -48,7 +51,6 @@ public class WebServiceGestaoContas {
         gestaoContaBean.excluirLancamento(idLancamento);
         return Response.Status.OK.getReasonPhrase();
     }
-
 
     @WebMethod(operationName = "pesquisarLancamentoPeriodo")
     @WebResult(name = "Lancamento")

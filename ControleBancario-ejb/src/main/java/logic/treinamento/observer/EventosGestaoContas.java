@@ -1,11 +1,9 @@
 package logic.treinamento.observer;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import logic.treinamento.model.Lancamento;
 import logic.treinamento.request.LancarContasDoMesRequisicao;
 
 @Stateless

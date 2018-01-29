@@ -24,7 +24,6 @@ import utilitarios.Formatadores;
 @RunWith(ApplicationComposer.class)
 public class GestaoContasTest extends TestCase {
 
-
     @AfterClass
     public static void after() {
         File folder = new File("C:\\banco");
@@ -41,7 +40,7 @@ public class GestaoContasTest extends TestCase {
      */
     @EJB
     public InterfaceGestaoContas gestaoContaBean;
-    @EJB    
+    @EJB
     EventosGestaoContas eventosGestaoContas;
 
     @org.apache.openejb.testing.Module
@@ -49,7 +48,7 @@ public class GestaoContasTest extends TestCase {
         EjbJar ejbJar = new EjbJar();
         ejbJar.addEnterpriseBean(new StatelessBean(GestaoContasBean.class));
         ejbJar.addEnterpriseBean(new StatelessBean(EventosGestaoContas.class));
-        ejbJar.addEnterpriseBean(new StatelessBean(LancamentoDao.class));        
+        ejbJar.addEnterpriseBean(new StatelessBean(LancamentoDao.class));
         ejbJar.addEnterpriseBean(new StatelessBean(Formatadores.class));
         return ejbJar;
 
@@ -416,18 +415,18 @@ public class GestaoContasTest extends TestCase {
         gestaoContaBean.excluirLancamento(lancamentoDeSaque.get(0).getId());
         gestaoContaBean.excluirLancamento(lancamentoDeSaque.get(1).getId());
     }
+
     
-    @Test
-    public void testeEvento() throws Exception{
-        
+    public void testeEvento() throws Exception {
+
         LancarContasDoMesRequisicao lancRequisicao = new LancarContasDoMesRequisicao();
         lancRequisicao.setNome("Albert Einstein");
         lancRequisicao.setValor(new BigDecimal(1234.56));
         lancRequisicao.setData(Formatadores.formatoDataInterface.format(new java.util.Date()));
         lancRequisicao.setIdTipoLancamento(TipoLancamentoEnum.DEPOSITO.getId());
         eventosGestaoContas.lancarContas(lancRequisicao);
-        
-        List<Lancamento> lancNovo =  gestaoContaBean.pesquisarLancamentoPorNome("Albert");
+
+        List<Lancamento> lancNovo = gestaoContaBean.pesquisarLancamentoPorNome("Albert");
 
         if (!lancNovo.isEmpty()) {
             for (Lancamento lancamentoConsultado : lancNovo) {
