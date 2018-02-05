@@ -26,7 +26,7 @@ public class GestaoContasTest extends TestCase {
 
     @AfterClass
     public static void after() {
-        File folder = new File("C:\\banco");
+        File folder = new File("C:\teste\banco");
         if (folder.isDirectory()) {
             File[] sun = folder.listFiles();
             for (File toDelete : sun) {
@@ -424,7 +424,7 @@ public class GestaoContasTest extends TestCase {
         lancRequisicao.setValor(new BigDecimal(1234.56));
         lancRequisicao.setData(Formatadores.formatoDataInterface.format(new java.util.Date()));
         lancRequisicao.setIdTipoLancamento(TipoLancamentoEnum.DEPOSITO.getId());
-        eventosGestaoContas.lancarContas(lancRequisicao);
+        eventosGestaoContas.salvarLacamentoBancario(lancRequisicao);
 
         List<Lancamento> lancNovo = gestaoContaBean.pesquisarLancamentoPorNome("Albert");
 

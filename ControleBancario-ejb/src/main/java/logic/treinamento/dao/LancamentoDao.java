@@ -6,27 +6,28 @@ import java.sql.SQLException;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import utilitarios.Formatadores;
 
 @Stateless
 public class LancamentoDao implements InterfaceLancamentoDao {
+    
+    @PersistenceContext
+    private EntityManager em;    
 
     @Override
     public void salvarContasDoMes(Lancamento lanc) throws SQLException {
-        EntityManager em = new JPAUtil().getEntityManager();
-
+        em = new JPAUtil().getEntityManager();
         em.getTransaction().begin();
         em.persist(lanc);
         em.getTransaction().commit();
-
         em.close();
     }
 
     @Override
     public void atualizarLancamento(Lancamento lanc) throws SQLException {
-
-        EntityManager em = new JPAUtil().getEntityManager();
+        em = new JPAUtil().getEntityManager();
         em.getTransaction().begin();
         em.merge(lanc);
         em.getTransaction().commit();
@@ -35,7 +36,7 @@ public class LancamentoDao implements InterfaceLancamentoDao {
 
     @Override
     public void excluirLancamento(long idLancamento) throws SQLException {
-        EntityManager em = new JPAUtil().getEntityManager();
+        em = new JPAUtil().getEntityManager();
         em.getTransaction().begin();
         em.remove(em.getReference(Lancamento.class, idLancamento));
         em.getTransaction().commit();
@@ -47,7 +48,7 @@ public class LancamentoDao implements InterfaceLancamentoDao {
         StringBuilder sql = new StringBuilder();
         List<Lancamento> resultados = null;
 
-        EntityManager em = new JPAUtil().getEntityManager();
+        em = new JPAUtil().getEntityManager();
         em.getTransaction().begin();
 
         sql.append("\n SELECT l FROM Lancamento l");
@@ -66,7 +67,7 @@ public class LancamentoDao implements InterfaceLancamentoDao {
         StringBuilder sql = new StringBuilder();
         List<Lancamento> resultados = null;
 
-        EntityManager em = new JPAUtil().getEntityManager();
+        em = new JPAUtil().getEntityManager();
         em.getTransaction().begin();
 
         sql.append("\n SELECT l FROM Lancamento l");
@@ -85,7 +86,7 @@ public class LancamentoDao implements InterfaceLancamentoDao {
         StringBuilder sql = new StringBuilder();
         List<Lancamento> resultados = null;
 
-        EntityManager em = new JPAUtil().getEntityManager();
+        em = new JPAUtil().getEntityManager();
         em.getTransaction().begin();
 
         sql.append("\n SELECT l FROM Lancamento l");

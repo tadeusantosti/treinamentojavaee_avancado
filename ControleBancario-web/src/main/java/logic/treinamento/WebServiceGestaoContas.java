@@ -22,10 +22,10 @@ public class WebServiceGestaoContas {
     EventosGestaoContas eventosGestaoContas;
 
     @WebMethod(operationName = "lancarContasDoMes")
-    @WebResult(name = "resultado")
+    @WebResult(name = "resposta")
     public String lancarContasDoMes(@WebParam(name = "requisicao") LancarContasDoMesRequisicao lancarContasDoMesRequisicao) throws Exception {
         try {
-            eventosGestaoContas.lancarContas(lancarContasDoMesRequisicao);
+            eventosGestaoContas.salvarLacamentoBancario(lancarContasDoMesRequisicao);
             return Response.Status.OK.getReasonPhrase();
         } catch (Exception e) {
             return Response.Status.EXPECTATION_FAILED.getReasonPhrase();
@@ -35,21 +35,30 @@ public class WebServiceGestaoContas {
     @WebMethod(operationName = "atualizarLancamento")
     @WebResult(name = "Lancamento")
     public String atualizarLancamento(@WebParam(name = "nome") AtualizarLancamentoRequisicao atualizarLancamentoRequisicao) throws Exception {
-        gestaoContaBean.atualizarLancamento(atualizarLancamentoRequisicao);
-        return Response.Status.OK.getReasonPhrase();
+        try {
+            eventosGestaoContas.atualizarLancamentoBancario(atualizarLancamentoRequisicao);
+            return Response.Status.OK.getReasonPhrase();
+        } catch (Exception e) {
+            return Response.Status.EXPECTATION_FAILED.getReasonPhrase();
+        }
+    }
+
+    @WebMethod(operationName = "excluirLancamento")
+    @WebResult(name = "Lancamento")
+    public String excluirLancamento(@WebParam(name = "idLancamento") int idLancamento) throws Exception {
+        try {
+            eventosGestaoContas.excluirLancamentoBancario(idLancamento);
+            return Response.Status.OK.getReasonPhrase();
+        } catch (Exception e) {
+            return Response.Status.EXPECTATION_FAILED.getReasonPhrase();
+        }
+
     }
 
     @WebMethod(operationName = "pesquisarPorTipoLancamento")
     @WebResult(name = "Lancamento")
     public List<Lancamento> pesquisarPorTipoLancamento(@WebParam(name = "tipoLancamento") int idtipolancamento) throws Exception {
         return gestaoContaBean.pesquisarLancamentoPorTipoDeLancamento(idtipolancamento);
-    }
-
-    @WebMethod(operationName = "excluirLancamento")
-    @WebResult(name = "Lancamento")
-    public String excluirLancamento(@WebParam(name = "idLancamento") int idLancamento) throws Exception {
-        gestaoContaBean.excluirLancamento(idLancamento);
-        return Response.Status.OK.getReasonPhrase();
     }
 
     @WebMethod(operationName = "pesquisarLancamentoPeriodo")

@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 import logic.treinamento.dao.InterfaceLancamentoDao;
 import logic.treinamento.model.Lancamento;
 import logic.treinamento.dao.TipoLancamentoEnum;
@@ -26,7 +27,7 @@ import utilitarios.Formatadores;
 @Stateless
 public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
 
-    @EJB
+    @Inject
     private InterfaceLancamentoDao lancamentoDao;
 
     @Resource
@@ -60,7 +61,7 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void atualizarLancamento(AtualizarLancamentoRequisicao atualizarLancamentoRequisicao) throws Exception {
+    public void atualizarLancamento(@Observes AtualizarLancamentoRequisicao atualizarLancamentoRequisicao) throws Exception {
         try {
             Lancamento lanc = new Lancamento();
             lanc.setId(atualizarLancamentoRequisicao.getId());
@@ -82,7 +83,7 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void excluirLancamento(long idLancamento) throws SQLException {
+    public void excluirLancamento(@Observes long idLancamento) throws SQLException {
         try {
             if (idLancamento >= 0) {
                 lancamentoDao.excluirLancamento(idLancamento);
@@ -102,7 +103,7 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
     }
 
     @Override
-    public List<Lancamento> pesquisarLancamentoPorNome(String nome) throws SQLException {
+    public List<Lancamento> pesquisarLancamentoPorNome(@Observes String nome) throws SQLException {
         if (!nome.isEmpty()) {
             return lancamentoDao.pesquisarLancamentoPorNome(nome);
         } else {
