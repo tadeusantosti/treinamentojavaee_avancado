@@ -1,20 +1,32 @@
 package logic.treinamento.dao;
 
-import javax.enterprise.context.RequestScoped;
+import java.io.Serializable;
+import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.PersistenceUnit;
 
-public class JPAUtil {
-    
-    @PersistenceUnit
+public class JPAUtil implements Serializable {
+
     private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("dbControleBancario");
 
     @Produces
-    @RequestScoped 
-    public EntityManager getEntityManager() {
+    public EntityManager createEntityManager() {
         return emf.createEntityManager();
+    }
+
+    public void close(@Disposes EntityManager em) {
+        if (em.isOpen()) {
+            em.close();
+        }
+    }
+
+    public EntityManagerFactory getEmf() {
+        return emf;
+    }
+
+    public void setEmf(EntityManagerFactory emf) {
+        JPAUtil.emf = emf;
     }
 }

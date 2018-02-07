@@ -38,14 +38,7 @@
         </dependency>
         <dependency>
             <groupId>javax.enterprise</groupId>
-            <artifactId>cdi-api</artifactId>
-            <version>1.0-SP4</version>
-            <scope>provided</scope>
-        </dependency>  
-        <dependency>
-            <groupId>javax.enterprise</groupId>
-            <artifactId>cdi-api</artifactId>
-            <!-- Use version 2.0 for Weld 3 -->
+            <artifactId>cdi-api</artifactId>            
             <version>1.2</version>
             <scope>provided</scope>
         </dependency>
@@ -84,27 +77,16 @@
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
             <version>2.4.0</version>
-            <scope>runtime</scope>
+            <scope>test</scope>
         </dependency>
         
-        <!-- JPA -->  
+        <!-- JPA-->
         <dependency>
-            <groupId>org.hibernate.javax.persistence</groupId>
-            <artifactId>hibernate-jpa-2.1-api</artifactId>
-            <version>1.0.0.Final</version>
-        </dependency>   
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>5.1.10.Final</version>
-            <scope>provided</scope>
+            <groupId>org.apache.openjpa</groupId>
+            <artifactId>openjpa</artifactId>
+            <!-- set the version to be the same as the level in your runtime -->
+            <version>2.4.0</version>
         </dependency>
-        <dependency>
-            <groupId>javax.enterprise</groupId>
-            <artifactId>cdi-api</artifactId>            
-            <version>1.2</version>
-            <scope>provided</scope>
-        </dependency>  
     </dependencies>
 
     <build>

@@ -5,29 +5,32 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import utilitarios.Formatadores;
 
 @Stateless
 public class LancamentoDao implements InterfaceLancamentoDao {
-    
-    @PersistenceContext
-    private EntityManager em;    
+
+    @Inject
+    private EntityManager em;
 
     @Override
     public void salvarContasDoMes(Lancamento lanc) throws SQLException {
-        em = new JPAUtil().getEntityManager();
-        em.getTransaction().begin();
-        em.persist(lanc);
-        em.getTransaction().commit();
-        em.close();
+        try {
+            em.getTransaction().begin();
+            em.persist(lanc);
+            em.getTransaction().commit();
+        } catch (Exception ex) {
+            em.getTransaction().rollback();
+        } finally {
+            em.close();
+        }
     }
 
     @Override
     public void atualizarLancamento(Lancamento lanc) throws SQLException {
-        em = new JPAUtil().getEntityManager();
         em.getTransaction().begin();
         em.merge(lanc);
         em.getTransaction().commit();
@@ -36,7 +39,6 @@ public class LancamentoDao implements InterfaceLancamentoDao {
 
     @Override
     public void excluirLancamento(long idLancamento) throws SQLException {
-        em = new JPAUtil().getEntityManager();
         em.getTransaction().begin();
         em.remove(em.getReference(Lancamento.class, idLancamento));
         em.getTransaction().commit();
@@ -48,7 +50,6 @@ public class LancamentoDao implements InterfaceLancamentoDao {
         StringBuilder sql = new StringBuilder();
         List<Lancamento> resultados = null;
 
-        em = new JPAUtil().getEntityManager();
         em.getTransaction().begin();
 
         sql.append("\n SELECT l FROM Lancamento l");
@@ -67,17 +68,21 @@ public class LancamentoDao implements InterfaceLancamentoDao {
         StringBuilder sql = new StringBuilder();
         List<Lancamento> resultados = null;
 
-        em = new JPAUtil().getEntityManager();
-        em.getTransaction().begin();
+        try {
+            em.getTransaction().begin();
 
-        sql.append("\n SELECT l FROM Lancamento l");
-        sql.append(" WHERE l.nome LIKE '%").append(nome).append("%' ORDER BY l.id");
-        String jpql = sql.toString();
-        Query query = em.createQuery(jpql);
-        resultados = query.getResultList();
-        em.close();
-        return resultados;
-
+            sql.append("\n SELECT l FROM Lancamento l");
+            sql.append(" WHERE l.nome LIKE '%").append(nome).append("%' ORDER BY l.id");
+            String jpql = sql.toString();
+            Query query = em.createQuery(jpql);
+            resultados = query.getResultList();
+            return resultados;
+        } catch (Exception ex) {
+            em.getTransaction().rollback();
+            return null;
+        } finally {
+            em.close();
+        }
     }
 
     @Override
@@ -86,7 +91,6 @@ public class LancamentoDao implements InterfaceLancamentoDao {
         StringBuilder sql = new StringBuilder();
         List<Lancamento> resultados = null;
 
-        em = new JPAUtil().getEntityManager();
         em.getTransaction().begin();
 
         sql.append("\n SELECT l FROM Lancamento l");

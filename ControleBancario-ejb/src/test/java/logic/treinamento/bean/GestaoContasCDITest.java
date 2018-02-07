@@ -4,8 +4,6 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.inject.Inject;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.fail;
 import logic.treinamento.dao.InterfaceLancamentoDao;
@@ -14,7 +12,6 @@ import logic.treinamento.model.Lancamento;
 import logic.treinamento.observer.EventosGestaoContas;
 import logic.treinamento.request.LancarContasDoMesRequisicao;
 import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import utilitarios.Formatadores;
@@ -30,10 +27,10 @@ public class GestaoContasCDITest {
 
     @Inject
     EventosGestaoContas eventosGestaoContas;
-        
+
     @AfterClass
     public static void after() {
-        File folder = new File("C:\teste\banco");
+        File folder = new File("C:\banco");
         if (folder.isDirectory()) {
             File[] sun = folder.listFiles();
             for (File toDelete : sun) {
