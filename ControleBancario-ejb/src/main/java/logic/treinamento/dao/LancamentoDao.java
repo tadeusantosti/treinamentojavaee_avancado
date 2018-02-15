@@ -31,18 +31,28 @@ public class LancamentoDao implements InterfaceLancamentoDao {
 
     @Override
     public void atualizarLancamento(Lancamento lanc) throws SQLException {
-        em.getTransaction().begin();
-        em.merge(lanc);
-        em.getTransaction().commit();
-        em.close();
+        try {
+            em.getTransaction().begin();
+            em.merge(lanc);
+            em.getTransaction().commit();
+        } catch (Exception ex) {
+            em.getTransaction().rollback();
+        } finally {
+            em.close();
+        }
     }
 
     @Override
     public void excluirLancamento(long idLancamento) throws SQLException {
-        em.getTransaction().begin();
-        em.remove(em.getReference(Lancamento.class, idLancamento));
-        em.getTransaction().commit();
-        em.close();
+        try {
+            em.getTransaction().begin();
+            em.remove(em.getReference(Lancamento.class, idLancamento));
+            em.getTransaction().commit();
+        } catch (Exception ex) {
+            em.getTransaction().rollback();
+        } finally {
+            em.close();
+        }
     }
 
     @Override
@@ -57,8 +67,6 @@ public class LancamentoDao implements InterfaceLancamentoDao {
         String jpql = sql.toString();
         Query query = em.createQuery(jpql);
         resultados = query.getResultList();
-        em.close();
-
         return resultados;
     }
 
@@ -80,8 +88,6 @@ public class LancamentoDao implements InterfaceLancamentoDao {
         } catch (Exception ex) {
             em.getTransaction().rollback();
             return null;
-        } finally {
-            em.close();
         }
     }
 
@@ -98,7 +104,12 @@ public class LancamentoDao implements InterfaceLancamentoDao {
         String jpql = sql.toString();
         Query query = em.createQuery(jpql);
         resultados = query.getResultList();
-        em.close();
         return resultados;
+    }
+
+    @Override
+    public void limparBaseDadosTeste() throws SQLException {
+        em.getTransaction().begin();
+        em.createNativeQuery("DELETE FROM Lancamento").executeUpdate();
     }
 }

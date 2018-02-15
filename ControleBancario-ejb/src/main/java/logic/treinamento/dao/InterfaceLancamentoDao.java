@@ -20,4 +20,6 @@ public interface InterfaceLancamentoDao {
     public List<Lancamento> pesquisarLancamentoPorNome(String nome) throws SQLException;
 
     public List<Lancamento> pesquisarLancamentoPorTipoDeLancamento(TipoLancamentoEnum tipoLancamento) throws SQLException;
+
+    public void limparBaseDadosTeste() throws SQLException;
 }

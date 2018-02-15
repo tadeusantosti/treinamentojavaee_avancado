@@ -1,6 +1,5 @@
 package logic.treinamento.bean;
 
-import java.io.File;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.inject.Inject;
@@ -11,7 +10,6 @@ import logic.treinamento.dao.TipoLancamentoEnum;
 import logic.treinamento.model.Lancamento;
 import logic.treinamento.observer.EventosGestaoContas;
 import logic.treinamento.request.LancarContasDoMesRequisicao;
-import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import utilitarios.Formatadores;
@@ -28,20 +26,16 @@ public class GestaoContasCDITest {
     @Inject
     EventosGestaoContas eventosGestaoContas;
 
-    @AfterClass
-    public static void after() {
-        File folder = new File("C:\banco");
-        if (folder.isDirectory()) {
-            File[] sun = folder.listFiles();
-            for (File toDelete : sun) {
-                toDelete.delete();
-            }
-        }
-    }
-
     @Test
     public void testeEvento() throws Exception {
 
+        List<Lancamento> lixo = gestaoContaBean.pesquisarLancamentoPorNome("Albert");
+        if (!lixo.isEmpty()) {
+            for (Lancamento lancamento : lixo) {
+            gestaoContaBean.excluirLancamento(lancamento.getId());                
+            }            
+        }
+                
         LancarContasDoMesRequisicao lancRequisicao = new LancarContasDoMesRequisicao();
         lancRequisicao.setNome("Albert Einstein");
         lancRequisicao.setValor(new BigDecimal(1234.56));

@@ -5,11 +5,11 @@
         <class>logic.treinamento.model.Lancamento</class>
         <properties>
             <property name="javax.persistence.jdbc.driver"   value="org.hsqldb.jdbcDriver"               />
-            <property name="javax.persistence.jdbc.url"      value="jdbc:hsqldb:file:C:/banco/dbControleBancario"    />
+            <property name="javax.persistence.jdbc.url"      value="jdbc:hsqldb:file:C:/bancoTeste/dbControleBancario"    />
             <property name="javax.persistence.jdbc.user"     value="SA"                                  />
             <property name="javax.persistence.jdbc.password" value=""                                    />
    
-            <property name="hibernate.hbm2ddl.auto"          value="update" />  
+           <property name="hibernate.hbm2ddl.auto"          value="update" /> 
             <property name="hibernate.show_sql"              value="true"                                />
             <property name="hibernate.format_sql"            value="false"                               />
             <property name="hibernate.dialect"               value="org.hibernate.dialect.HSQLDialect"   />
