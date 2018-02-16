@@ -24,8 +24,6 @@ public class LancamentoDao implements InterfaceLancamentoDao {
             em.getTransaction().commit();
         } catch (Exception ex) {
             em.getTransaction().rollback();
-        } finally {
-            em.close();
         }
     }
 
@@ -36,9 +34,8 @@ public class LancamentoDao implements InterfaceLancamentoDao {
             em.merge(lanc);
             em.getTransaction().commit();
         } catch (Exception ex) {
+            System.out.println(ex.getMessage());
             em.getTransaction().rollback();
-        } finally {
-            em.close();
         }
     }
 
@@ -50,8 +47,6 @@ public class LancamentoDao implements InterfaceLancamentoDao {
             em.getTransaction().commit();
         } catch (Exception ex) {
             em.getTransaction().rollback();
-        } finally {
-            em.close();
         }
     }
 
@@ -59,8 +54,6 @@ public class LancamentoDao implements InterfaceLancamentoDao {
     public List<Lancamento> pesquisarLancamentoPorPeriodo(Date dataInicial, Date dataFinal) throws SQLException {
         StringBuilder sql = new StringBuilder();
         List<Lancamento> resultados = null;
-
-        em.getTransaction().begin();
 
         sql.append("\n SELECT l FROM Lancamento l");
         sql.append(" WHERE l.data BETWEEN '").append(Formatadores.formatoDataBanco.format(dataInicial)).append("' AND '").append(Formatadores.formatoDataBanco.format(dataFinal)).append("' ORDER BY l.id");
@@ -77,8 +70,6 @@ public class LancamentoDao implements InterfaceLancamentoDao {
         List<Lancamento> resultados = null;
 
         try {
-            em.getTransaction().begin();
-
             sql.append("\n SELECT l FROM Lancamento l");
             sql.append(" WHERE l.nome LIKE '%").append(nome).append("%' ORDER BY l.id");
             String jpql = sql.toString();
@@ -86,7 +77,6 @@ public class LancamentoDao implements InterfaceLancamentoDao {
             resultados = query.getResultList();
             return resultados;
         } catch (Exception ex) {
-            em.getTransaction().rollback();
             return null;
         }
     }
@@ -97,19 +87,16 @@ public class LancamentoDao implements InterfaceLancamentoDao {
         StringBuilder sql = new StringBuilder();
         List<Lancamento> resultados = null;
 
-        em.getTransaction().begin();
-
-        sql.append("\n SELECT l FROM Lancamento l");
-        sql.append(" WHERE l.tipoLancamento = '").append(tipoLancamento).append("' ORDER BY l.id");
-        String jpql = sql.toString();
-        Query query = em.createQuery(jpql);
-        resultados = query.getResultList();
-        return resultados;
+        try {
+            sql.append("\n SELECT l FROM Lancamento l");
+            sql.append(" WHERE l.tipoLancamento = '").append(tipoLancamento).append("' ORDER BY l.id");
+            String jpql = sql.toString();
+            Query query = em.createQuery(jpql);
+            resultados = query.getResultList();
+            return resultados;
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
-    @Override
-    public void limparBaseDadosTeste() throws SQLException {
-        em.getTransaction().begin();
-        em.createNativeQuery("DELETE FROM Lancamento").executeUpdate();
-    }
 }
