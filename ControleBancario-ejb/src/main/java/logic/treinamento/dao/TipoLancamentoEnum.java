@@ -5,14 +5,14 @@ public enum TipoLancamentoEnum {
     SAQUE(2),
     DEPOSITO(3);
 
-    private final int id;
+    private final int idTipoLancamento;
 
     TipoLancamentoEnum(int id) {
-        this.id = id;
+        this.idTipoLancamento = id;
     }
 
     public int getId() {
-        return id;
+        return idTipoLancamento;
     }
 
     public static TipoLancamentoEnum getByCodigo(int codigoID) {
@@ -20,7 +20,7 @@ public enum TipoLancamentoEnum {
             return null;
         }
         for (TipoLancamentoEnum tipoLanc : TipoLancamentoEnum.values()) {
-            if (tipoLanc.id == codigoID) {
+            if (tipoLanc.idTipoLancamento == codigoID) {
                 return tipoLanc;
             }
         }

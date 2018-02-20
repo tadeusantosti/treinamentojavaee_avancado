@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import logic.treinamento.dao.TipoLancamentoEnum;
 
 @Entity
-@Table(name="Lancamento")
+@Table(name = "Lancamento")
 public class Lancamento implements Serializable {
 
     @Id

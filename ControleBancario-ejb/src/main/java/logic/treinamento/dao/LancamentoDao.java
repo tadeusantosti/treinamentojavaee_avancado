@@ -89,9 +89,9 @@ public class LancamentoDao implements InterfaceLancamentoDao {
 
         try {
             sql.append("\n SELECT l FROM Lancamento l");
-            sql.append(" WHERE l.tipoLancamento = '").append(tipoLancamento).append("' ORDER BY l.id");
+            sql.append(" WHERE l.tipoLancamento = '").append(tipoLancamento.toString()).append("'");
             String jpql = sql.toString();
-            Query query = em.createQuery(jpql);
+            Query query = em.createQuery(jpql);            
             resultados = query.getResultList();
             return resultados;
         } catch (Exception ex) {
