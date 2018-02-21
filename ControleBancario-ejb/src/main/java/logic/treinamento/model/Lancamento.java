@@ -3,12 +3,15 @@ package logic.treinamento.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import logic.treinamento.dao.TipoLancamentoEnum;
 
@@ -25,6 +28,10 @@ public class Lancamento implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private TipoLancamentoEnum tipoLancamento;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id")
+    private ContaCorrente conta;
 
     public String getNome() {
         return nome;
@@ -73,4 +80,13 @@ public class Lancamento implements Serializable {
     public void setDataGUI(String dataGUI) {
         this.dataGUI = dataGUI;
     }
+
+    public ContaCorrente getConta() {
+        return conta;
+    }
+
+    public void setConta(ContaCorrente conta) {
+        this.conta = conta;
+    }
+
 }

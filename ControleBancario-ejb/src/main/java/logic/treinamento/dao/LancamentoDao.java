@@ -17,24 +17,25 @@ public class LancamentoDao implements InterfaceLancamentoDao {
     private EntityManager em;
 
     @Override
-    public void salvarContasDoMes(Lancamento lanc) throws SQLException {
+    public void salvarLancamentoBancario(Lancamento lanc) throws SQLException {
         try {
             em.getTransaction().begin();
             em.persist(lanc);
             em.getTransaction().commit();
         } catch (Exception ex) {
+            ex.printStackTrace();
             em.getTransaction().rollback();
         }
     }
 
     @Override
-    public void atualizarLancamento(Lancamento lanc) throws SQLException {
+    public void atualizarLancamentoBancario(Lancamento lanc) throws SQLException {
         try {
             em.getTransaction().begin();
             em.merge(lanc);
             em.getTransaction().commit();
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            ex.printStackTrace();
             em.getTransaction().rollback();
         }
     }
@@ -46,12 +47,13 @@ public class LancamentoDao implements InterfaceLancamentoDao {
             em.remove(em.getReference(Lancamento.class, idLancamento));
             em.getTransaction().commit();
         } catch (Exception ex) {
+            ex.printStackTrace();
             em.getTransaction().rollback();
         }
     }
 
     @Override
-    public List<Lancamento> pesquisarLancamentoPorPeriodo(Date dataInicial, Date dataFinal) throws SQLException {
+    public List<Lancamento> pesquisarLancamentoBancarioPorPeriodo(Date dataInicial, Date dataFinal) throws SQLException {
         StringBuilder sql = new StringBuilder();
         List<Lancamento> resultados = null;
 
@@ -64,7 +66,7 @@ public class LancamentoDao implements InterfaceLancamentoDao {
     }
 
     @Override
-    public List<Lancamento> pesquisarLancamentoPorNome(String nome) throws SQLException {
+    public List<Lancamento> pesquisarLancamentoBancarioPorNome(String nome) throws SQLException {
 
         StringBuilder sql = new StringBuilder();
         List<Lancamento> resultados = null;
@@ -77,24 +79,26 @@ public class LancamentoDao implements InterfaceLancamentoDao {
             resultados = query.getResultList();
             return resultados;
         } catch (Exception ex) {
+            ex.printStackTrace();
             return null;
         }
     }
 
     @Override
-    public List<Lancamento> pesquisarLancamentoPorTipoDeLancamento(TipoLancamentoEnum tipoLancamento) throws SQLException {
+    public List<Lancamento> pesquisarLancamentoBancarioPorTipoDeLancamento(TipoLancamentoEnum tipoLancamento) throws SQLException {
 
         StringBuilder sql = new StringBuilder();
         List<Lancamento> resultados = null;
 
         try {
             sql.append("\n SELECT l FROM Lancamento l");
-            sql.append(" WHERE l.tipoLancamento = '").append(tipoLancamento.toString()).append("'");
+            sql.append(" WHERE l.tipoLancamento =:tipoLancamento");
             String jpql = sql.toString();
-            Query query = em.createQuery(jpql);            
+            Query query = em.createQuery(jpql).setParameter("tipoLancamento", tipoLancamento);
             resultados = query.getResultList();
             return resultados;
         } catch (Exception ex) {
+            ex.printStackTrace();
             return null;
         }
     }

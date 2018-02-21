@@ -2,20 +2,35 @@ package logic.treinamento.bean;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import javax.inject.Inject;
 import junit.framework.TestCase;
-import org.apache.openejb.junit.ApplicationComposer;
+import logic.treinamento.dao.InterfaceLancamentoDao;
+import logic.treinamento.dao.LancamentoDao;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import javax.inject.Inject;
 import logic.treinamento.model.Lancamento;
 import logic.treinamento.dao.TipoLancamentoEnum;
+import org.apache.openejb.jee.EjbJar;
+import org.apache.openejb.jee.StatelessBean;
 import utilitarios.Formatadores;
 
-@RunWith(ApplicationComposer.class)
-public class GestaoContasTest extends TestCase {
+@RunWith(WeldJUnit4Runner.class)
+public class GestaoContasValidacoesTest extends TestCase {
 
     @Inject
     public InterfaceGestaoContas gestaoContaBean;
+
+    @Inject
+    InterfaceLancamentoDao gestaoContasDao;
+
+    @org.apache.openejb.testing.Module
+    public EjbJar beans() {
+        EjbJar ejbJar = new EjbJar();
+        ejbJar.addEnterpriseBean(new StatelessBean(GestaoContasBean.class));
+        ejbJar.addEnterpriseBean(new StatelessBean(LancamentoDao.class));
+        ejbJar.addEnterpriseBean(new StatelessBean(Formatadores.class));
+        return ejbJar;
+    }
 
     /**
      * Teste responsavel por validar o metodo que verifica o campo de data

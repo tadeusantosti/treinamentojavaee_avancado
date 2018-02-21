@@ -34,7 +34,7 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
      */
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void lancarContasDoMes(@Observes LancarContasDoMesRequisicao lancarContasDoMesRequisicao) throws Exception {
+    public void salvarLancamentoBancario(@Observes LancarContasDoMesRequisicao lancarContasDoMesRequisicao) throws Exception {
 
         Lancamento lanc = new Lancamento();
         lanc.setNome(lancarContasDoMesRequisicao.getNome());
@@ -45,13 +45,13 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
         String retornoValidacao = validarCamposObrigatorios(lanc);
 
         if (retornoValidacao.isEmpty()) {
-            lancamentoDao.salvarContasDoMes(lanc);
+            lancamentoDao.salvarLancamentoBancario(lanc);
         }
     }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void atualizarLancamento(@Observes AtualizarLancamentoRequisicao atualizarLancamentoRequisicao) throws Exception {
+    public void atualizarLancamentoBancario(@Observes AtualizarLancamentoRequisicao atualizarLancamentoRequisicao) throws Exception {
 
         Lancamento lanc = new Lancamento();
         lanc.setId(atualizarLancamentoRequisicao.getId());
@@ -63,13 +63,13 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
         String retornoValidacao = validarCamposObrigatoriosAtualizacao(lanc);
 
         if (retornoValidacao.equals("")) {
-            lancamentoDao.atualizarLancamento(lanc);
+            lancamentoDao.atualizarLancamentoBancario(lanc);
         }
     }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void excluirLancamento(@Observes long idLancamento) throws SQLException {
+    public void excluirLancamentoBancario(@Observes long idLancamento) throws SQLException {
         if (idLancamento >= 0) {
             lancamentoDao.excluirLancamento(idLancamento);
             System.out.println("Lancamento Excluido com Sucesso!");
@@ -79,24 +79,24 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
     }
 
     @Override
-    public List<Lancamento> pesquisarLancamentoPorPeriodo(String dataInicial, String dataFinal) throws Exception {
+    public List<Lancamento> pesquisarLancamentoBancarioPorPeriodo(String dataInicial, String dataFinal) throws Exception {
         List<Date> datas = Formatadores.validarDatasInformadas(dataInicial, dataFinal);
-        return lancamentoDao.pesquisarLancamentoPorPeriodo(datas.get(0), datas.get(1));
+        return lancamentoDao.pesquisarLancamentoBancarioPorPeriodo(datas.get(0), datas.get(1));
     }
 
     @Override
-    public List<Lancamento> pesquisarLancamentoPorNome(@Observes String nome) throws SQLException {
+    public List<Lancamento> pesquisarLancamentoBancarioPorNome(@Observes String nome) throws SQLException {
         if (!nome.isEmpty()) {
-            return lancamentoDao.pesquisarLancamentoPorNome(nome);
+            return lancamentoDao.pesquisarLancamentoBancarioPorNome(nome);
         } else {
             return null;
         }
     }
 
     @Override
-    public List<Lancamento> pesquisarLancamentoPorTipoDeLancamento(int idtipolancamento) throws SQLException {
+    public List<Lancamento> pesquisarLancamentoBancarioPorTipoDeLancamento(int idtipolancamento) throws SQLException {
         if (!validarTipoLancamentoInformado(TipoLancamentoEnum.getByCodigo(idtipolancamento))) {
-            return lancamentoDao.pesquisarLancamentoPorTipoDeLancamento(TipoLancamentoEnum.getByCodigo(idtipolancamento));
+            return lancamentoDao.pesquisarLancamentoBancarioPorTipoDeLancamento(TipoLancamentoEnum.getByCodigo(idtipolancamento));
         } else {
             return null;
         }

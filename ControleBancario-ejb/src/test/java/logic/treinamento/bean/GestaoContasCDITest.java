@@ -6,8 +6,10 @@ import java.util.List;
 import javax.inject.Inject;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.fail;
+import logic.treinamento.dao.InterfaceContaCorrente;
 import logic.treinamento.dao.InterfaceLancamentoDao;
 import logic.treinamento.dao.TipoLancamentoEnum;
+import logic.treinamento.model.ContaCorrente;
 import logic.treinamento.model.Lancamento;
 import logic.treinamento.observer.EventosGestaoContas;
 import logic.treinamento.request.AtualizarLancamentoRequisicao;
@@ -29,22 +31,25 @@ public class GestaoContasCDITest {
     @Inject
     EventosGestaoContas eventosGestaoContas;
 
-    @Before
-    public void setup() throws Exception {
-        List<Lancamento> registrosPararemoverAntesTeste = gestaoContaBean.pesquisarLancamentoPorNome("Albert");
-        if (!registrosPararemoverAntesTeste.isEmpty()) {
-            for (Lancamento lancamento : registrosPararemoverAntesTeste) {
-                eventosGestaoContas.excluirLancamentoBancario(lancamento.getId());
-            }
-        }
+    @Inject
+    InterfaceContaCorrente contaCorrenteDao;
 
-        List<Lancamento> registrosPararemoverAntesTeste1 = gestaoContaBean.pesquisarLancamentoPorNome("Charles Darwin");
-        if (!registrosPararemoverAntesTeste1.isEmpty()) {
-            for (Lancamento lancamento : registrosPararemoverAntesTeste1) {
-                eventosGestaoContas.excluirLancamentoBancario(lancamento.getId());
-            }
-        }
-    }
+//    @Before
+//    public void setup() throws Exception {
+//        List<Lancamento> registrosPararemoverAntesTeste = gestaoContaBean.pesquisarLancamentoBancarioPorNome("Albert");
+//        if (!registrosPararemoverAntesTeste.isEmpty()) {
+//            for (Lancamento lancamento : registrosPararemoverAntesTeste) {
+//                eventosGestaoContas.excluirLancamentoBancario(lancamento.getId());
+//            }
+//        }
+//
+//        List<Lancamento> registrosPararemoverAntesTeste1 = gestaoContaBean.pesquisarLancamentoBancarioPorNome("Charles Darwin");
+//        if (!registrosPararemoverAntesTeste1.isEmpty()) {
+//            for (Lancamento lancamento : registrosPararemoverAntesTeste1) {
+//                eventosGestaoContas.excluirLancamentoBancario(lancamento.getId());
+//            }
+//        }
+//    }
 
     /**
      * Teste responsavel por validar o serviço de lançamento de contas do mês e
@@ -60,7 +65,7 @@ public class GestaoContasCDITest {
      * @throws Exception
      */
     @Test
-    public void testLancarContasDoMes() throws Exception {
+    public void testSalvarLancamentoBancario() throws Exception {
 
         LancarContasDoMesRequisicao lancRequisicao = new LancarContasDoMesRequisicao();
         lancRequisicao.setNome("Albert Einstein");
@@ -69,7 +74,7 @@ public class GestaoContasCDITest {
         lancRequisicao.setIdTipoLancamento(TipoLancamentoEnum.DEPOSITO.getId());
         eventosGestaoContas.salvarLacamentoBancario(lancRequisicao);
 
-        List<Lancamento> lancNovo = gestaoContaBean.pesquisarLancamentoPorNome("Albert");
+        List<Lancamento> lancNovo = gestaoContaBean.pesquisarLancamentoBancarioPorNome("Albert");
 
         if (!lancNovo.isEmpty()) {
             for (Lancamento lancamentoConsultado : lancNovo) {
@@ -82,7 +87,7 @@ public class GestaoContasCDITest {
             fail("O lancamento bancario nao foi salvo!");
         }
 
-        gestaoContaBean.excluirLancamento(lancNovo.get(0).getId());
+        gestaoContaBean.excluirLancamentoBancario(lancNovo.get(0).getId());
     }
 
     /**
@@ -99,7 +104,7 @@ public class GestaoContasCDITest {
      * @throws Exception
      */
     @Test
-    public void testAtualizarDadosLancamento() throws Exception {
+    public void testAtualizarDadosLancamentoBancario() throws Exception {
 
         LancarContasDoMesRequisicao lancRequisicao = new LancarContasDoMesRequisicao();
         lancRequisicao.setNome("Albert Einstein");
@@ -108,7 +113,7 @@ public class GestaoContasCDITest {
         lancRequisicao.setIdTipoLancamento(TipoLancamentoEnum.DEPOSITO.getId());
         eventosGestaoContas.salvarLacamentoBancario(lancRequisicao);
 
-        List<Lancamento> lancNovo = gestaoContaBean.pesquisarLancamentoPorNome("Albert");
+        List<Lancamento> lancNovo = gestaoContaBean.pesquisarLancamentoBancarioPorNome("Albert");
 
         if (!lancNovo.isEmpty()) {
             for (Lancamento lancamentoConsultado : lancNovo) {
@@ -132,7 +137,7 @@ public class GestaoContasCDITest {
         atualizarLancamentoRequisicao.setIdTipoLancamentoAtualizado(TipoLancamentoEnum.TRANSFERENCIA.getId());
         eventosGestaoContas.atualizarLancamentoBancario(atualizarLancamentoRequisicao);
 
-        List<Lancamento> lancamentoAtualizado = gestaoContaBean.pesquisarLancamentoPorNome("Charles");
+        List<Lancamento> lancamentoAtualizado = gestaoContaBean.pesquisarLancamentoBancarioPorNome("Charles");
 
         if (!lancamentoAtualizado.isEmpty()) {
             for (Lancamento lancAtualizado : lancamentoAtualizado) {
@@ -145,7 +150,7 @@ public class GestaoContasCDITest {
             fail("O lancamento bancario nao foi atualizado!");
         }
 
-        gestaoContaBean.excluirLancamento(lancamentoAtualizado.get(0).getId());
+        gestaoContaBean.excluirLancamentoBancario(lancamentoAtualizado.get(0).getId());
     }
 
     /**
@@ -159,7 +164,7 @@ public class GestaoContasCDITest {
      * @throws Exception
      */
     @Test
-    public void testExcluirContasDoMes() throws Exception {
+    public void testExcluirLancamentoBancario() throws Exception {
 
         LancarContasDoMesRequisicao lancRequisicao = new LancarContasDoMesRequisicao();
         lancRequisicao.setNome("Albert Einstein");
@@ -168,7 +173,7 @@ public class GestaoContasCDITest {
         lancRequisicao.setIdTipoLancamento(TipoLancamentoEnum.DEPOSITO.getId());
         eventosGestaoContas.salvarLacamentoBancario(lancRequisicao);
 
-        List<Lancamento> lancNovo = gestaoContaBean.pesquisarLancamentoPorNome("Albert");
+        List<Lancamento> lancNovo = gestaoContaBean.pesquisarLancamentoBancarioPorNome("Albert");
 
         if (!lancNovo.isEmpty()) {
             for (Lancamento lancamentoConsultado : lancNovo) {
@@ -183,7 +188,7 @@ public class GestaoContasCDITest {
 
         eventosGestaoContas.excluirLancamentoBancario(lancNovo.get(0).getId());
 
-        List<Lancamento> lancExcluido = gestaoContaBean.pesquisarLancamentoPorNome("Albert");
+        List<Lancamento> lancExcluido = gestaoContaBean.pesquisarLancamentoBancarioPorNome("Albert");
 
         if (!lancExcluido.isEmpty()) {
             fail("O lancamento bancario nao foi excluido!");
@@ -203,7 +208,7 @@ public class GestaoContasCDITest {
      * @throws Exception
      */
     @Test
-    public void testPesquisarPorTipoDeLancamentoContasDoMes() throws Exception {
+    public void testPesquisarLancamentoBancarioPorTipoDeLancamento() throws Exception {
 
         LancarContasDoMesRequisicao lancRequisicao = new LancarContasDoMesRequisicao();
         lancRequisicao.setNome("Albert Einstein");
@@ -212,8 +217,8 @@ public class GestaoContasCDITest {
         lancRequisicao.setIdTipoLancamento(TipoLancamentoEnum.SAQUE.getId());
         eventosGestaoContas.salvarLacamentoBancario(lancRequisicao);
 
-        List<Lancamento> lancamentoDeSaque = gestaoContaBean.pesquisarLancamentoPorTipoDeLancamento(TipoLancamentoEnum.SAQUE.getId());
-        
+        List<Lancamento> lancamentoDeSaque = gestaoContaBean.pesquisarLancamentoBancarioPorTipoDeLancamento(TipoLancamentoEnum.SAQUE.getId());
+
         if (!lancamentoDeSaque.isEmpty()) {
             for (Lancamento lancamentoConsultado : lancamentoDeSaque) {
                 assertEquals(lancRequisicao.getNome(), lancamentoConsultado.getNome());
@@ -240,7 +245,7 @@ public class GestaoContasCDITest {
      * @throws Exception
      */
     @Test
-    public void testPesquisarPorPeriodoDeLancamentoContasDoMes() throws Exception {
+    public void testPesquisarLancamentoBancarioPorPeriodo() throws Exception {
 
         LancarContasDoMesRequisicao lancRequisicao = new LancarContasDoMesRequisicao();
         lancRequisicao.setNome("Albert Einstein");
@@ -261,7 +266,7 @@ public class GestaoContasCDITest {
         eventosGestaoContas.salvarLacamentoBancario(lancDoisRequisicao);
 
         novaData.add(Calendar.DAY_OF_MONTH, 10);
-        List<Lancamento> lancamentoDeSaque = gestaoContaBean.pesquisarLancamentoPorPeriodo(Formatadores.formatoDataInterface.format(new java.util.Date()), Formatadores.formatoDataInterface.format(novaData.getTime().getTime()));
+        List<Lancamento> lancamentoDeSaque = gestaoContaBean.pesquisarLancamentoBancarioPorPeriodo(Formatadores.formatoDataInterface.format(new java.util.Date()), Formatadores.formatoDataInterface.format(novaData.getTime().getTime()));
 
         if (!lancamentoDeSaque.isEmpty()) {
             for (Lancamento lancamentoConsultado : lancamentoDeSaque) {
@@ -285,6 +290,36 @@ public class GestaoContasCDITest {
 
         eventosGestaoContas.excluirLancamentoBancario(lancamentoDeSaque.get(0).getId());
         eventosGestaoContas.excluirLancamentoBancario(lancamentoDeSaque.get(1).getId());
+    }
+
+    @Test
+    public void testContas() throws Exception {
+        ContaCorrente cc = new ContaCorrente();
+        cc.setSaldo(0);
+        contaCorrenteDao.salvarContaCorrente(cc);
+
+        LancarContasDoMesRequisicao lancRequisicao = new LancarContasDoMesRequisicao();
+        lancRequisicao.setNome("Albert Einstein");
+        lancRequisicao.setValor(new BigDecimal(1234.56));
+        lancRequisicao.setData(Formatadores.formatoDataInterface.format(new java.util.Date()));
+        lancRequisicao.setIdTipoLancamento(TipoLancamentoEnum.DEPOSITO.getId());
+        lancRequisicao.setIdContaCorrente(1);
+        eventosGestaoContas.salvarLacamentoBancario(lancRequisicao);
+
+        List<Lancamento> lancNovo = gestaoContaBean.pesquisarLancamentoBancarioPorNome("Albert");
+
+        if (!lancNovo.isEmpty()) {
+            for (Lancamento lancamentoConsultado : lancNovo) {
+                assertEquals(lancRequisicao.getNome(), lancamentoConsultado.getNome());
+                assertEquals(lancRequisicao.getValor().doubleValue(), lancamentoConsultado.getValor().doubleValue());
+                assertEquals(lancRequisicao.getData(), Formatadores.formatoDataInterface.format(lancamentoConsultado.getData()));
+                assertEquals(TipoLancamentoEnum.getByCodigo(lancRequisicao.getIdTipoLancamento()), lancamentoConsultado.getTipoLancamento());
+            }
+        } else {
+            fail("O lancamento bancario nao foi salvo!");
+        }
+
+        gestaoContaBean.excluirLancamentoBancario(lancNovo.get(0).getId());
     }
 
 }

@@ -11,18 +11,20 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LancarContasDoMesRequisicao implements Serializable {
 
-    
     @XmlElement
     private String nome;
-    
+
     @XmlElement
     private BigDecimal valor;
-    
+
     @XmlElement
     private int idTipoLancamento;
-    
+
     @XmlElement
     private String data;
+
+    @XmlElement
+    private int idContaCorrente;
 
     public String getNome() {
         return nome;
@@ -56,4 +58,11 @@ public class LancarContasDoMesRequisicao implements Serializable {
         this.data = data;
     }
 
+    public int getIdContaCorrente() {
+        return idContaCorrente;
+    }
+
+    public void setIdContaCorrente(int idContaCorrente) {
+        this.idContaCorrente = idContaCorrente;
+    }
 }
