@@ -34,22 +34,29 @@ public class GestaoContasCDITest {
     @Inject
     InterfaceContaCorrente contaCorrenteDao;
 
-//    @Before
-//    public void setup() throws Exception {
-//        List<Lancamento> registrosPararemoverAntesTeste = gestaoContaBean.pesquisarLancamentoBancarioPorNome("Albert");
-//        if (!registrosPararemoverAntesTeste.isEmpty()) {
-//            for (Lancamento lancamento : registrosPararemoverAntesTeste) {
-//                eventosGestaoContas.excluirLancamentoBancario(lancamento.getId());
-//            }
-//        }
-//
-//        List<Lancamento> registrosPararemoverAntesTeste1 = gestaoContaBean.pesquisarLancamentoBancarioPorNome("Charles Darwin");
-//        if (!registrosPararemoverAntesTeste1.isEmpty()) {
-//            for (Lancamento lancamento : registrosPararemoverAntesTeste1) {
-//                eventosGestaoContas.excluirLancamentoBancario(lancamento.getId());
-//            }
-//        }
-//    }
+    @Before
+    public void setup() throws Exception {
+        List<Lancamento> registrosPararemoverAntesTeste = gestaoContaBean.pesquisarLancamentoBancarioPorNome("Albert");
+        if (!registrosPararemoverAntesTeste.isEmpty()) {
+            for (Lancamento lancamento : registrosPararemoverAntesTeste) {
+                eventosGestaoContas.excluirLancamentoBancario(lancamento.getId());
+            }
+        }
+
+        List<Lancamento> registrosPararemoverAntesTeste1 = gestaoContaBean.pesquisarLancamentoBancarioPorNome("Charles Darwin");
+        if (!registrosPararemoverAntesTeste1.isEmpty()) {
+            for (Lancamento lancamento : registrosPararemoverAntesTeste1) {
+                eventosGestaoContas.excluirLancamentoBancario(lancamento.getId());
+            }
+        }
+        
+        List<ContaCorrente> registrosContaCorrente = contaCorrenteDao.pesquisarTodasContasCorrentes();
+        if (!registrosContaCorrente.isEmpty()) {
+            for (ContaCorrente contaCorrente : registrosContaCorrente) {
+                contaCorrenteDao.excluirContaCorrente(contaCorrente.getId());
+            }
+        }
+    }
 
     /**
      * Teste responsavel por validar o serviço de lançamento de contas do mês e
@@ -295,15 +302,17 @@ public class GestaoContasCDITest {
     @Test
     public void testContas() throws Exception {
         ContaCorrente cc = new ContaCorrente();
-        cc.setSaldo(0);
+        cc.setSaldo(9999);
         contaCorrenteDao.salvarContaCorrente(cc);
+        
+        List<ContaCorrente> contas = contaCorrenteDao.pesquisarTodasContasCorrentes();
 
         LancarContasDoMesRequisicao lancRequisicao = new LancarContasDoMesRequisicao();
         lancRequisicao.setNome("Albert Einstein");
         lancRequisicao.setValor(new BigDecimal(1234.56));
         lancRequisicao.setData(Formatadores.formatoDataInterface.format(new java.util.Date()));
         lancRequisicao.setIdTipoLancamento(TipoLancamentoEnum.DEPOSITO.getId());
-        lancRequisicao.setIdContaCorrente(1);
+        lancRequisicao.setIdContaCorrente(contas.get(0).getId());
         eventosGestaoContas.salvarLacamentoBancario(lancRequisicao);
 
         List<Lancamento> lancNovo = gestaoContaBean.pesquisarLancamentoBancarioPorNome("Albert");
@@ -313,7 +322,8 @@ public class GestaoContasCDITest {
                 assertEquals(lancRequisicao.getNome(), lancamentoConsultado.getNome());
                 assertEquals(lancRequisicao.getValor().doubleValue(), lancamentoConsultado.getValor().doubleValue());
                 assertEquals(lancRequisicao.getData(), Formatadores.formatoDataInterface.format(lancamentoConsultado.getData()));
-                assertEquals(TipoLancamentoEnum.getByCodigo(lancRequisicao.getIdTipoLancamento()), lancamentoConsultado.getTipoLancamento());
+                assertEquals(TipoLancamentoEnum.getByCodigo(lancRequisicao.getIdTipoLancamento()), lancamentoConsultado.getTipoLancamento());    
+                assertEquals(contas.get(0).getId(), lancRequisicao.getIdContaCorrente());
             }
         } else {
             fail("O lancamento bancario nao foi salvo!");

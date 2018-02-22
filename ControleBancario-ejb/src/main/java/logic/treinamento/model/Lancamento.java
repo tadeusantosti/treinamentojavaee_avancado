@@ -30,7 +30,7 @@ public class Lancamento implements Serializable {
     private TipoLancamentoEnum tipoLancamento;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "id_contacorrente")
     private ContaCorrente conta;
 
     public String getNome() {

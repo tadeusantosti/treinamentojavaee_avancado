@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.OneToMany; 
 import javax.persistence.Table;
 
 @Entity
@@ -16,14 +16,14 @@ public class ContaCorrente implements Serializable {
 
     @Id
      @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
     
     @OneToMany(mappedBy="conta", cascade=CascadeType.ALL)  
     private List<Lancamento> lancamento;
     
     private double saldo;
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 

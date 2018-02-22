@@ -24,7 +24,7 @@ public class LancarContasDoMesRequisicao implements Serializable {
     private String data;
 
     @XmlElement
-    private int idContaCorrente;
+    private long idContaCorrente;
 
     public String getNome() {
         return nome;
@@ -58,11 +58,11 @@ public class LancarContasDoMesRequisicao implements Serializable {
         this.data = data;
     }
 
-    public int getIdContaCorrente() {
+    public long getIdContaCorrente() {
         return idContaCorrente;
     }
 
-    public void setIdContaCorrente(int idContaCorrente) {
+    public void setIdContaCorrente(long idContaCorrente) {
         this.idContaCorrente = idContaCorrente;
     }
 }
