@@ -13,7 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import logic.treinamento.dao.TipoLancamentoEnum;
 
 @Entity
 @Table(name = "Lancamento")
@@ -22,7 +21,7 @@ public class Lancamento implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private String nome, dataGUI;
+    private String observacao, dataGUI;
     private Date data;
     private BigDecimal valor;
 
@@ -33,12 +32,14 @@ public class Lancamento implements Serializable {
     @JoinColumn(name = "id_contacorrente")
     private ContaCorrente conta;
 
-    public String getNome() {
-        return nome;
+    private long idContaCorrente;
+
+    public String getObservacao() {
+        return observacao;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setObservacao(String observacao) {
+        this.observacao = observacao;
     }
 
     public BigDecimal getValor() {
@@ -87,6 +88,14 @@ public class Lancamento implements Serializable {
 
     public void setConta(ContaCorrente conta) {
         this.conta = conta;
+    }
+
+    public long getIdContaCorrente() {
+        return idContaCorrente;
+    }
+
+    public void setIdContaCorrente(long idContaCorrente) {
+        this.idContaCorrente = idContaCorrente;
     }
 
 }

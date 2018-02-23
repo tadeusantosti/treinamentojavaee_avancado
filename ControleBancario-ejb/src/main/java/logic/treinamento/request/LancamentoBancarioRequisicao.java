@@ -7,12 +7,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "LancarContasDoMesRequisicao")
+@XmlRootElement(name = "SalvarLancamentoBancarioRequisicao")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class LancarContasDoMesRequisicao implements Serializable {
+public class LancamentoBancarioRequisicao implements Serializable {
 
     @XmlElement
-    private String nome;
+    private String observacao;
 
     @XmlElement
     private BigDecimal valor;
@@ -26,12 +26,12 @@ public class LancarContasDoMesRequisicao implements Serializable {
     @XmlElement
     private long idContaCorrente;
 
-    public String getNome() {
-        return nome;
+    public String getObservacao() {
+        return observacao;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setObservacao(String observacao) {
+        this.observacao = observacao;
     }
 
     public BigDecimal getValor() {

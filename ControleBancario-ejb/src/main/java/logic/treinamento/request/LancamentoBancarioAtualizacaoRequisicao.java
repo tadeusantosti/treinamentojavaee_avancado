@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "AtualizarLancamentoRequisicao")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AtualizarLancamentoRequisicao implements Serializable {
+public class LancamentoBancarioAtualizacaoRequisicao implements Serializable {
 
     @XmlElement
     private long id;

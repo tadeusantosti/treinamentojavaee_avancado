@@ -1,5 +1,7 @@
 package logic.treinamento.dao;
 
+import java.math.BigDecimal;
+import logic.treinamento.model.TipoLancamentoEnum;
 import logic.treinamento.model.Lancamento;
 import java.sql.Date;
 import java.sql.SQLException;
@@ -16,12 +18,17 @@ public class LancamentoDao implements InterfaceLancamentoDao {
     @Inject
     private EntityManager em;
 
+    @Inject
+    private InterfaceContaCorrente contaCorrenteDao;
+
     @Override
     public void salvarLancamentoBancario(Lancamento lanc) throws SQLException {
         try {
             em.getTransaction().begin();
             em.persist(lanc);
             em.getTransaction().commit();
+            
+            contaCorrenteDao.atualizarSaldoContaCorrente(lanc.getIdContaCorrente(), lanc.getValor());
         } catch (Exception ex) {
             ex.printStackTrace();
             em.getTransaction().rollback();
@@ -34,6 +41,7 @@ public class LancamentoDao implements InterfaceLancamentoDao {
             em.getTransaction().begin();
             em.merge(lanc);
             em.getTransaction().commit();
+            contaCorrenteDao.atualizarSaldoContaCorrente(lanc.getIdContaCorrente(), lanc.getValor());
         } catch (Exception ex) {
             ex.printStackTrace();
             em.getTransaction().rollback();
@@ -73,7 +81,7 @@ public class LancamentoDao implements InterfaceLancamentoDao {
 
         try {
             sql.append("\n SELECT l FROM Lancamento l");
-            sql.append(" WHERE l.nome LIKE '%").append(nome).append("%' ORDER BY l.id");
+            sql.append(" WHERE l.observacao LIKE '%").append(nome).append("%' ORDER BY l.id");
             String jpql = sql.toString();
             Query query = em.createQuery(jpql);
             resultados = query.getResultList();

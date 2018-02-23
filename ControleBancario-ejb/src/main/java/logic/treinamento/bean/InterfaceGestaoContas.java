@@ -2,14 +2,16 @@ package logic.treinamento.bean;
 
 import java.util.List;
 import javax.ejb.Local;
+import logic.treinamento.model.ContaCorrente;
 import logic.treinamento.model.Lancamento;
-import logic.treinamento.request.AtualizarLancamentoRequisicao;
-import logic.treinamento.request.LancarContasDoMesRequisicao;
+import logic.treinamento.request.CadastroContaCorrenteRequisicao;
+import logic.treinamento.request.LancamentoBancarioAtualizacaoRequisicao;
+import logic.treinamento.request.LancamentoBancarioRequisicao;
 
 @Local
 public interface InterfaceGestaoContas {
     
-    public void salvarLancamentoBancario(LancarContasDoMesRequisicao lancarContasDoMesRequisicao) throws Exception;
+    public void salvarLancamentoBancario(LancamentoBancarioRequisicao lancarContasDoMesRequisicao) throws Exception;
     
     public List<Lancamento> pesquisarLancamentoBancarioPorTipoDeLancamento(int idtipolancamento) throws Exception;
 
@@ -19,9 +21,13 @@ public interface InterfaceGestaoContas {
 
     public void excluirLancamentoBancario(long idLancamento) throws Exception;
 
-    public void atualizarLancamentoBancario(AtualizarLancamentoRequisicao atualizarLancamentoRequisicao) throws Exception;
+    public void atualizarLancamentoBancario(LancamentoBancarioAtualizacaoRequisicao atualizarLancamentoRequisicao) throws Exception;
 
     public String validarCamposObrigatorios(Lancamento lanc);
+
+    public void salvarContaCorrente(CadastroContaCorrenteRequisicao contaCorrenteRequisicao) throws Exception;
+
+    public String validarCamposObrigatoriosCadastrarContaCorrente(ContaCorrente conta);
 
 
 }

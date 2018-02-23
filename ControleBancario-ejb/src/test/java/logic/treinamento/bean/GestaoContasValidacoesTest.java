@@ -5,10 +5,13 @@ import java.sql.Date;
 import javax.inject.Inject;
 import junit.framework.TestCase;
 import logic.treinamento.dao.InterfaceLancamentoDao;
+import logic.treinamento.model.AgenciaEnum;
+import logic.treinamento.model.BancoEnum;
+import logic.treinamento.model.ContaCorrente;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import logic.treinamento.model.Lancamento;
-import logic.treinamento.dao.TipoLancamentoEnum;
+import logic.treinamento.model.TipoLancamentoEnum;
 import utilitarios.Formatadores;
 
 @RunWith(WeldJUnit4Runner.class)
@@ -117,26 +120,37 @@ public class GestaoContasValidacoesTest extends TestCase {
     @Test
     public void testValidarCamposObrigatorios() {
         Lancamento lanc = new Lancamento();
-        assertEquals("E necessario informar o nome !", gestaoContaBean.validarCamposObrigatorios(lanc));
+        assertEquals("E necessario informar uma observacao para o lancamento !", gestaoContaBean.validarCamposObrigatorios(lanc));
 
-        lanc.setNome("Jair Rillo Junior");
+        lanc.setObservacao("Jair Rillo Junior");
         assertEquals("E necessario informar um valor !", gestaoContaBean.validarCamposObrigatorios(lanc));
 
-        lanc.setNome("Jair Rillo Junior");
         lanc.setValor(BigDecimal.valueOf(1200.05D));
         assertEquals("E necessario informar um tipo de lancamento Valido !", gestaoContaBean.validarCamposObrigatorios(lanc));
 
-        lanc.setNome("Jair Rillo Junior");
-        lanc.setValor(BigDecimal.valueOf(1200.05D));
         lanc.setTipoLancamento(TipoLancamentoEnum.DEPOSITO);
         assertEquals("E necessario informar a data do lancamento !", gestaoContaBean.validarCamposObrigatorios(lanc));
 
-        lanc.setNome("Jair Rillo Junior");
-        lanc.setValor(BigDecimal.valueOf(1200.05D));
-        lanc.setTipoLancamento(TipoLancamentoEnum.DEPOSITO);
         lanc.setData(new Date(new java.util.Date().getTime()));
+        assertEquals("E necessario informar o codigo da sua conta corrente !",  gestaoContaBean.validarCamposObrigatorios(lanc));
+        
+        lanc.setIdContaCorrente(3);
         assertEquals("", gestaoContaBean.validarCamposObrigatorios(lanc));
+    }
 
+    @Test
+    public void testValidarCamposObrigatoriosCadastrarContaCorrente() {
+        ContaCorrente conta = new ContaCorrente();
+        assertEquals("E necessario informar o nome do titular da conta!", gestaoContaBean.validarCamposObrigatoriosCadastrarContaCorrente(conta));
+
+        conta.setTitular("Son Goku");
+        assertEquals("E necessario informar um codigo de banco Valido !", gestaoContaBean.validarCamposObrigatoriosCadastrarContaCorrente(conta));
+
+        conta.setBanco(BancoEnum.BRADESCO);
+        assertEquals("E necessario informar um codigo de agenica Valido !", gestaoContaBean.validarCamposObrigatoriosCadastrarContaCorrente(conta));
+
+        conta.setAgencia(AgenciaEnum.OSASCO);
+        assertEquals("", gestaoContaBean.validarCamposObrigatoriosCadastrarContaCorrente(conta));
     }
 
 }

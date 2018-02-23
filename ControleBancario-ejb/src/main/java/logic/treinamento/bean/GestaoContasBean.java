@@ -10,37 +10,37 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import logic.treinamento.dao.InterfaceContaCorrente;
 import logic.treinamento.dao.InterfaceLancamentoDao;
+import logic.treinamento.model.AgenciaEnum;
+import logic.treinamento.model.BancoEnum;
+import logic.treinamento.model.ContaCorrente;
 import logic.treinamento.model.Lancamento;
-import logic.treinamento.dao.TipoLancamentoEnum;
-import logic.treinamento.request.AtualizarLancamentoRequisicao;
-import logic.treinamento.request.LancarContasDoMesRequisicao;
+import logic.treinamento.model.TipoLancamentoEnum;
+import logic.treinamento.request.CadastroContaCorrenteRequisicao;
+import logic.treinamento.request.LancamentoBancarioAtualizacaoRequisicao;
+import logic.treinamento.request.LancamentoBancarioRequisicao;
 import utilitarios.Formatadores;
 
-/**
- *
- * @author tadpi
- */
 @Stateless
 public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
 
     @Inject
     private InterfaceLancamentoDao lancamentoDao;
 
-    /**
-     *
-     * @param lancarContasDoMesRequisicao
-     * @throws Exception
-     */
+    @Inject
+    private InterfaceContaCorrente contaCorrenteDao;
+
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void salvarLancamentoBancario(@Observes LancarContasDoMesRequisicao lancarContasDoMesRequisicao) throws Exception {
+    public void salvarLancamentoBancario(@Observes LancamentoBancarioRequisicao ContasDoMesRequisicao) throws Exception {
 
         Lancamento lanc = new Lancamento();
-        lanc.setNome(lancarContasDoMesRequisicao.getNome());
-        lanc.setValor(lancarContasDoMesRequisicao.getValor());
-        lanc.setTipoLancamento(TipoLancamentoEnum.getByCodigo(lancarContasDoMesRequisicao.getIdTipoLancamento()));
-        lanc.setData(Formatadores.validarDatasInformadas(lancarContasDoMesRequisicao.getData()).get(0));
+        lanc.setObservacao(ContasDoMesRequisicao.getObservacao());
+        lanc.setValor(ContasDoMesRequisicao.getValor());
+        lanc.setTipoLancamento(TipoLancamentoEnum.getByCodigo(ContasDoMesRequisicao.getIdTipoLancamento()));
+        lanc.setData(Formatadores.validarDatasInformadas(ContasDoMesRequisicao.getData()).get(0));
+        lanc.setIdContaCorrente(ContasDoMesRequisicao.getIdContaCorrente());
 
         String retornoValidacao = validarCamposObrigatorios(lanc);
 
@@ -51,11 +51,11 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void atualizarLancamentoBancario(@Observes AtualizarLancamentoRequisicao atualizarLancamentoRequisicao) throws Exception {
+    public void atualizarLancamentoBancario(@Observes LancamentoBancarioAtualizacaoRequisicao atualizarLancamentoRequisicao) throws Exception {
 
         Lancamento lanc = new Lancamento();
         lanc.setId(atualizarLancamentoRequisicao.getId());
-        lanc.setNome(atualizarLancamentoRequisicao.getNomeAtualizado());
+        lanc.setObservacao(atualizarLancamentoRequisicao.getNomeAtualizado());
         lanc.setValor(atualizarLancamentoRequisicao.getValorAtualizado());
         lanc.setTipoLancamento(TipoLancamentoEnum.getByCodigo(atualizarLancamentoRequisicao.getIdTipoLancamentoAtualizado()));
         lanc.setData(Formatadores.validarDatasInformadas(atualizarLancamentoRequisicao.getDataAtualizada()).get(0));
@@ -105,8 +105,8 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
     @Override
     public String validarCamposObrigatorios(Lancamento lanc) {
 
-        if (lanc.getNome() == null || lanc.getNome().isEmpty()) {
-            return "E necessario informar o nome !";
+        if (lanc.getObservacao() == null || lanc.getObservacao().isEmpty()) {
+            return "E necessario informar uma observacao para o lancamento !";
         } else if (lanc.getValor() == null || lanc.getValor().compareTo(BigDecimal.ZERO) <= 0) {
             return "E necessario informar um valor !";
         } else if (lanc.getTipoLancamento() != TipoLancamentoEnum.DEPOSITO
@@ -115,6 +115,8 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
             return "E necessario informar um tipo de lancamento Valido !";
         } else if (lanc.getData() == null) {
             return "E necessario informar a data do lancamento !";
+        } else if (lanc.getIdContaCorrente() <= 0) {
+            return "E necessario informar o codigo da sua conta corrente !";
         } else {
             return "";
         }
@@ -125,14 +127,16 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
 
         if (lanc.getId() < 0) {
             return "E necessario informar o codigo do lancamento !";
-        } else if (lanc.getNome().isEmpty()) {
-            return "E necessario informar o nome !";
+        } else if (lanc.getObservacao().isEmpty()) {
+            return "E necessario informar uma observacao para o lancamento !";
         } else if (lanc.getValor().compareTo(BigDecimal.ZERO) <= 0) {
             return "E necessario informar um valor !";
         } else if (validarTipoLancamentoInformado(lanc.getTipoLancamento())) {
             return "E necessario informar um tipo de lancamento !";
         } else if (lanc.getData() == null) {
             return "E necessario informar a data do lancamento !";
+        } else if (lanc.getIdContaCorrente() <= 0) {
+            return "E necessario informar o codigo da sua conta corrente !";
         } else {
             return "";
         }
@@ -141,6 +145,41 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
 
     private boolean validarTipoLancamentoInformado(TipoLancamentoEnum tipoLancamento) {
         return tipoLancamento.getId() < 0;
+    }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public void salvarContaCorrente(@Observes CadastroContaCorrenteRequisicao contaCorrenteRequisicao) throws Exception {
+
+        ContaCorrente cc = new ContaCorrente();
+        cc.setAgencia(AgenciaEnum.getByCodigo(contaCorrenteRequisicao.getAgencia()));
+        cc.setBanco(BancoEnum.getByCodigo(contaCorrenteRequisicao.getBanco()));
+        cc.setTitular(contaCorrenteRequisicao.getTitular());
+
+        String retornoValidacao = validarCamposObrigatoriosCadastrarContaCorrente(cc);
+
+        if (retornoValidacao.isEmpty()) {
+            contaCorrenteDao.salvarContaCorrente(cc);
+        }
+    }
+
+    @Override
+    public String validarCamposObrigatoriosCadastrarContaCorrente(ContaCorrente conta) {
+
+        if (conta.getTitular() == null || conta.getTitular().isEmpty()) {
+            return "E necessario informar o nome do titular da conta!";
+        } else if (conta.getBanco() != BancoEnum.BRADESCO
+                && conta.getBanco() != BancoEnum.ITAU
+                && conta.getBanco() != BancoEnum.SANTANDER) {
+            return "E necessario informar um codigo de banco Valido !";
+        } else if (conta.getAgencia() != AgenciaEnum.ARARAS
+                && conta.getAgencia() != AgenciaEnum.OSASCO
+                && conta.getAgencia() != AgenciaEnum.SAOPAULO) {
+            return "E necessario informar um codigo de agenica Valido !";
+        } else {
+            return "";
+        }
+
     }
 
 }

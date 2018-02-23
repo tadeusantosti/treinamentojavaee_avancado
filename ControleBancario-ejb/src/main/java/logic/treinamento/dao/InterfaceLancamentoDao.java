@@ -1,5 +1,6 @@
 package logic.treinamento.dao;
 
+import logic.treinamento.model.TipoLancamentoEnum;
 import logic.treinamento.model.Lancamento;
 import java.sql.SQLException;
 import java.sql.Date;

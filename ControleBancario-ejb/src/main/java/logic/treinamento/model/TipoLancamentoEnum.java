@@ -1,4 +1,4 @@
-package logic.treinamento.dao;
+package logic.treinamento.model;
 
 public enum TipoLancamentoEnum {
     TRANSFERENCIA(1),

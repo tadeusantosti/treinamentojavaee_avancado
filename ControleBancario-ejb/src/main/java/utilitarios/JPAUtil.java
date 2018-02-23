@@ -1,4 +1,4 @@
-package logic.treinamento.dao;
+package utilitarios;
 
 import java.io.Serializable;
 import javax.enterprise.inject.Disposes;
