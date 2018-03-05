@@ -2,16 +2,14 @@ package logic.treinamento.request;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import logic.treinamento.model.Lancamento;
 
-@XmlRootElement(name = "SalvarCadastroContaCorrenteRequisicao")
+@XmlRootElement(name = "AtualizarCadastroContaCorrenteRequisicao")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class CadastroContaCorrenteRequisicao implements Serializable {
+public class AtualizarCadastroContaCorrenteRequisicao implements Serializable {
 
     @XmlElement
     private String titular;
@@ -23,7 +21,7 @@ public class CadastroContaCorrenteRequisicao implements Serializable {
     private int banco;
 
     @XmlElement
-    List<Lancamento> lancamentos;
+    private long idContaCorrente;
 
     @XmlElement
     private BigDecimal saldo = BigDecimal.ZERO;
@@ -52,12 +50,12 @@ public class CadastroContaCorrenteRequisicao implements Serializable {
         this.banco = banco;
     }
 
-    public List<Lancamento> getLancamentos() {
-        return lancamentos;
+    public long getIdContaCorrente() {
+        return idContaCorrente;
     }
 
-    public void setLancamentos(List<Lancamento> lancamentos) {
-        this.lancamentos = lancamentos;
+    public void setIdContaCorrente(long idContaCorrente) {
+        this.idContaCorrente = idContaCorrente;
     }
 
     public BigDecimal getSaldo() {

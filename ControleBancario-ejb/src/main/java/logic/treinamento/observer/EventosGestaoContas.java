@@ -4,6 +4,7 @@ import java.io.Serializable;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import logic.treinamento.request.AtualizarCadastroContaCorrenteRequisicao;
 import logic.treinamento.request.CadastroContaCorrenteRequisicao;
 import logic.treinamento.request.LancamentoBancarioAtualizacaoRequisicao;
 import logic.treinamento.request.LancamentoBancarioRequisicao;
@@ -22,6 +23,12 @@ public class EventosGestaoContas implements Serializable {
     
     @Inject
     Event<CadastroContaCorrenteRequisicao> eventoSalvarContaCorrente;
+    
+    @Inject
+    Event<Long> eventoExcluirContaCorrente;
+    
+    @Inject
+    Event<AtualizarCadastroContaCorrenteRequisicao> eventoAtualizarContaCorrente;
 
     public void salvarLacamentoBancario(LancamentoBancarioRequisicao lancamento) {
         eventoSalvarLancamentoBancario.fire(lancamento);
@@ -37,5 +44,13 @@ public class EventosGestaoContas implements Serializable {
     
     public void salvarContaCorrente(CadastroContaCorrenteRequisicao contaCorrente) {
         eventoSalvarContaCorrente.fire(contaCorrente);
+    }
+    
+    public void excluirContaCorrente(long idContaCorrente) {
+        eventoExcluirContaCorrente.fire(idContaCorrente);
+    }
+    
+    public void atualizarDadosContaCorrente(AtualizarCadastroContaCorrenteRequisicao contaCorrente) {
+        eventoAtualizarContaCorrente.fire(contaCorrente);
     }
 }

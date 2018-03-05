@@ -1,9 +1,11 @@
 package logic.treinamento.bean;
 
+import java.math.BigDecimal;
 import java.util.List;
 import javax.ejb.Local;
 import logic.treinamento.model.ContaCorrente;
 import logic.treinamento.model.Lancamento;
+import logic.treinamento.request.AtualizarCadastroContaCorrenteRequisicao;
 import logic.treinamento.request.CadastroContaCorrenteRequisicao;
 import logic.treinamento.request.LancamentoBancarioAtualizacaoRequisicao;
 import logic.treinamento.request.LancamentoBancarioRequisicao;
@@ -28,6 +30,10 @@ public interface InterfaceGestaoContas {
     public void salvarContaCorrente(CadastroContaCorrenteRequisicao contaCorrenteRequisicao) throws Exception;
 
     public String validarCamposObrigatoriosCadastrarContaCorrente(ContaCorrente conta);
+
+    public void excluirContaCorrente(long idContaCorrente) throws Exception;
+
+    public BigDecimal verSaldoContaCorrente(long idContaCorrente) throws Exception;
 
 
 }

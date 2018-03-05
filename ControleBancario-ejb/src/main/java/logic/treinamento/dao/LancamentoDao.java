@@ -1,6 +1,5 @@
 package logic.treinamento.dao;
 
-import java.math.BigDecimal;
 import logic.treinamento.model.TipoLancamentoEnum;
 import logic.treinamento.model.Lancamento;
 import java.sql.Date;
@@ -27,8 +26,8 @@ public class LancamentoDao implements InterfaceLancamentoDao {
             em.getTransaction().begin();
             em.persist(lanc);
             em.getTransaction().commit();
-            
-            contaCorrenteDao.atualizarSaldoContaCorrente(lanc.getIdContaCorrente(), lanc.getValor());
+
+            contaCorrenteDao.atualizarSaldoContaCorrente(lanc);
         } catch (Exception ex) {
             ex.printStackTrace();
             em.getTransaction().rollback();
@@ -41,7 +40,7 @@ public class LancamentoDao implements InterfaceLancamentoDao {
             em.getTransaction().begin();
             em.merge(lanc);
             em.getTransaction().commit();
-            contaCorrenteDao.atualizarSaldoContaCorrente(lanc.getIdContaCorrente(), lanc.getValor());
+            contaCorrenteDao.atualizarSaldoContaCorrente(lanc);
         } catch (Exception ex) {
             ex.printStackTrace();
             em.getTransaction().rollback();
@@ -74,14 +73,14 @@ public class LancamentoDao implements InterfaceLancamentoDao {
     }
 
     @Override
-    public List<Lancamento> pesquisarLancamentoBancarioPorNome(String nome) throws SQLException {
+    public List<Lancamento> pesquisarLancamentoBancarioPorObservacao(String observacao) throws SQLException {
 
         StringBuilder sql = new StringBuilder();
         List<Lancamento> resultados = null;
 
         try {
             sql.append("\n SELECT l FROM Lancamento l");
-            sql.append(" WHERE l.observacao LIKE '%").append(nome).append("%' ORDER BY l.id");
+            sql.append(" WHERE l.observacao LIKE '%").append(observacao).append("%' ORDER BY l.id");
             String jpql = sql.toString();
             Query query = em.createQuery(jpql);
             resultados = query.getResultList();
@@ -103,6 +102,27 @@ public class LancamentoDao implements InterfaceLancamentoDao {
             sql.append(" WHERE l.tipoLancamento =:tipoLancamento");
             String jpql = sql.toString();
             Query query = em.createQuery(jpql).setParameter("tipoLancamento", tipoLancamento);
+            resultados = query.getResultList();
+            return resultados;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public List<Lancamento> pesquisarLancamentoBancarioPorContaBancaria(long idContaCorrente) throws SQLException {
+
+        StringBuilder sql = new StringBuilder();
+        List<Lancamento> resultados = null;
+
+        try {
+            sql.append("\n SELECT l FROM Lancamento l");
+            sql.append("\n JOIN ContaCorrente cc ON cc.id = l.id_contacorrente");
+            sql.append(" WHERE cc.situacao = TRUE");
+            sql.append(" AND cc.id = ").append(idContaCorrente);
+            String jpql = sql.toString();
+            Query query = em.createQuery(jpql);
             resultados = query.getResultList();
             return resultados;
         } catch (Exception ex) {

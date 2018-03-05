@@ -26,6 +26,7 @@ public class ContaCorrente implements Serializable {
 
     private BigDecimal saldo = BigDecimal.ZERO;
     private String titular;
+    private boolean situacao = true;
 
     @Enumerated(EnumType.ORDINAL)
     private AgenciaEnum agencia;
@@ -80,4 +81,13 @@ public class ContaCorrente implements Serializable {
     public void setBanco(BancoEnum banco) {
         this.banco = banco;
     }
+
+    public boolean isSituacao() {
+        return situacao;
+    }
+
+    public void setSituacao(boolean situacao) {
+        this.situacao = situacao;
+    }
+    
 }

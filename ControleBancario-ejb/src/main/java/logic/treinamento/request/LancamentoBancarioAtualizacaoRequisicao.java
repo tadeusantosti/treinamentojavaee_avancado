@@ -26,6 +26,10 @@ public class LancamentoBancarioAtualizacaoRequisicao implements Serializable {
     @XmlElement
     private String dataAtualizada;
 
+    @XmlElement
+    private long idContaCorrente;
+
+    
     public long getId() {
         return id;
     }
@@ -64,5 +68,13 @@ public class LancamentoBancarioAtualizacaoRequisicao implements Serializable {
 
     public void setDataAtualizada(String dataAtualizada) {
         this.dataAtualizada = dataAtualizada;
+    }
+
+    public long getIdContaCorrente() {
+        return idContaCorrente;
+    }
+
+    public void setIdContaCorrente(long idContaCorrente) {
+        this.idContaCorrente = idContaCorrente;
     }
 }

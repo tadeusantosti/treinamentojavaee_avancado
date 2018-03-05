@@ -3,6 +3,7 @@ package logic.treinamento.bean;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
@@ -18,6 +19,7 @@ import logic.treinamento.observer.EventosGestaoContas;
 import logic.treinamento.request.CadastroContaCorrenteRequisicao;
 import logic.treinamento.request.LancamentoBancarioAtualizacaoRequisicao;
 import logic.treinamento.request.LancamentoBancarioRequisicao;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,8 +40,12 @@ public class GestaoContasCDITest {
     @Inject
     InterfaceContaCorrente contaCorrenteDao;
 
+    @Inject
+    RastreioLancamentoBancarioMovimentacaoLocal rastreioBean;
+
     @Before
     public void setup() throws Exception {
+
         List<Lancamento> registrosPararemoverAntesTeste = gestaoContaBean.pesquisarLancamentoBancarioPorNome("Albert");
         if (!registrosPararemoverAntesTeste.isEmpty()) {
             for (Lancamento lancamento : registrosPararemoverAntesTeste) {
@@ -78,11 +84,32 @@ public class GestaoContasCDITest {
     @Test
     public void testSalvarLancamentoBancario() throws Exception {
 
+        CadastroContaCorrenteRequisicao cc = new CadastroContaCorrenteRequisicao();
+        cc.setAgencia(AgenciaEnum.ARARAS.getId());
+        cc.setBanco(BancoEnum.BRADESCO.getId());
+        cc.setTitular("Son Gohan");
+        eventosGestaoContas.salvarContaCorrente(cc);
+
+        List<ContaCorrente> contas = contaCorrenteDao.pesquisarTodasContasCorrentes();
+
+        if (!contas.isEmpty()) {
+            for (ContaCorrente conta : contas) {
+                assertTrue(BigDecimal.ZERO.compareTo(conta.getSaldo()) == 0);
+                assertEquals(cc.getAgencia(), conta.getAgencia().getId());
+                assertEquals(cc.getBanco(), conta.getBanco().getId());
+                assertEquals(cc.getTitular(), conta.getTitular());
+                assertTrue(conta.isSituacao());
+            }
+        } else {
+            fail("A conta corrente nao foi cadastrada!");
+        }
+
         LancamentoBancarioRequisicao lancRequisicao = new LancamentoBancarioRequisicao();
         lancRequisicao.setObservacao("Deposito na conta corrente do Albert Einstein");
         lancRequisicao.setValor(new BigDecimal(1234.56));
         lancRequisicao.setData(Formatadores.formatoDataInterface.format(new java.util.Date()));
         lancRequisicao.setIdTipoLancamento(TipoLancamentoEnum.DEPOSITO.getId());
+        lancRequisicao.setIdContaCorrente(contas.get(0).getId());
         eventosGestaoContas.salvarLacamentoBancario(lancRequisicao);
 
         List<Lancamento> lancNovo = gestaoContaBean.pesquisarLancamentoBancarioPorNome("Albert");
@@ -114,12 +141,32 @@ public class GestaoContasCDITest {
      */
     @Test
     public void testAtualizarDadosLancamentoBancario() throws Exception {
+        CadastroContaCorrenteRequisicao cc = new CadastroContaCorrenteRequisicao();
+        cc.setAgencia(AgenciaEnum.ARARAS.getId());
+        cc.setBanco(BancoEnum.BRADESCO.getId());
+        cc.setTitular("Son Gohan");
+        eventosGestaoContas.salvarContaCorrente(cc);
+
+        List<ContaCorrente> contas = contaCorrenteDao.pesquisarTodasContasCorrentes();
+
+        if (!contas.isEmpty()) {
+            for (ContaCorrente conta : contas) {
+                assertTrue(BigDecimal.ZERO.compareTo(conta.getSaldo()) == 0);
+                assertEquals(cc.getAgencia(), conta.getAgencia().getId());
+                assertEquals(cc.getBanco(), conta.getBanco().getId());
+                assertEquals(cc.getTitular(), conta.getTitular());
+                assertTrue(conta.isSituacao());
+            }
+        } else {
+            fail("A conta corrente nao foi cadastrada!");
+        }
 
         LancamentoBancarioRequisicao lancRequisicao = new LancamentoBancarioRequisicao();
         lancRequisicao.setObservacao("Deposito na conta corrente do Albert Einstein");
         lancRequisicao.setValor(new BigDecimal(1234.56));
         lancRequisicao.setData(Formatadores.formatoDataInterface.format(new java.util.Date()));
         lancRequisicao.setIdTipoLancamento(TipoLancamentoEnum.DEPOSITO.getId());
+        lancRequisicao.setIdContaCorrente(contas.get(0).getId());
         eventosGestaoContas.salvarLacamentoBancario(lancRequisicao);
 
         List<Lancamento> lancNovo = gestaoContaBean.pesquisarLancamentoBancarioPorNome("Albert");
@@ -144,6 +191,7 @@ public class GestaoContasCDITest {
         atualizarLancamentoRequisicao.setValorAtualizado(new BigDecimal(9999.99));
         atualizarLancamentoRequisicao.setDataAtualizada(Formatadores.formatoDataInterface.format(novaData.getTime()));
         atualizarLancamentoRequisicao.setIdTipoLancamentoAtualizado(TipoLancamentoEnum.TRANSFERENCIA.getId());
+        atualizarLancamentoRequisicao.setIdContaCorrente(contas.get(0).getId());
         eventosGestaoContas.atualizarLancamentoBancario(atualizarLancamentoRequisicao);
 
         List<Lancamento> lancamentoAtualizado = gestaoContaBean.pesquisarLancamentoBancarioPorNome("Charles");
@@ -172,12 +220,32 @@ public class GestaoContasCDITest {
      */
     @Test
     public void testExcluirLancamentoBancario() throws Exception {
+        CadastroContaCorrenteRequisicao cc = new CadastroContaCorrenteRequisicao();
+        cc.setAgencia(AgenciaEnum.ARARAS.getId());
+        cc.setBanco(BancoEnum.BRADESCO.getId());
+        cc.setTitular("Son Gohan");
+        eventosGestaoContas.salvarContaCorrente(cc);
+
+        List<ContaCorrente> contas = contaCorrenteDao.pesquisarTodasContasCorrentes();
+
+        if (!contas.isEmpty()) {
+            for (ContaCorrente conta : contas) {
+                assertTrue(BigDecimal.ZERO.compareTo(conta.getSaldo()) == 0);
+                assertEquals(cc.getAgencia(), conta.getAgencia().getId());
+                assertEquals(cc.getBanco(), conta.getBanco().getId());
+                assertEquals(cc.getTitular(), conta.getTitular());
+                assertTrue(conta.isSituacao());
+            }
+        } else {
+            fail("A conta corrente nao foi cadastrada!");
+        }
 
         LancamentoBancarioRequisicao lancRequisicao = new LancamentoBancarioRequisicao();
         lancRequisicao.setObservacao("Deposito na conta corrente do Albert Einstein");
         lancRequisicao.setValor(new BigDecimal(1234.56));
         lancRequisicao.setData(Formatadores.formatoDataInterface.format(new java.util.Date()));
         lancRequisicao.setIdTipoLancamento(TipoLancamentoEnum.DEPOSITO.getId());
+        lancRequisicao.setIdContaCorrente(contas.get(0).getId());
         eventosGestaoContas.salvarLacamentoBancario(lancRequisicao);
 
         List<Lancamento> lancNovo = gestaoContaBean.pesquisarLancamentoBancarioPorNome("Albert");
@@ -216,12 +284,32 @@ public class GestaoContasCDITest {
      */
     @Test
     public void testPesquisarLancamentoBancarioPorTipoDeLancamento() throws Exception {
+        CadastroContaCorrenteRequisicao cc = new CadastroContaCorrenteRequisicao();
+        cc.setAgencia(AgenciaEnum.ARARAS.getId());
+        cc.setBanco(BancoEnum.BRADESCO.getId());
+        cc.setTitular("Son Gohan");
+        eventosGestaoContas.salvarContaCorrente(cc);
+
+        List<ContaCorrente> contas = contaCorrenteDao.pesquisarTodasContasCorrentes();
+
+        if (!contas.isEmpty()) {
+            for (ContaCorrente conta : contas) {
+                assertTrue(BigDecimal.ZERO.compareTo(conta.getSaldo()) == 0);
+                assertEquals(cc.getAgencia(), conta.getAgencia().getId());
+                assertEquals(cc.getBanco(), conta.getBanco().getId());
+                assertEquals(cc.getTitular(), conta.getTitular());
+                assertTrue(conta.isSituacao());
+            }
+        } else {
+            fail("A conta corrente nao foi cadastrada!");
+        }
 
         LancamentoBancarioRequisicao lancRequisicao = new LancamentoBancarioRequisicao();
         lancRequisicao.setObservacao("Saque realizado da conta corrente de Albert Einstein");
         lancRequisicao.setValor(new BigDecimal(1234.56));
         lancRequisicao.setData(Formatadores.formatoDataInterface.format(new java.util.Date()));
         lancRequisicao.setIdTipoLancamento(TipoLancamentoEnum.SAQUE.getId());
+        lancRequisicao.setIdContaCorrente(contas.get(0).getId());
         eventosGestaoContas.salvarLacamentoBancario(lancRequisicao);
 
         List<Lancamento> lancamentoDeSaque = gestaoContaBean.pesquisarLancamentoBancarioPorTipoDeLancamento(TipoLancamentoEnum.SAQUE.getId());
@@ -252,12 +340,32 @@ public class GestaoContasCDITest {
      */
     @Test
     public void testPesquisarLancamentoBancarioPorPeriodo() throws Exception {
+        CadastroContaCorrenteRequisicao cc = new CadastroContaCorrenteRequisicao();
+        cc.setAgencia(AgenciaEnum.ARARAS.getId());
+        cc.setBanco(BancoEnum.BRADESCO.getId());
+        cc.setTitular("Son Gohan");
+        eventosGestaoContas.salvarContaCorrente(cc);
+
+        List<ContaCorrente> contas = contaCorrenteDao.pesquisarTodasContasCorrentes();
+
+        if (!contas.isEmpty()) {
+            for (ContaCorrente conta : contas) {
+                assertTrue(BigDecimal.ZERO.compareTo(conta.getSaldo()) == 0);
+                assertEquals(cc.getAgencia(), conta.getAgencia().getId());
+                assertEquals(cc.getBanco(), conta.getBanco().getId());
+                assertEquals(cc.getTitular(), conta.getTitular());
+                assertTrue(conta.isSituacao());
+            }
+        } else {
+            fail("A conta corrente nao foi cadastrada!");
+        }
 
         LancamentoBancarioRequisicao lancRequisicao = new LancamentoBancarioRequisicao();
         lancRequisicao.setObservacao("Deposito na conta corrente do Albert Einstein");
         lancRequisicao.setValor(new BigDecimal(1234.56));
         lancRequisicao.setData(Formatadores.formatoDataInterface.format(new java.util.Date()));
         lancRequisicao.setIdTipoLancamento(TipoLancamentoEnum.DEPOSITO.getId());
+        lancRequisicao.setIdContaCorrente(contas.get(0).getId());
         eventosGestaoContas.salvarLacamentoBancario(lancRequisicao);
 
         Calendar novaData = Calendar.getInstance();
@@ -296,7 +404,7 @@ public class GestaoContasCDITest {
     }
 
     @Test
-    public void testCadastrarContaCorrenteVinculandoLancamentoBancario() throws Exception {
+    public void testIntegradoContaCorrente() throws Exception {
         CadastroContaCorrenteRequisicao cc = new CadastroContaCorrenteRequisicao();
         cc.setAgencia(AgenciaEnum.ARARAS.getId());
         cc.setBanco(BancoEnum.BRADESCO.getId());
@@ -311,6 +419,7 @@ public class GestaoContasCDITest {
                 assertEquals(cc.getAgencia(), conta.getAgencia().getId());
                 assertEquals(cc.getBanco(), conta.getBanco().getId());
                 assertEquals(cc.getTitular(), conta.getTitular());
+                assertTrue(conta.isSituacao());
             }
         } else {
             fail("A conta corrente nao foi cadastrada!");
@@ -325,6 +434,7 @@ public class GestaoContasCDITest {
         eventosGestaoContas.salvarLacamentoBancario(lancRequisicao);
 
         List<Lancamento> lancNovo = gestaoContaBean.pesquisarLancamentoBancarioPorNome("Albert");
+        ContaCorrente conta = contaCorrenteDao.pesquisarContasCorrentesPorId(lancNovo.get(0).getIdContaCorrente());
 
         if (!lancNovo.isEmpty()) {
             for (Lancamento lancamentoConsultado : lancNovo) {
@@ -333,20 +443,29 @@ public class GestaoContasCDITest {
                 assertEquals(lancRequisicao.getData(), Formatadores.formatoDataInterface.format(lancamentoConsultado.getData()));
                 assertEquals(TipoLancamentoEnum.getByCodigo(lancRequisicao.getIdTipoLancamento()), lancamentoConsultado.getTipoLancamento());
                 assertEquals(contas.get(0).getId(), lancRequisicao.getIdContaCorrente());
+                assertTrue(conta.getSaldo().compareTo(BigDecimal.valueOf(lancamentoConsultado.getValor().doubleValue())) == 0);
             }
         } else {
             fail("O lancamento bancario nao foi salvo!");
         }
 
-        contas = contaCorrenteDao.pesquisarTodasContasCorrentes();
+        conta = contaCorrenteDao.pesquisarContasCorrentesPorId(lancNovo.get(0).getIdContaCorrente());
+        Map<Long, List<Lancamento>> mapa = rastreioBean.getMapaContasLancamentos();
+        Assert.assertNotNull(mapa);
+        assertEquals(1, mapa.size());
+        assertTrue(conta.getSaldo().compareTo(mapa.get(contas.get(0).getId()).get(0).getValor()) == 0);
 
-        if (!contas.isEmpty()) {
-            for (ContaCorrente conta : contas) {
-                assertTrue(conta.getSaldo().compareTo(conta.getSaldo()) == 0);
-                assertEquals(cc.getAgencia(), conta.getAgencia().getId());
-                assertEquals(cc.getBanco(), conta.getBanco().getId());
-                assertEquals(cc.getTitular(), conta.getTitular());
-            }
-        }
+        lancRequisicao = new LancamentoBancarioRequisicao();
+        lancRequisicao.setObservacao("Saque na conta corrente de Albert Einstein");
+        lancRequisicao.setValor(new BigDecimal(1000.00));
+        lancRequisicao.setData(Formatadores.formatoDataInterface.format(new java.util.Date()));
+        lancRequisicao.setIdTipoLancamento(TipoLancamentoEnum.SAQUE.getId());
+        lancRequisicao.setIdContaCorrente(contas.get(0).getId());
+        eventosGestaoContas.salvarLacamentoBancario(lancRequisicao);
+
+        mapa = rastreioBean.getMapaContasLancamentos();
+        Assert.assertNotNull(mapa);
+        assertEquals(2, mapa.size());
+        assertEquals(contas.get(0).getSaldo(), mapa.get(contas.get(0).getId()).get(0).getValor().subtract(mapa.get(contas.get(0).getId()).get(1).getValor()));
     }
 }

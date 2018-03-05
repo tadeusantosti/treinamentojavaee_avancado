@@ -18,7 +18,9 @@ public interface InterfaceLancamentoDao {
 
     public List<Lancamento> pesquisarLancamentoBancarioPorPeriodo(Date dataInicial, Date dataFinal) throws SQLException;
 
-    public List<Lancamento> pesquisarLancamentoBancarioPorNome(String nome) throws SQLException;
+    public List<Lancamento> pesquisarLancamentoBancarioPorObservacao(String nome) throws SQLException;
 
     public List<Lancamento> pesquisarLancamentoBancarioPorTipoDeLancamento(TipoLancamentoEnum tipoLancamento) throws SQLException;
+
+    public List<Lancamento> pesquisarLancamentoBancarioPorContaBancaria(long idContaCorrente) throws SQLException;
 }

@@ -17,6 +17,7 @@ import logic.treinamento.model.BancoEnum;
 import logic.treinamento.model.ContaCorrente;
 import logic.treinamento.model.Lancamento;
 import logic.treinamento.model.TipoLancamentoEnum;
+import logic.treinamento.request.AtualizarCadastroContaCorrenteRequisicao;
 import logic.treinamento.request.CadastroContaCorrenteRequisicao;
 import logic.treinamento.request.LancamentoBancarioAtualizacaoRequisicao;
 import logic.treinamento.request.LancamentoBancarioRequisicao;
@@ -59,6 +60,7 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
         lanc.setValor(atualizarLancamentoRequisicao.getValorAtualizado());
         lanc.setTipoLancamento(TipoLancamentoEnum.getByCodigo(atualizarLancamentoRequisicao.getIdTipoLancamentoAtualizado()));
         lanc.setData(Formatadores.validarDatasInformadas(atualizarLancamentoRequisicao.getDataAtualizada()).get(0));
+        lanc.setIdContaCorrente(atualizarLancamentoRequisicao.getIdContaCorrente());
 
         String retornoValidacao = validarCamposObrigatoriosAtualizacao(lanc);
 
@@ -87,7 +89,7 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
     @Override
     public List<Lancamento> pesquisarLancamentoBancarioPorNome(@Observes String nome) throws SQLException {
         if (!nome.isEmpty()) {
-            return lancamentoDao.pesquisarLancamentoBancarioPorNome(nome);
+            return lancamentoDao.pesquisarLancamentoBancarioPorObservacao(nome);
         } else {
             return null;
         }
@@ -156,10 +158,35 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
         cc.setBanco(BancoEnum.getByCodigo(contaCorrenteRequisicao.getBanco()));
         cc.setTitular(contaCorrenteRequisicao.getTitular());
 
-        String retornoValidacao = validarCamposObrigatoriosCadastrarContaCorrente(cc);
-
-        if (retornoValidacao.isEmpty()) {
+        if (validarCamposObrigatoriosCadastrarContaCorrente(cc).isEmpty()) {
             contaCorrenteDao.salvarContaCorrente(cc);
+        }
+    }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public void excluirContaCorrente(@Observes long idContaCorrente) throws Exception {
+        if (idContaCorrente > 0) {
+            contaCorrenteDao.excluirContaCorrente(idContaCorrente);
+        }
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public void atualizarDadosContaCorrente(@Observes AtualizarCadastroContaCorrenteRequisicao contaCorrenteRequisicao) throws Exception {
+        ContaCorrente cc = new ContaCorrente();
+        cc.setAgencia(AgenciaEnum.getByCodigo(contaCorrenteRequisicao.getAgencia()));
+        cc.setBanco(BancoEnum.getByCodigo(contaCorrenteRequisicao.getBanco()));
+        cc.setTitular(contaCorrenteRequisicao.getTitular());
+        contaCorrenteDao.atualizarDadosContaCorrente(cc);
+    }
+
+    @Override
+    public BigDecimal verSaldoContaCorrente(long idContaCorrente) throws Exception {
+        if (idContaCorrente > 0) {
+            ContaCorrente conta = contaCorrenteDao.pesquisarContasCorrentesPorId(idContaCorrente);
+            return conta.getSaldo();
+        } else {
+            throw new Exception("E necessario informar o codigo da conta!");
         }
     }
 
@@ -180,6 +207,28 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
             return "";
         }
 
+    }
+
+    private ContaCorrente validarDadosAntesAtualizarContaCorrente(AtualizarCadastroContaCorrenteRequisicao contaCorrenteRequisicao) throws Exception {
+        ContaCorrente cc = new ContaCorrente();
+        if (contaCorrenteRequisicao.getIdContaCorrente() > 0) {
+            cc.setId(contaCorrenteRequisicao.getIdContaCorrente());
+        }
+
+        if (contaCorrenteRequisicao.getAgencia() > 0) {
+            cc.setAgencia(AgenciaEnum.getByCodigo(contaCorrenteRequisicao.getAgencia()));
+        }
+
+        if (contaCorrenteRequisicao.getBanco() > 0) {
+            cc.setBanco(BancoEnum.getByCodigo(contaCorrenteRequisicao.getBanco()));
+            cc.setTitular(contaCorrenteRequisicao.getTitular());
+        }
+
+        if (!contaCorrenteRequisicao.getTitular().isEmpty()) {
+            cc.setTitular(contaCorrenteRequisicao.getTitular());
+        }
+
+        return cc;
     }
 
 }
