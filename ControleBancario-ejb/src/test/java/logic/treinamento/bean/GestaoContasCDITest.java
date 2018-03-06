@@ -433,6 +433,11 @@ public class GestaoContasCDITest {
         lancRequisicao.setIdContaCorrente(contas.get(0).getId());
         eventosGestaoContas.salvarLacamentoBancario(lancRequisicao);
 
+//        ContaCorrente contaCorrenteTeste = new ContaCorrente();        
+//        contaCorrenteTeste = contaCorrenteDao.pesquisarContasCorrentesPorId(contas.get(0).getId());
+//        contaCorrenteTeste.setSaldo(lancRequisicao.getValor());
+//        contaCorrenteDao.atualizarDadosContaCorrente(contaCorrenteTeste);
+
         List<Lancamento> lancNovo = gestaoContaBean.pesquisarLancamentoBancarioPorNome("Albert");
         ContaCorrente conta = contaCorrenteDao.pesquisarContasCorrentesPorId(lancNovo.get(0).getIdContaCorrente());
 

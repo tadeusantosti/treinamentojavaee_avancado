@@ -26,8 +26,6 @@ public class LancamentoDao implements InterfaceLancamentoDao {
             em.getTransaction().begin();
             em.persist(lanc);
             em.getTransaction().commit();
-
-            contaCorrenteDao.atualizarSaldoContaCorrente(lanc);
         } catch (Exception ex) {
             ex.printStackTrace();
             em.getTransaction().rollback();
@@ -39,8 +37,7 @@ public class LancamentoDao implements InterfaceLancamentoDao {
         try {
             em.getTransaction().begin();
             em.merge(lanc);
-            em.getTransaction().commit();
-            contaCorrenteDao.atualizarSaldoContaCorrente(lanc);
+            em.getTransaction().commit();            
         } catch (Exception ex) {
             ex.printStackTrace();
             em.getTransaction().rollback();

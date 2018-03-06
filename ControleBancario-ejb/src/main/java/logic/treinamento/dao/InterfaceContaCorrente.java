@@ -20,5 +20,4 @@ public interface InterfaceContaCorrente {
     public void excluirContaCorrente(long idContaCorrente) throws SQLException;
 
     public void atualizarDadosContaCorrente(ContaCorrente conta) throws SQLException;
-
 }
