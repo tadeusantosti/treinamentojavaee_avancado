@@ -47,8 +47,7 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
 
         if (retornoValidacao.isEmpty()) {
             lancamentoDao.salvarLancamentoBancario(lanc);
-            atualizarSaldoContaCorrente(lanc);
-            //contaCorrenteDao.atualizarSaldoContaCorrente(lanc);
+            //atualizarSaldoContaCorrente(lanc);           
         }
     }
 
@@ -68,7 +67,7 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
 
         if (retornoValidacao.equals("")) {
             lancamentoDao.atualizarLancamentoBancario(lanc);
-            contaCorrenteDao.atualizarSaldoContaCorrente(lanc);
+            //contaCorrenteDao.atualizarSaldoContaCorrente(lanc);
         }
     }
 
@@ -235,7 +234,8 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
         return cc;
     }
 
-    private void atualizarSaldoContaCorrente(Lancamento lanc) throws SQLException {
+    @Override
+    public void atualizarSaldoContaCorrente(Lancamento lanc) throws SQLException {
         ContaCorrente contaCorrenteTeste = new ContaCorrente();
         contaCorrenteTeste = contaCorrenteDao.pesquisarContasCorrentesPorId(lanc.getIdContaCorrente());
         contaCorrenteTeste.setSaldo(lanc.getValor());

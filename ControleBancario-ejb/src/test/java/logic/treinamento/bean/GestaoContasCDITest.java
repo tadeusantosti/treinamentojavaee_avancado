@@ -439,6 +439,9 @@ public class GestaoContasCDITest {
 //        contaCorrenteDao.atualizarDadosContaCorrente(contaCorrenteTeste);
 
         List<Lancamento> lancNovo = gestaoContaBean.pesquisarLancamentoBancarioPorNome("Albert");
+        
+        gestaoContaBean.atualizarSaldoContaCorrente(lancNovo.get(0));
+        
         ContaCorrente conta = contaCorrenteDao.pesquisarContasCorrentesPorId(lancNovo.get(0).getIdContaCorrente());
 
         if (!lancNovo.isEmpty()) {
