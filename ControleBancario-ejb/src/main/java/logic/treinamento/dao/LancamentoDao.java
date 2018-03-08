@@ -17,9 +17,6 @@ public class LancamentoDao implements InterfaceLancamentoDao {
     @Inject
     private EntityManager em;
 
-    @Inject
-    private InterfaceContaCorrente contaCorrenteDao;
-
     @Override
     public void salvarLancamentoBancario(Lancamento lanc) throws SQLException {
         try {
@@ -37,7 +34,7 @@ public class LancamentoDao implements InterfaceLancamentoDao {
         try {
             em.getTransaction().begin();
             em.merge(lanc);
-            em.getTransaction().commit();            
+            em.getTransaction().commit();
         } catch (Exception ex) {
             ex.printStackTrace();
             em.getTransaction().rollback();

@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.sql.Date;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -32,6 +33,9 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
     @Inject
     private InterfaceContaCorrente contaCorrenteDao;
 
+    @Inject
+    private RastreioLancamentoBancarioMovimentacaoLocal rastreio;
+
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void salvarLancamentoBancario(@Observes LancamentoBancarioRequisicao ContasDoMesRequisicao) throws Exception {
@@ -47,7 +51,8 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
 
         if (retornoValidacao.isEmpty()) {
             lancamentoDao.salvarLancamentoBancario(lanc);
-            //atualizarSaldoContaCorrente(lanc);           
+            atualizarSaldoContaCorrente(lanc);
+            rastreio.registrarAlteracaoContaCorrente(lanc);
         }
     }
 
@@ -67,7 +72,8 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
 
         if (retornoValidacao.equals("")) {
             lancamentoDao.atualizarLancamentoBancario(lanc);
-            //contaCorrenteDao.atualizarSaldoContaCorrente(lanc);
+            atualizarSaldoContaCorrente(lanc);
+            rastreio.registrarAlteracaoContaCorrente(lanc);
         }
     }
 
@@ -174,13 +180,16 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    @Override
     public void atualizarDadosContaCorrente(@Observes AtualizarCadastroContaCorrenteRequisicao contaCorrenteRequisicao) throws Exception {
         ContaCorrente cc = new ContaCorrente();
         cc.setAgencia(AgenciaEnum.getByCodigo(contaCorrenteRequisicao.getAgencia()));
         cc.setBanco(BancoEnum.getByCodigo(contaCorrenteRequisicao.getBanco()));
         cc.setTitular(contaCorrenteRequisicao.getTitular());
         cc.setSaldo(contaCorrenteRequisicao.getSaldo());
-        contaCorrenteDao.atualizarDadosContaCorrente(cc);
+        if (!validarDadosAntesAtualizarContaCorrente(contaCorrenteRequisicao).isEmpty()) {
+            contaCorrenteDao.atualizarDadosContaCorrente(cc);
+        }
     }
 
     @Override
@@ -212,34 +221,47 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
 
     }
 
-    private ContaCorrente validarDadosAntesAtualizarContaCorrente(AtualizarCadastroContaCorrenteRequisicao contaCorrenteRequisicao) throws Exception {
-        ContaCorrente cc = new ContaCorrente();
-        if (contaCorrenteRequisicao.getIdContaCorrente() > 0) {
-            cc.setId(contaCorrenteRequisicao.getIdContaCorrente());
-        }
+    private String validarDadosAntesAtualizarContaCorrente(AtualizarCadastroContaCorrenteRequisicao contaCorrenteRequisicao) throws Exception {
 
-        if (contaCorrenteRequisicao.getAgencia() > 0) {
-            cc.setAgencia(AgenciaEnum.getByCodigo(contaCorrenteRequisicao.getAgencia()));
+        if (contaCorrenteRequisicao.getIdContaCorrente() <= 0) {
+            return "E necessario informar o ID da conta!";
+        } else if (contaCorrenteRequisicao.getTitular() == null || contaCorrenteRequisicao.getTitular().isEmpty()) {
+            return "E necessario informar o nome do titular da conta!";
+        } else if (contaCorrenteRequisicao.getBanco() != BancoEnum.BRADESCO.getId()
+                && contaCorrenteRequisicao.getBanco() != BancoEnum.ITAU.getId()
+                && contaCorrenteRequisicao.getBanco() != BancoEnum.SANTANDER.getId()) {
+            return "E necessario informar um codigo de banco Valido !";
+        } else if (contaCorrenteRequisicao.getAgencia() != AgenciaEnum.ARARAS.getId()
+                && contaCorrenteRequisicao.getAgencia() != AgenciaEnum.OSASCO.getId()
+                && contaCorrenteRequisicao.getAgencia() != AgenciaEnum.SAOPAULO.getId()) {
+            return "E necessario informar um codigo de agenica Valido !";
+        } else {
+            return "";
         }
+    }
 
-        if (contaCorrenteRequisicao.getBanco() > 0) {
-            cc.setBanco(BancoEnum.getByCodigo(contaCorrenteRequisicao.getBanco()));
-            cc.setTitular(contaCorrenteRequisicao.getTitular());
-        }
-
-        if (!contaCorrenteRequisicao.getTitular().isEmpty()) {
-            cc.setTitular(contaCorrenteRequisicao.getTitular());
-        }
-
-        return cc;
+    @Override
+    public ContaCorrente pesquisarContasCorrentesPorId(long idContaCorrente) throws SQLException {
+        return contaCorrenteDao.pesquisarContasCorrentesPorId(idContaCorrente);
     }
 
     @Override
     public void atualizarSaldoContaCorrente(Lancamento lanc) throws SQLException {
-        ContaCorrente contaCorrenteTeste = new ContaCorrente();
-        contaCorrenteTeste = contaCorrenteDao.pesquisarContasCorrentesPorId(lanc.getIdContaCorrente());
-        contaCorrenteTeste.setSaldo(lanc.getValor());
-        contaCorrenteDao.atualizarDadosContaCorrente(contaCorrenteTeste);
+        ContaCorrente conta = pesquisarContasCorrentesPorId(lanc.getIdContaCorrente());
+        if (lanc.getTipoLancamento() == TipoLancamentoEnum.SAQUE
+                || lanc.getTipoLancamento() == TipoLancamentoEnum.TRANSFERENCIA) {
+            conta.setSaldo(conta.getSaldo().subtract(lanc.getValor()));
+        } else {
+            conta.setSaldo(conta.getSaldo().add(lanc.getValor()));
+        }
+
+        contaCorrenteDao.atualizarDadosContaCorrente(conta);
+    }
+
+    @Override
+    public List<Lancamento> consultarLancametosBancariosVinculadosContaCorrente(@Observes long idContaCorrente) {
+        Map<Long, List<Lancamento>> mapaContasLancamentos = rastreio.getMapaContasLancamentos();
+        return mapaContasLancamentos.get(idContaCorrente);
     }
 
 }

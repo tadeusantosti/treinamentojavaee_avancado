@@ -8,7 +8,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import logic.treinamento.bean.RastreioLancamentoBancarioMovimentacaoLocal;
 import logic.treinamento.model.ContaCorrente;
-import logic.treinamento.model.Lancamento;
 
 @Stateless
 public class ContaCorrenteDao implements InterfaceContaCorrente {
@@ -42,16 +41,10 @@ public class ContaCorrenteDao implements InterfaceContaCorrente {
     }
 
     @Override
-    public void atualizarSaldoContaCorrente(Lancamento lanc) throws SQLException {
-        ContaCorrente contaCorrente = new ContaCorrente();
-        contaCorrente = pesquisarContasCorrentesPorId(lanc.getId());
-        contaCorrente.setSaldo(lanc.getValor());
-        atualizarDadosContaCorrente(contaCorrente);
-    }
-
-    @Override
     public ContaCorrente pesquisarContasCorrentesPorId(long idContaCorrente) throws SQLException {
-        return em.find(ContaCorrente.class, idContaCorrente);
+        ContaCorrente conta = em.find(ContaCorrente.class, idContaCorrente);
+        em.refresh(conta);
+        return conta;
     }
 
     @Override
@@ -89,7 +82,7 @@ public class ContaCorrenteDao implements InterfaceContaCorrente {
     public void atualizarDadosContaCorrente(ContaCorrente conta) throws SQLException {
         try {
             em.getTransaction().begin();
-            em.merge(conta);
+            em.merge(conta);            
             em.getTransaction().commit();
         } catch (Exception ex) {
             em.getTransaction().rollback();

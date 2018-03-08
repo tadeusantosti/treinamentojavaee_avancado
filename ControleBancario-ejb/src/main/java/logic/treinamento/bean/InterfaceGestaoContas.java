@@ -6,6 +6,7 @@ import java.util.List;
 import javax.ejb.Local;
 import logic.treinamento.model.ContaCorrente;
 import logic.treinamento.model.Lancamento;
+import logic.treinamento.request.AtualizarCadastroContaCorrenteRequisicao;
 import logic.treinamento.request.CadastroContaCorrenteRequisicao;
 import logic.treinamento.request.LancamentoBancarioAtualizacaoRequisicao;
 import logic.treinamento.request.LancamentoBancarioRequisicao;
@@ -36,6 +37,12 @@ public interface InterfaceGestaoContas {
     public BigDecimal verSaldoContaCorrente(long idContaCorrente) throws Exception;
 
     public void atualizarSaldoContaCorrente(Lancamento lanc) throws SQLException;
+
+    public ContaCorrente pesquisarContasCorrentesPorId(long idContaCorrente) throws SQLException;
+
+    public void atualizarDadosContaCorrente(AtualizarCadastroContaCorrenteRequisicao contaCorrenteRequisicao) throws Exception;
+
+    public List<Lancamento> consultarLancametosBancariosVinculadosContaCorrente(long idContaCorrente);
 
 
 }

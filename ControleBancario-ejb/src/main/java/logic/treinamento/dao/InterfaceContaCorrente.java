@@ -3,7 +3,6 @@ package logic.treinamento.dao;
 import java.sql.SQLException;
 import java.util.List;
 import logic.treinamento.model.ContaCorrente;
-import logic.treinamento.model.Lancamento;
 
 public interface InterfaceContaCorrente {
 
@@ -12,8 +11,6 @@ public interface InterfaceContaCorrente {
     public List<ContaCorrente> pesquisarTodasContasCorrentes() throws SQLException;
 
     public ContaCorrente pesquisarContasCorrentesPorId(long idContaCorrente) throws SQLException;
-
-    public void atualizarSaldoContaCorrente(Lancamento lanc) throws SQLException;
 
     public void inativarContaCorrente(long idContaCorrente) throws SQLException;
 

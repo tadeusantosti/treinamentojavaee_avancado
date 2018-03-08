@@ -20,13 +20,13 @@ public class EventosGestaoContas implements Serializable {
 
     @Inject
     Event<Long> eventoExcluirLancamentoBancario;
-    
+
     @Inject
     Event<CadastroContaCorrenteRequisicao> eventoSalvarContaCorrente;
-    
+
     @Inject
     Event<Long> eventoExcluirContaCorrente;
-    
+
     @Inject
     Event<AtualizarCadastroContaCorrenteRequisicao> eventoAtualizarContaCorrente;
 
@@ -41,15 +41,15 @@ public class EventosGestaoContas implements Serializable {
     public void excluirLancamentoBancario(long idLancamento) {
         eventoExcluirLancamentoBancario.fire(idLancamento);
     }
-    
+
     public void salvarContaCorrente(CadastroContaCorrenteRequisicao contaCorrente) {
         eventoSalvarContaCorrente.fire(contaCorrente);
     }
-    
+
     public void excluirContaCorrente(long idContaCorrente) {
         eventoExcluirContaCorrente.fire(idContaCorrente);
     }
-    
+
     public void atualizarDadosContaCorrente(AtualizarCadastroContaCorrenteRequisicao contaCorrente) {
         eventoAtualizarContaCorrente.fire(contaCorrente);
     }
