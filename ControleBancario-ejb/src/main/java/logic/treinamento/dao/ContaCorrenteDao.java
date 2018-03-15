@@ -6,7 +6,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import logic.treinamento.bean.RastreioLancamentoBancarioMovimentacaoLocal;
 import logic.treinamento.model.ContaCorrente;
 
 @Stateless
@@ -14,9 +13,6 @@ public class ContaCorrenteDao implements InterfaceContaCorrente {
 
     @Inject
     private EntityManager em;
-
-    @Inject
-    private RastreioLancamentoBancarioMovimentacaoLocal rastreio;
 
     @Override
     public void salvarContaCorrente(ContaCorrente conta) throws SQLException {
@@ -52,16 +48,11 @@ public class ContaCorrenteDao implements InterfaceContaCorrente {
         StringBuilder sql = new StringBuilder();
         List<ContaCorrente> resultado = null;
 
-        try {
-            sql.append("\n SELECT cc FROM ContaCorrente cc");
-            String jpql = sql.toString();
-            Query query = em.createQuery(jpql);
-            resultado = query.getResultList();
-            return resultado;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
+        sql.append("\n SELECT cc FROM ContaCorrente cc");
+        String jpql = sql.toString();
+        Query query = em.createQuery(jpql);
+        resultado = query.getResultList();
+        return resultado;
     }
 
     @Override
@@ -82,7 +73,7 @@ public class ContaCorrenteDao implements InterfaceContaCorrente {
     public void atualizarDadosContaCorrente(ContaCorrente conta) throws SQLException {
         try {
             em.getTransaction().begin();
-            em.merge(conta);            
+            em.merge(conta);
             em.getTransaction().commit();
         } catch (Exception ex) {
             em.getTransaction().rollback();

@@ -4,6 +4,8 @@ import java.io.Serializable;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import logic.treinamento.bean.InterfaceGestaoContas;
+import logic.treinamento.dao.InterfaceContaCorrente;
 import logic.treinamento.request.AtualizarCadastroContaCorrenteRequisicao;
 import logic.treinamento.request.CadastroContaCorrenteRequisicao;
 import logic.treinamento.request.LancamentoBancarioAtualizacaoRequisicao;
@@ -29,6 +31,9 @@ public class EventosGestaoContas implements Serializable {
 
     @Inject
     Event<AtualizarCadastroContaCorrenteRequisicao> eventoAtualizarContaCorrente;
+    
+    @Inject
+    InterfaceGestaoContas GestaoContasBean;
 
     public void salvarLacamentoBancario(LancamentoBancarioRequisicao lancamento) {
         eventoSalvarLancamentoBancario.fire(lancamento);

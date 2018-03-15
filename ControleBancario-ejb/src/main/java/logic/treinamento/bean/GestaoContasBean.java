@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.Stateless;
@@ -165,6 +166,7 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
         cc.setAgencia(AgenciaEnum.getByCodigo(contaCorrenteRequisicao.getAgencia()));
         cc.setBanco(BancoEnum.getByCodigo(contaCorrenteRequisicao.getBanco()));
         cc.setTitular(contaCorrenteRequisicao.getTitular());
+        cc.setLancamento(new ArrayList<Lancamento>());
 
         if (validarCamposObrigatoriosCadastrarContaCorrente(cc).isEmpty()) {
             contaCorrenteDao.salvarContaCorrente(cc);

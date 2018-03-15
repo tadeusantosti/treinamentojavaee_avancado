@@ -2,8 +2,10 @@ package logic.treinamento.dao;
 
 import java.sql.SQLException;
 import java.util.List;
+import javax.ejb.Local;
 import logic.treinamento.model.ContaCorrente;
 
+@Local
 public interface InterfaceContaCorrente {
 
     public void salvarContaCorrente(ContaCorrente conta) throws SQLException;
