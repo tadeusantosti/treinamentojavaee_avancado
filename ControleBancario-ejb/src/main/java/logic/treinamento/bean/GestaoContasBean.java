@@ -63,7 +63,7 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
 
         Lancamento lanc = new Lancamento();
         lanc.setId(atualizarLancamentoRequisicao.getId());
-        lanc.setObservacao(atualizarLancamentoRequisicao.getNomeAtualizado());
+        lanc.setObservacao(atualizarLancamentoRequisicao.getObservacaoAtualizada());
         lanc.setValor(atualizarLancamentoRequisicao.getValorAtualizado());
         lanc.setTipoLancamento(TipoLancamentoEnum.getByCodigo(atualizarLancamentoRequisicao.getIdTipoLancamentoAtualizado()));
         lanc.setData(Formatadores.validarDatasInformadas(atualizarLancamentoRequisicao.getDataAtualizada()).get(0));

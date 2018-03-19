@@ -44,5 +44,4 @@ public interface InterfaceGestaoContas {
 
     public List<Lancamento> consultarLancametosBancariosVinculadosContaCorrente(long idContaCorrente);
 
-
 }

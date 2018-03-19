@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="3d5ee3c9-1555-4051-a543-3fe8bcd40f53" activeEnvironment="Default" name="WebServiceGestaoContas?wsdl" resourceRoot="" soapui-version="5.4.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" id="b20caaa7-5c33-420b-bbe5-dbbb2b5193d7" wsaVersion="NONE" name="WebServiceGestaoContasServiceSoapBinding" type="wsdl" bindingName="{http://treinamento.logic/}WebServiceGestaoContasServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/ControleBancario-web/WebServiceGestaoContas?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/ControleBancario-web/WebServiceGestaoContas?wsdl"><con:part><con:url>http://localhost:8080/ControleBancario-web/WebServiceGestaoContas?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="WebServiceGestaoContasService" targetNamespace="http://treinamento.logic/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://treinamento.logic/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http">
+  <wsdl:types>
+    <xs:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://treinamento.logic/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="AtualizarCadastroContaCorrenteRequisicao" type="tns:atualizarCadastroContaCorrenteRequisicao"/>
+      <xs:element name="AtualizarLancamentoRequisicao" type="tns:lancamentoBancarioAtualizacaoRequisicao"/>
+      <xs:element name="SalvarCadastroContaCorrenteRequisicao" type="tns:cadastroContaCorrenteRequisicao"/>
+      <xs:element name="SalvarLancamentoBancarioRequisicao" type="tns:lancamentoBancarioRequisicao"/>
+      <xs:element name="atualizarContaContaCorrente" type="tns:atualizarContaContaCorrente"/>
+      <xs:element name="atualizarContaContaCorrenteResponse" type="tns:atualizarContaContaCorrenteResponse"/>
+      <xs:element name="atualizarLancamentoBancario" type="tns:atualizarLancamentoBancario"/>
+      <xs:element name="atualizarLancamentoBancarioResponse" type="tns:atualizarLancamentoBancarioResponse"/>
+      <xs:element name="cadastrarContaContaCorrente" type="tns:cadastrarContaContaCorrente"/>
+      <xs:element name="cadastrarContaContaCorrenteResponse" type="tns:cadastrarContaContaCorrenteResponse"/>
+      <xs:element name="cadastrarLancamentoBancario" type="tns:cadastrarLancamentoBancario"/>
+      <xs:element name="cadastrarLancamentoBancarioResponse" type="tns:cadastrarLancamentoBancarioResponse"/>
+      <xs:element name="excluirLancamentoBancario" type="tns:excluirLancamentoBancario"/>
+      <xs:element name="excluirLancamentoBancarioResponse" type="tns:excluirLancamentoBancarioResponse"/>
+      <xs:element name="pesquisarLancamentoBancarioPorObservacao" type="tns:pesquisarLancamentoBancarioPorObservacao"/>
+      <xs:element name="pesquisarLancamentoBancarioPorObservacaoResponse" type="tns:pesquisarLancamentoBancarioPorObservacaoResponse"/>
+      <xs:element name="pesquisarLancamentoBancarioPorPeriodo" type="tns:pesquisarLancamentoBancarioPorPeriodo"/>
+      <xs:element name="pesquisarLancamentoBancarioPorPeriodoResponse" type="tns:pesquisarLancamentoBancarioPorPeriodoResponse"/>
+      <xs:element name="pesquisarLancamentoBancarioPorTipo" type="tns:pesquisarLancamentoBancarioPorTipo"/>
+      <xs:element name="pesquisarLancamentoBancarioPorTipoResponse" type="tns:pesquisarLancamentoBancarioPorTipoResponse"/>
+      <xs:element name="verSaldoContaCorrente" type="tns:verSaldoContaCorrente"/>
+      <xs:element name="verSaldoContaCorrenteResponse" type="tns:verSaldoContaCorrenteResponse"/>
+      <xs:complexType name="pesquisarLancamentoBancarioPorTipo">
+        <xs:sequence>
+          <xs:element name="tipoLancamento" type="xs:int"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="pesquisarLancamentoBancarioPorTipoResponse">
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="Lancamento" type="tns:lancamento"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="lancamento">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="conta" type="tns:contaCorrente"/>
+          <xs:element minOccurs="0" name="data" type="tns:date"/>
+          <xs:element minOccurs="0" name="dataGUI" type="xs:string"/>
+          <xs:element name="id" type="xs:long"/>
+          <xs:element name="idContaCorrente" type="xs:long"/>
+          <xs:element minOccurs="0" name="observacao" type="xs:string"/>
+          <xs:element minOccurs="0" name="tipoLancamento" type="tns:tipoLancamentoEnum"/>
+          <xs:element minOccurs="0" name="valor" type="xs:decimal"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="contaCorrente">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="agencia" type="tns:agenciaEnum"/>
+          <xs:element minOccurs="0" name="banco" type="tns:bancoEnum"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="lancamento" nillable="true" type="tns:lancamento"/>
+          <xs:element minOccurs="0" name="saldo" type="xs:decimal"/>
+          <xs:element name="situacao" type="xs:boolean"/>
+          <xs:element minOccurs="0" name="titular" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="date">
+        <xs:sequence/>
+      </xs:complexType>
+      <xs:complexType name="atualizarContaContaCorrente">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="requisicao" type="tns:atualizarCadastroContaCorrenteRequisicao"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="atualizarCadastroContaCorrenteRequisicao">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="titular" type="xs:string"/>
+          <xs:element name="agencia" type="xs:int"/>
+          <xs:element name="banco" type="xs:int"/>
+          <xs:element name="idContaCorrente" type="xs:long"/>
+          <xs:element minOccurs="0" name="saldo" type="xs:decimal"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="atualizarContaContaCorrenteResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="resposta" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="atualizarLancamentoBancario">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="nome" type="tns:lancamentoBancarioAtualizacaoRequisicao"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="lancamentoBancarioAtualizacaoRequisicao">
+        <xs:sequence>
+          <xs:element name="id" type="xs:long"/>
+          <xs:element minOccurs="0" name="nomeAtualizado" type="xs:string"/>
+          <xs:element minOccurs="0" name="valorAtualizado" type="xs:decimal"/>
+          <xs:element name="idTipoLancamentoAtualizado" type="xs:int"/>
+          <xs:element minOccurs="0" name="dataAtualizada" type="xs:string"/>
+          <xs:element name="idContaCorrente" type="xs:long"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="atualizarLancamentoBancarioResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="respostaAtualizacaoCadastro" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="pesquisarLancamentoBancarioPorObservacao">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="observacao" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="pesquisarLancamentoBancarioPorObservacaoResponse">
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="Lancamentos" type="tns:lancamento"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="pesquisarLancamentoBancarioPorPeriodo">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="dataInicial" type="xs:string"/>
+          <xs:element minOccurs="0" name="dataFinal" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="pesquisarLancamentoBancarioPorPeriodoResponse">
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="Lancamentos" type="tns:lancamento"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="cadastrarContaContaCorrente">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="requisicao" type="tns:cadastroContaCorrenteRequisicao"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="cadastroContaCorrenteRequisicao">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="titular" type="xs:string"/>
+          <xs:element name="agencia" type="xs:int"/>
+          <xs:element name="banco" type="xs:int"/>
+          <xs:element minOccurs="0" name="saldo" type="xs:decimal"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="cadastrarContaContaCorrenteResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="resposta" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="verSaldoContaCorrente">
+        <xs:sequence>
+          <xs:element name="codigoContaCorrente" type="xs:long"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="verSaldoContaCorrenteResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Saldo" type="xs:decimal"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="excluirLancamentoBancario">
+        <xs:sequence>
+          <xs:element name="idLancamento" type="xs:int"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="excluirLancamentoBancarioResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="respostaExclusaoCadastro" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="cadastrarLancamentoBancario">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="requisicao" type="tns:lancamentoBancarioRequisicao"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="lancamentoBancarioRequisicao">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="observacao" type="xs:string"/>
+          <xs:element minOccurs="0" name="valor" type="xs:decimal"/>
+          <xs:element name="idTipoLancamento" type="xs:int"/>
+          <xs:element minOccurs="0" name="data" type="xs:string"/>
+          <xs:element name="idContaCorrente" type="xs:long"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="cadastrarLancamentoBancarioResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="respostaCadastro" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:simpleType name="agenciaEnum">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="OSASCO"/>
+          <xs:enumeration value="SAOPAULO"/>
+          <xs:enumeration value="ARARAS"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="bancoEnum">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="BRADESCO"/>
+          <xs:enumeration value="ITAU"/>
+          <xs:enumeration value="SANTANDER"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="tipoLancamentoEnum">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="TRANSFERENCIA"/>
+          <xs:enumeration value="SAQUE"/>
+          <xs:enumeration value="DEPOSITO"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:element name="Exception" type="tns:Exception"/>
+      <xs:complexType name="Exception">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="message" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="pesquisarLancamentoBancarioPorTipo">
+    <wsdl:part element="tns:pesquisarLancamentoBancarioPorTipo" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="Exception">
+    <wsdl:part element="tns:Exception" name="Exception"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="atualizarContaContaCorrente">
+    <wsdl:part element="tns:atualizarContaContaCorrente" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="atualizarContaContaCorrenteResponse">
+    <wsdl:part element="tns:atualizarContaContaCorrenteResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="atualizarLancamentoBancarioResponse">
+    <wsdl:part element="tns:atualizarLancamentoBancarioResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="pesquisarLancamentoBancarioPorPeriodoResponse">
+    <wsdl:part element="tns:pesquisarLancamentoBancarioPorPeriodoResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="excluirLancamentoBancario">
+    <wsdl:part element="tns:excluirLancamentoBancario" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="cadastrarLancamentoBancario">
+    <wsdl:part element="tns:cadastrarLancamentoBancario" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="pesquisarLancamentoBancarioPorObservacaoResponse">
+    <wsdl:part element="tns:pesquisarLancamentoBancarioPorObservacaoResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="excluirLancamentoBancarioResponse">
+    <wsdl:part element="tns:excluirLancamentoBancarioResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="verSaldoContaCorrenteResponse">
+    <wsdl:part element="tns:verSaldoContaCorrenteResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="atualizarLancamentoBancario">
+    <wsdl:part element="tns:atualizarLancamentoBancario" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="pesquisarLancamentoBancarioPorObservacao">
+    <wsdl:part element="tns:pesquisarLancamentoBancarioPorObservacao" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="pesquisarLancamentoBancarioPorPeriodo">
+    <wsdl:part element="tns:pesquisarLancamentoBancarioPorPeriodo" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="pesquisarLancamentoBancarioPorTipoResponse">
+    <wsdl:part element="tns:pesquisarLancamentoBancarioPorTipoResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="cadastrarContaContaCorrente">
+    <wsdl:part element="tns:cadastrarContaContaCorrente" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="verSaldoContaCorrente">
+    <wsdl:part element="tns:verSaldoContaCorrente" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="cadastrarContaContaCorrenteResponse">
+    <wsdl:part element="tns:cadastrarContaContaCorrenteResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="cadastrarLancamentoBancarioResponse">
+    <wsdl:part element="tns:cadastrarLancamentoBancarioResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="gestaoContas">
+    <wsdl:operation name="pesquisarLancamentoBancarioPorTipo">
+      <wsdl:input message="tns:pesquisarLancamentoBancarioPorTipo" name="pesquisarLancamentoBancarioPorTipo"></wsdl:input>
+      <wsdl:output message="tns:pesquisarLancamentoBancarioPorTipoResponse" name="pesquisarLancamentoBancarioPorTipoResponse"></wsdl:output>
+      <wsdl:fault message="tns:Exception" name="Exception"></wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="atualizarContaContaCorrente">
+      <wsdl:input message="tns:atualizarContaContaCorrente" name="atualizarContaContaCorrente"></wsdl:input>
+      <wsdl:output message="tns:atualizarContaContaCorrenteResponse" name="atualizarContaContaCorrenteResponse"></wsdl:output>
+      <wsdl:fault message="tns:Exception" name="Exception"></wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="atualizarLancamentoBancario">
+      <wsdl:input message="tns:atualizarLancamentoBancario" name="atualizarLancamentoBancario"></wsdl:input>
+      <wsdl:output message="tns:atualizarLancamentoBancarioResponse" name="atualizarLancamentoBancarioResponse"></wsdl:output>
+      <wsdl:fault message="tns:Exception" name="Exception"></wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="pesquisarLancamentoBancarioPorObservacao">
+      <wsdl:input message="tns:pesquisarLancamentoBancarioPorObservacao" name="pesquisarLancamentoBancarioPorObservacao"></wsdl:input>
+      <wsdl:output message="tns:pesquisarLancamentoBancarioPorObservacaoResponse" name="pesquisarLancamentoBancarioPorObservacaoResponse"></wsdl:output>
+      <wsdl:fault message="tns:Exception" name="Exception"></wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="pesquisarLancamentoBancarioPorPeriodo">
+      <wsdl:input message="tns:pesquisarLancamentoBancarioPorPeriodo" name="pesquisarLancamentoBancarioPorPeriodo"></wsdl:input>
+      <wsdl:output message="tns:pesquisarLancamentoBancarioPorPeriodoResponse" name="pesquisarLancamentoBancarioPorPeriodoResponse"></wsdl:output>
+      <wsdl:fault message="tns:Exception" name="Exception"></wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="cadastrarContaContaCorrente">
+      <wsdl:input message="tns:cadastrarContaContaCorrente" name="cadastrarContaContaCorrente"></wsdl:input>
+      <wsdl:output message="tns:cadastrarContaContaCorrenteResponse" name="cadastrarContaContaCorrenteResponse"></wsdl:output>
+      <wsdl:fault message="tns:Exception" name="Exception"></wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="verSaldoContaCorrente">
+      <wsdl:input message="tns:verSaldoContaCorrente" name="verSaldoContaCorrente"></wsdl:input>
+      <wsdl:output message="tns:verSaldoContaCorrenteResponse" name="verSaldoContaCorrenteResponse"></wsdl:output>
+      <wsdl:fault message="tns:Exception" name="Exception"></wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="excluirLancamentoBancario">
+      <wsdl:input message="tns:excluirLancamentoBancario" name="excluirLancamentoBancario"></wsdl:input>
+      <wsdl:output message="tns:excluirLancamentoBancarioResponse" name="excluirLancamentoBancarioResponse"></wsdl:output>
+      <wsdl:fault message="tns:Exception" name="Exception"></wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="cadastrarLancamentoBancario">
+      <wsdl:input message="tns:cadastrarLancamentoBancario" name="cadastrarLancamentoBancario"></wsdl:input>
+      <wsdl:output message="tns:cadastrarLancamentoBancarioResponse" name="cadastrarLancamentoBancarioResponse"></wsdl:output>
+      <wsdl:fault message="tns:Exception" name="Exception"></wsdl:fault>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="WebServiceGestaoContasServiceSoapBinding" type="tns:gestaoContas">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="pesquisarLancamentoBancarioPorTipo">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="pesquisarLancamentoBancarioPorTipo">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="pesquisarLancamentoBancarioPorTipoResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="atualizarContaContaCorrente">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="atualizarContaContaCorrente">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="atualizarContaContaCorrenteResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="atualizarLancamentoBancario">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="atualizarLancamentoBancario">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="atualizarLancamentoBancarioResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="pesquisarLancamentoBancarioPorObservacao">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="pesquisarLancamentoBancarioPorObservacao">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="pesquisarLancamentoBancarioPorObservacaoResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="pesquisarLancamentoBancarioPorPeriodo">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="pesquisarLancamentoBancarioPorPeriodo">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="pesquisarLancamentoBancarioPorPeriodoResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="cadastrarContaContaCorrente">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="cadastrarContaContaCorrente">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="cadastrarContaContaCorrenteResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="verSaldoContaCorrente">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="verSaldoContaCorrente">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="verSaldoContaCorrenteResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="excluirLancamentoBancario">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="excluirLancamentoBancario">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="excluirLancamentoBancarioResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="cadastrarLancamentoBancario">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="cadastrarLancamentoBancario">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="cadastrarLancamentoBancarioResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="Exception">
+        <soap:fault name="Exception" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="WebServiceGestaoContasService">
+    <wsdl:port binding="tns:WebServiceGestaoContasServiceSoapBinding" name="gestaoContasPort">
+      <soap:address location="http://localhost:8080/ControleBancario-web/WebServiceGestaoContas"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/ControleBancario-web/WebServiceGestaoContas</con:endpoint></con:endpoints><con:operation id="7a55616c-7de6-4320-a832-58819e1e7633" isOneWay="false" action="" name="atualizarContaContaCorrente" bindingOperationName="atualizarContaContaCorrente" type="Request-Response" outputName="atualizarContaContaCorrenteResponse" inputName="atualizarContaContaCorrente" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="f63d086a-31bb-4f4e-935e-e984c9dd3559" name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/ControleBancario-web/WebServiceGestaoContas</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tre="http://treinamento.logic/">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <tre:atualizarContaContaCorrente>\r
+         <!--Optional:-->\r
+         <requisicao>\r
+            <!--Optional:-->\r
+            <titular>?</titular>\r
+            <agencia>?</agencia>\r
+            <banco>?</banco>\r
+            <idContaCorrente>?</idContaCorrente>\r
+            <!--Optional:-->\r
+            <saldo>?</saldo>\r
+         </requisicao>\r
+      </tre:atualizarContaContaCorrente>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://treinamento.logic/gestaoContas/atualizarContaContaCorrente"/></con:call></con:operation><con:operation id="8d48e9ba-e89f-429a-a89a-0bfaf9ae5ced" isOneWay="false" action="" name="atualizarLancamentoBancario" bindingOperationName="atualizarLancamentoBancario" type="Request-Response" outputName="atualizarLancamentoBancarioResponse" inputName="atualizarLancamentoBancario" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="631bcd0d-eed4-4124-ab8e-d5ff97425385" name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/ControleBancario-web/WebServiceGestaoContas</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tre="http://treinamento.logic/">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <tre:atualizarLancamentoBancario>\r
+         <!--Optional:-->\r
+         <nome>\r
+            <id>?</id>\r
+            <!--Optional:-->\r
+            <nomeAtualizado>?</nomeAtualizado>\r
+            <!--Optional:-->\r
+            <valorAtualizado>?</valorAtualizado>\r
+            <idTipoLancamentoAtualizado>?</idTipoLancamentoAtualizado>\r
+            <!--Optional:-->\r
+            <dataAtualizada>?</dataAtualizada>\r
+            <idContaCorrente>?</idContaCorrente>\r
+         </nome>\r
+      </tre:atualizarLancamentoBancario>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://treinamento.logic/gestaoContas/atualizarLancamentoBancario"/></con:call></con:operation><con:operation id="1787f703-7627-444e-ab1c-87cf1f464cde" isOneWay="false" action="" name="cadastrarContaContaCorrente" bindingOperationName="cadastrarContaContaCorrente" type="Request-Response" outputName="cadastrarContaContaCorrenteResponse" inputName="cadastrarContaContaCorrente" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="8a7ce48a-4009-4382-b0d3-5a5dad3e8e58" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/ControleBancario-web/WebServiceGestaoContas</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tre="http://treinamento.logic/">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <tre:cadastrarContaContaCorrente>\r
+         <!--Optional:-->\r
+         <requisicao>\r
+            <!--Optional:-->\r
+            <titular>ROBERTO TONHAO</titular>\r
+            <agencia>1</agencia>\r
+            <banco>1</banco>\r
+            <!--Optional:-->\r
+            <saldo>0</saldo>\r
+         </requisicao>\r
+      </tre:cadastrarContaContaCorrente>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://treinamento.logic/gestaoContas/cadastrarContaContaCorrente"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="5ef3229b-2351-4248-b264-782d8d2e93c8" isOneWay="false" action="" name="cadastrarLancamentoBancario" bindingOperationName="cadastrarLancamentoBancario" type="Request-Response" outputName="cadastrarLancamentoBancarioResponse" inputName="cadastrarLancamentoBancario" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="b00f92e9-95c3-4223-9573-588c238336b2" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/ControleBancario-web/WebServiceGestaoContas</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tre="http://treinamento.logic/">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <tre:cadastrarLancamentoBancario>\r
+         <!--Optional:-->\r
+         <requisicao>\r
+            <!--Optional:-->\r
+            <observacao>DEPOSITO EM CONTA</observacao>\r
+            <!--Optional:-->\r
+            <valor>1500</valor>\r
+            <idTipoLancamento>3</idTipoLancamento>\r
+            <!--Optional:-->\r
+            <data>19/03/2018</data>\r
+            <idContaCorrente>7</idContaCorrente>\r
+         </requisicao>\r
+      </tre:cadastrarLancamentoBancario>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://treinamento.logic/gestaoContas/cadastrarLancamentoBancario"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="24a7259a-0204-4c24-a85b-4f3d8fdf7690" isOneWay="false" action="" name="excluirLancamentoBancario" bindingOperationName="excluirLancamentoBancario" type="Request-Response" outputName="excluirLancamentoBancarioResponse" inputName="excluirLancamentoBancario" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="5c6b48de-b27f-4810-9b6e-50550a129c49" name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/ControleBancario-web/WebServiceGestaoContas</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tre="http://treinamento.logic/">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <tre:excluirLancamentoBancario>\r
+         <idLancamento>?</idLancamento>\r
+      </tre:excluirLancamentoBancario>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://treinamento.logic/gestaoContas/excluirLancamentoBancario"/></con:call></con:operation><con:operation id="0cd98f0d-8952-41a0-baf8-2d22b9243a30" isOneWay="false" action="" name="pesquisarLancamentoBancarioPorObservacao" bindingOperationName="pesquisarLancamentoBancarioPorObservacao" type="Request-Response" outputName="pesquisarLancamentoBancarioPorObservacaoResponse" inputName="pesquisarLancamentoBancarioPorObservacao" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="3117cab1-dcaa-4494-8808-b74c8b44bc32" name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/ControleBancario-web/WebServiceGestaoContas</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tre="http://treinamento.logic/">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <tre:pesquisarLancamentoBancarioPorObservacao>\r
+         <!--Optional:-->\r
+         <observacao>?</observacao>\r
+      </tre:pesquisarLancamentoBancarioPorObservacao>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://treinamento.logic/gestaoContas/pesquisarLancamentoBancarioPorObservacao"/></con:call></con:operation><con:operation id="21dd590a-be02-4f1f-8b37-14643419ad9d" isOneWay="false" action="" name="pesquisarLancamentoBancarioPorPeriodo" bindingOperationName="pesquisarLancamentoBancarioPorPeriodo" type="Request-Response" outputName="pesquisarLancamentoBancarioPorPeriodoResponse" inputName="pesquisarLancamentoBancarioPorPeriodo" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="e6552a19-e371-41e2-bcc6-84b4fde134f3" name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/ControleBancario-web/WebServiceGestaoContas</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tre="http://treinamento.logic/">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <tre:pesquisarLancamentoBancarioPorPeriodo>\r
+         <!--Optional:-->\r
+         <dataInicial>?</dataInicial>\r
+         <!--Optional:-->\r
+         <dataFinal>?</dataFinal>\r
+      </tre:pesquisarLancamentoBancarioPorPeriodo>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://treinamento.logic/gestaoContas/pesquisarLancamentoBancarioPorPeriodo"/></con:call></con:operation><con:operation id="e11d7bac-b6a5-4c02-b947-af5a3b9f20c2" isOneWay="false" action="" name="pesquisarLancamentoBancarioPorTipo" bindingOperationName="pesquisarLancamentoBancarioPorTipo" type="Request-Response" outputName="pesquisarLancamentoBancarioPorTipoResponse" inputName="pesquisarLancamentoBancarioPorTipo" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="57285075-1414-4106-96f1-7662d50de36d" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/ControleBancario-web/WebServiceGestaoContas</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tre="http://treinamento.logic/">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <tre:pesquisarLancamentoBancarioPorTipo>\r
+         <tipoLancamento>3</tipoLancamento>\r
+      </tre:pesquisarLancamentoBancarioPorTipo>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://treinamento.logic/gestaoContas/pesquisarLancamentoBancarioPorTipo"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="e8a44d99-1e87-42a7-bcbb-35cd6224e04f" isOneWay="false" action="" name="verSaldoContaCorrente" bindingOperationName="verSaldoContaCorrente" type="Request-Response" outputName="verSaldoContaCorrenteResponse" inputName="verSaldoContaCorrente" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="92155f84-3c6a-4218-a6ac-e6c64cb8c601" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/ControleBancario-web/WebServiceGestaoContas</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tre="http://treinamento.logic/">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <tre:verSaldoContaCorrente>\r
+         <codigoContaCorrente>7</codigoContaCorrente>\r
+      </tre:verSaldoContaCorrente>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://treinamento.logic/gestaoContas/verSaldoContaCorrente"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/></con:soapui-project>

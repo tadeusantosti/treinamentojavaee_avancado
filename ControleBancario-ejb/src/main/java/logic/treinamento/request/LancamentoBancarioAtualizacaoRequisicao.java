@@ -15,7 +15,7 @@ public class LancamentoBancarioAtualizacaoRequisicao implements Serializable {
     private long id;
 
     @XmlElement
-    private String nomeAtualizado;
+    private String observacaoAtualizada;
 
     @XmlElement
     private BigDecimal valorAtualizado;
@@ -38,12 +38,12 @@ public class LancamentoBancarioAtualizacaoRequisicao implements Serializable {
         this.id = id;
     }
 
-    public String getNomeAtualizado() {
-        return nomeAtualizado;
+    public String getObservacaoAtualizada() {
+        return observacaoAtualizada;
     }
 
-    public void setNomeAtualizado(String nomeAtualizado) {
-        this.nomeAtualizado = nomeAtualizado;
+    public void setObservacaoAtualizada(String nomeAtualizado) {
+        this.observacaoAtualizada = nomeAtualizado;
     }
 
     public BigDecimal getValorAtualizado() {

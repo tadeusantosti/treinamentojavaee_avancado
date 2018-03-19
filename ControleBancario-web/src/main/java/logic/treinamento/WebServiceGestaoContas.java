@@ -81,7 +81,7 @@ public class WebServiceGestaoContas {
 
     @WebMethod(operationName = "cadastrarContaContaCorrente")
     @WebResult(name = "resposta")
-    public String salvarLancamentoBancario(@WebParam(name = "requisicao") CadastroContaCorrenteRequisicao cadastroContaCorrenteRequisicao) throws Exception {
+    public String salvarContaCorrente(@WebParam(name = "requisicao") CadastroContaCorrenteRequisicao cadastroContaCorrenteRequisicao) throws Exception {
         try {
             eventosGestaoContas.salvarContaCorrente(cadastroContaCorrenteRequisicao);
             return Response.Status.OK.getReasonPhrase();
@@ -93,7 +93,7 @@ public class WebServiceGestaoContas {
 
     @WebMethod(operationName = "atualizarContaContaCorrente")
     @WebResult(name = "resposta")
-    public String salvarLancamentoBancario(@WebParam(name = "requisicao") AtualizarCadastroContaCorrenteRequisicao cadastroContaCorrenteRequisicao) throws Exception {
+    public String atualizarCadastroContaCorrente(@WebParam(name = "requisicao") AtualizarCadastroContaCorrenteRequisicao cadastroContaCorrenteRequisicao) throws Exception {
         try {
             eventosGestaoContas.atualizarDadosContaCorrente(cadastroContaCorrenteRequisicao);
             return Response.Status.OK.getReasonPhrase();
@@ -105,7 +105,13 @@ public class WebServiceGestaoContas {
     
     @WebMethod(operationName = "verSaldoContaCorrente")
     @WebResult(name = "Saldo")
-    public BigDecimal pesquisaLancamentoBancarioPorObservacao(@WebParam(name = "codigoContaCorrente") long codigoContaCorrente) throws Exception {
+    public BigDecimal visualizarSadoAtualContaCorrentePorID(@WebParam(name = "codigoContaCorrente") long codigoContaCorrente) throws Exception {
         return gestaoContaBean.verSaldoContaCorrente(codigoContaCorrente);
+    }
+    
+    @WebMethod(operationName = "consultarLogContaCorrente")
+    @WebResult(name = "LogLancamentosBancarios")
+    public List<Lancamento> consultarLancametosBancariosVinculadosContaCorrente(@WebParam(name = "codigoContaCorrente") long codigoContaCorrente) throws Exception {
+        return gestaoContaBean.consultarLancametosBancariosVinculadosContaCorrente(codigoContaCorrente);
     }
 }

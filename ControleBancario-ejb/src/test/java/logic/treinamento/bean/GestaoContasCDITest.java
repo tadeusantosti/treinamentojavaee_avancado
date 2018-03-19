@@ -188,7 +188,7 @@ public class GestaoContasCDITest {
         novaData.add(Calendar.DAY_OF_MONTH, 2);
 
         LancamentoBancarioAtualizacaoRequisicao atualizarLancamentoRequisicao = new LancamentoBancarioAtualizacaoRequisicao();
-        atualizarLancamentoRequisicao.setNomeAtualizado("Transferencia para a conta corrente do Charles Darwin");
+        atualizarLancamentoRequisicao.setObservacaoAtualizada("Transferencia para a conta corrente do Charles Darwin");
         atualizarLancamentoRequisicao.setValorAtualizado(new BigDecimal(9999.99));
         atualizarLancamentoRequisicao.setDataAtualizada(Formatadores.formatoDataInterface.format(novaData.getTime()));
         atualizarLancamentoRequisicao.setIdTipoLancamentoAtualizado(TipoLancamentoEnum.TRANSFERENCIA.getId());
@@ -199,7 +199,7 @@ public class GestaoContasCDITest {
 
         if (!lancamentoAtualizado.isEmpty()) {
             for (Lancamento lancAtualizado : lancamentoAtualizado) {
-                assertEquals(atualizarLancamentoRequisicao.getNomeAtualizado(), lancAtualizado.getObservacao());
+                assertEquals(atualizarLancamentoRequisicao.getObservacaoAtualizada(), lancAtualizado.getObservacao());
                 assertEquals(atualizarLancamentoRequisicao.getValorAtualizado().doubleValue(), lancAtualizado.getValor().doubleValue());
                 assertEquals(atualizarLancamentoRequisicao.getDataAtualizada(), Formatadores.formatoDataInterface.format(lancAtualizado.getData()));
                 assertEquals(TipoLancamentoEnum.getByCodigo(atualizarLancamentoRequisicao.getIdTipoLancamentoAtualizado()), lancAtualizado.getTipoLancamento());
