@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
 import javax.ejb.Local;
+import javax.enterprise.event.Observes;
 import logic.treinamento.model.ContaCorrente;
 import logic.treinamento.model.Lancamento;
 import logic.treinamento.request.AtualizarCadastroContaCorrenteRequisicao;
@@ -18,7 +19,7 @@ public interface InterfaceGestaoContas {
     
     public List<Lancamento> pesquisarLancamentoBancarioPorTipoDeLancamento(int idtipolancamento) throws Exception;
 
-    public List<Lancamento> pesquisarLancamentoBancarioPorNome(String nome) throws Exception;
+    public List<Lancamento> pesquisarLancamentoBancarioPorObservacao(String nome) throws Exception;
 
     public List<Lancamento> pesquisarLancamentoBancarioPorPeriodo(String dataInicial, String dataFinal) throws Exception;
 
@@ -44,4 +45,5 @@ public interface InterfaceGestaoContas {
 
     public List<Lancamento> consultarLancametosBancariosVinculadosContaCorrente(long idContaCorrente);
 
+    public void inativarContaCorrente(@Observes long idContaCorrente) throws Exception;
 }

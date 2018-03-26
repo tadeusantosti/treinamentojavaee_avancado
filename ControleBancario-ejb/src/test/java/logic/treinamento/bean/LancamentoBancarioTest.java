@@ -24,7 +24,7 @@ import org.junit.runner.RunWith;
 import utilitarios.Formatadores;
 
 @RunWith(WeldJUnit4Runner.class)
-public class GestaoContasCDITest {
+public class LancamentoBancarioTest {
 
     @Inject
     public InterfaceGestaoContas gestaoContaBean;
@@ -66,36 +66,18 @@ public class GestaoContasCDITest {
         }
     }
 
-    /** <H3>Teste de Criacao e Consulta de um novo Lancamento Bancario</H3>
-     * <br>
-     * <br>
-     * <p>
-     * Objetivo do teste: Garantir que o sistema esteja criando o lancamento
-     * bancario corretamente e que a consulta do lancamento atraves de parte da
-     * observacao esteja funcionando adequadamente.</p>
-     * <br>
-     * <p>
-     * <b>Configuração inicial para a realização dos testes: </b> <br>
-     * Foi informado todos os campos principais necessarios para a correta
-     * inclusao dos dados.</p>
-     * <br>
-     * <p>
-     * <b>Relação de cenários com sua descrição, os passos executados e os
-     * resultados esperados. *</b> </p>
-     * <ul>
-     * <li> <i> Cenário 1: Cadastrar um novo lancamento bancario. <i><br>
-     * Resultado esperado: Sistema casdastrou o novo lancamento bancario
-     * corretamente<br>
-     * <li> <i> Cenário 2: Consultar o lancamento bancario que foi criado
-     * atraves do campo observacao.
-     * <i> <li>
-     * Resultado esperado: Sistema consultou o registro com sucesso. <br>
-     * </ul>
-     * <br>
-     * <p>
-     * @since 1.0
-     * @author Tadeu
-     * @version 2.0 </p>
+    /**
+     * Teste responsavel por validar o serviço de lançamento de contas do mês e
+     * consultar o lançamento salvo através de parte do nome do cliente.
+     * ------------------------------------------------------------------------
+     * Preparacao do cenario: -Foi informado todos os campos principais
+     * necessarios para a correta inclusao dos dados
+     * ------------------------------------------------------------------------
+     * Resultado Esperado: -Sistema persistiu o lancamento de conta em bando de
+     * dados e consultou corretamente os dados salvos informando apenas parte do
+     * nome do cliente
+     *
+     * @throws Exception
      */
     @Test
     public void testSalvarLancamentoBancario() throws Exception {
@@ -142,31 +124,18 @@ public class GestaoContasCDITest {
         }
     }
 
-    /** <H3>Teste de Atualizacao de um Lancamento Bancario cadastrado</H3>
-     * <br>
-     * <br>
-     * <p>
-     * Objetivo do teste: Garantir que o sistema esteja atualizando os dados de
-     * um lancamento bancario corretamente.</p>
-     * <br>
-     * <p>
-     * <b>Configuração inicial para a realização dos testes: </b> <br>
-     * Foi criado um lancamento bancario e em seguida alterado algumas
-     * informacoes do mesmo para que seja atualizado.</p>
-     * <br>
-     * <p>
-     * <b>Relação de cenários com sua descrição, os passos executados e os
-     * resultados esperados. *</b> </p>
-     * <ul>
-     * <li> <i> Cenário 1: Atualizar um novo lancamento bancario. <i><br>
-     * Resultado esperado: Sistema atualizou os dados do lancamento bancario com
-     * sucesso<br>
-     * </ul>
-     * <br>
-     * <p>
-     * @since 1.0
-     * @author Tadeu
-     * @version 2.0 </p>
+    /**
+     * Teste responsavel por atualizar os dados de um lancamento persistido na
+     * base de dados.
+     * ------------------------------------------------------------------------
+     * Preparacao do cenario: -Foi incluido um lancamento na base de dados.
+     * -Foram informados novas informações e requisitado o serviço de
+     * atualizacao dos dados no sistema
+     * ------------------------------------------------------------------------
+     * Resultado Esperado: -Sistema atualizou o lancamento em bando de dados de
+     * acordo com a novas informações.
+     *
+     * @throws Exception
      */
     @Test
     public void testAtualizarDadosLancamentoBancario() throws Exception {
@@ -216,9 +185,9 @@ public class GestaoContasCDITest {
         novaData.add(Calendar.DAY_OF_MONTH, 2);
 
         LancamentoBancarioAtualizacaoRequisicao atualizarLancamentoRequisicao = new LancamentoBancarioAtualizacaoRequisicao();
+        atualizarLancamentoRequisicao.setId(lancNovo.get(0).getId());        
         atualizarLancamentoRequisicao.setObservacaoAtualizada("Transferencia para a conta corrente do Charles Darwin");
         atualizarLancamentoRequisicao.setDataAtualizada(Formatadores.formatoDataInterface.format(novaData.getTime()));
-        atualizarLancamentoRequisicao.setIdContaCorrente(contas.get(0).getId());
         eventosGestaoContas.atualizarLancamentoBancario(atualizarLancamentoRequisicao);
 
         List<Lancamento> lancamentoAtualizado = gestaoContaBean.pesquisarLancamentoBancarioPorObservacao("Charles");
@@ -233,30 +202,15 @@ public class GestaoContasCDITest {
         }
     }
 
-    /** <H3>Teste de Remocao de um Lancamento Bancario cadastrado</H3>
-     * <br>
-     * <br>
-     * <p>
-     * Objetivo do teste: Garantir que o sistema esteja excluindo os dados de um
-     * lancamento bancario corretamente.</p>
-     * <br>
-     * <p>
-     * <b>Configuração inicial para a realização dos testes: </b> <br>
-     * Foi criado um lancamento bancario.</p>
-     * <br>
-     * <p>
-     * <b>Relação de cenários com sua descrição, os passos executados e os
-     * resultados esperados. *</b> </p>
-     * <ul>
-     * <li> <i> Cenário 1: Excluir um lancamento bancario. <i><br>
-     * Resultado esperado: Sistema Excluiu os dados do lancamento bancario com
-     * sucesso<br>
-     * </ul>
-     * <br>
-     * <p>
-     * @since 1.0
-     * @author Tadeu
-     * @version 2.0 </p>
+    /**
+     * Teste responsavel por excluir os dados de um lancamento persistido na
+     * base de dados.
+     * ------------------------------------------------------------------------
+     * Preparacao do cenario: -Foi incluido um lancamento na base de dados.
+     * ------------------------------------------------------------------------
+     * Resultado Esperado: -Sistema excluiu os dados do lancamento corretamente.
+     *
+     * @throws Exception
      */
     @Test
     public void testExcluirLancamentoBancario() throws Exception {
@@ -310,33 +264,17 @@ public class GestaoContasCDITest {
         }
     }
 
-    /** <H3>Teste de Consulta de um Lancamento Bancario cadastrado atraves do
-     * tipo do lancamento</H3>
-     * <br>
-     * <br>
-     * <p>
-     * Objetivo do teste: Garantir que o sistema esteja excluindo os dados de um
-     * lancamento bancario corretamente.</p>
-     * <br>
-     * <p>
-     * <b>Configuração inicial para a realização dos testes: </b> <br>
-     * Foi incluido um lancamento na base de dados com o tipo de lancamento
-     * SAQUE.</p>
-     * <br>
-     * <p>
-     * <b>Relação de cenários com sua descrição, os passos executados e os
-     * resultados esperados. *</b> </p>
-     * <ul>
-     * <li> <i> Cenário 1: Consultar um lancamento bancario atraves do tipo.
-     * <i><br>
-     * Resultado esperado: Sistema consultou corretamente o registro atraves do
-     * tipo de lancamento informado (SAQUE)<br>
-     * </ul>
-     * <br>
-     * <p>
-     * @since 1.0
-     * @author Tadeu
-     * @version 2.0 </p>
+    /**
+     * Teste responsavel por pesquisar os dados de um lancamento persistido na
+     * base de dados atraves do tipo do lancamento.
+     * ------------------------------------------------------------------------
+     * Preparacao do cenario: -Foi incluido um lancamento na base de dados com o
+     * tipo de lancamento SAQUE.
+     * ------------------------------------------------------------------------
+     * Resultado Esperado: -Sistema consultou corretamente o registro atraves do
+     * tipo de lancamento informado (SAQUE)
+     *
+     * @throws Exception
      */
     @Test
     public void testPesquisarLancamentoBancarioPorTipoDeLancamento() throws Exception {
@@ -382,31 +320,17 @@ public class GestaoContasCDITest {
         }
     }
 
-    /** <H3>Teste de Consulta de um Lancamento Bancario cadastrado atraves de um
-     * determinado periodo</H3>
-     * <br>
-     * <br>
-     * <p>
-     * Objetivo do teste: Garantir que o sistema esteja excluindo os dados de um
-     * lancamento bancario corretamente.</p>
-     * <br>
-     * <p>
-     * <b>Configuração inicial para a realização dos testes: </b> <br>
-     * Foram inseridos na base de dados dois lancamentos distintos.</p>
-     * <br>
-     * <p>
-     * <b>Relação de cenários com sua descrição, os passos executados e os
-     * resultados esperados. *</b> </p>
-     * <ul>
-     * <li> <i> Cenário 1: Consultar um lancamento bancario atraves do periodo.
-     * <i><br>
-     * Resultado esperado: Sistema consultou os lancamentos corretamente atraves
-     * do serviço de consulta por periodo.
-     * <br>
-     * <p>
-     * @since 1.0
-     * @author Tadeu
-     * @version 2.0 </p>
+    /**
+     * Teste responsavel por pesquisar os dados de lancamentos persistidos na
+     * base de dados informando apenas um periodo.
+     * ------------------------------------------------------------------------
+     * Preparacao do cenario: -Foram inseridos na base de dados dois lancamentos
+     * distintos.
+     * ------------------------------------------------------------------------
+     * Resultado Esperado: -Sistema consultou os lancamentos corretamente
+     * atraves do serviço de consulta por periodo.
+     *
+     * @throws Exception
      */
     @Test
     public void testPesquisarLancamentoBancarioPorPeriodo() throws Exception {

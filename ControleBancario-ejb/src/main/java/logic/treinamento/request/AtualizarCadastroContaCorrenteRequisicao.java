@@ -7,6 +7,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * Classe responsavel pela gestão dos dados recebidos via WebService que dizem
+ * respeito a atualizacao dos dados de uma conta corrente.
+ *
+ * @since 1.0
+ * @author Tadeu
+ * @version 1.0
+ */
 @XmlRootElement(name = "AtualizarCadastroContaCorrenteRequisicao")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AtualizarCadastroContaCorrenteRequisicao implements Serializable {

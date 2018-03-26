@@ -14,6 +14,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+/**
+ * Classe responsavel por representar os dados da entidade lancamento
+ * persistidos no banco de dados.
+ *
+ * @since 1.0
+ * @author Tadeu
+ * @version 2.0
+ */
 @Entity
 @Table(name = "Lancamento")
 public class Lancamento implements Serializable {

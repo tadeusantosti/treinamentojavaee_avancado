@@ -7,6 +7,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * Classe responsavel pela gestão dos dados recebidos via WebService que dizem
+ * respeito ao cadastro de um novo lancamento bancario.
+ *
+ * @since 1.0
+ * @author Tadeu
+ * @version 2.0
+ */
 @XmlRootElement(name = "SalvarLancamentoBancarioRequisicao")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LancamentoBancarioRequisicao implements Serializable {

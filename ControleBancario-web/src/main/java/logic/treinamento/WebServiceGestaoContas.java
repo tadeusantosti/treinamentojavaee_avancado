@@ -30,8 +30,7 @@ public class WebServiceGestaoContas {
         try {
             eventosGestaoContas.salvarLacamentoBancario(cadastroLancamentoBancarioRequisicao);
             return Response.Status.OK.getReasonPhrase();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception e) {            
             return Response.Status.EXPECTATION_FAILED.getReasonPhrase();
         }
     }
@@ -42,8 +41,7 @@ public class WebServiceGestaoContas {
         try {
             eventosGestaoContas.atualizarLancamentoBancario(atualizarLancamentoBancarioRequisicao);
             return Response.Status.OK.getReasonPhrase();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception e) {            
             return Response.Status.EXPECTATION_FAILED.getReasonPhrase();
         }
     }
@@ -54,8 +52,7 @@ public class WebServiceGestaoContas {
         try {
             eventosGestaoContas.excluirLancamentoBancario(idLancamento);
             return Response.Status.OK.getReasonPhrase();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception e) {            
             return Response.Status.EXPECTATION_FAILED.getReasonPhrase();
         }
 
@@ -76,7 +73,7 @@ public class WebServiceGestaoContas {
     @WebMethod(operationName = "pesquisarLancamentoBancarioPorObservacao")
     @WebResult(name = "Lancamentos")
     public List<Lancamento> pesquisaLancamentoBancarioPorObservacao(@WebParam(name = "observacao") String observacao) throws Exception {
-        return gestaoContaBean.pesquisarLancamentoBancarioPorNome(observacao);
+        return gestaoContaBean.pesquisarLancamentoBancarioPorObservacao(observacao);
     }
 
     @WebMethod(operationName = "cadastrarContaContaCorrente")
@@ -85,8 +82,7 @@ public class WebServiceGestaoContas {
         try {
             eventosGestaoContas.salvarContaCorrente(cadastroContaCorrenteRequisicao);
             return Response.Status.OK.getReasonPhrase();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception e) {            
             return Response.Status.EXPECTATION_FAILED.getReasonPhrase();
         }
     }
@@ -97,8 +93,29 @@ public class WebServiceGestaoContas {
         try {
             eventosGestaoContas.atualizarDadosContaCorrente(cadastroContaCorrenteRequisicao);
             return Response.Status.OK.getReasonPhrase();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception e) {            
+            return Response.Status.EXPECTATION_FAILED.getReasonPhrase();
+        }
+    }
+    
+    @WebMethod(operationName = "excluirContaContaCorrente")
+    @WebResult(name = "resposta")
+    public String excluirCadastroContaCorrente(@WebParam(name = "idContaCorrente") int idContaCorrente) throws Exception {
+        try {
+            eventosGestaoContas.excluirContaCorrente(idContaCorrente);
+            return Response.Status.OK.getReasonPhrase();
+        } catch (Exception e) {            
+            return Response.Status.EXPECTATION_FAILED.getReasonPhrase();
+        }
+    }
+    
+    @WebMethod(operationName = "excluirContaContaCorrente")
+    @WebResult(name = "resposta")
+    public String inativarCadastroContaCorrente(@WebParam(name = "idContaCorrente") int idContaCorrente) throws Exception {
+        try {
+            eventosGestaoContas.inativarContaCorrente(idContaCorrente);
+            return Response.Status.OK.getReasonPhrase();
+        } catch (Exception e) {            
             return Response.Status.EXPECTATION_FAILED.getReasonPhrase();
         }
     }

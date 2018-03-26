@@ -11,12 +11,28 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import utilitarios.Formatadores;
 
+/**
+ * Classe responsavel pela gestão das persistencias e consultas no banco de
+ * dados para processos relacionados ao lancamento bancario.
+ *
+ * @since 1.0
+ * @author Tadeu
+ * @version 2.0
+ */
 @Stateless
 public class LancamentoDao implements InterfaceLancamentoDao {
 
     @Inject
     private EntityManager em;
 
+    /**
+     * Método para persistir os dados de um novo lancamento bancario
+     *
+     * @author Tadeu
+     * @param lanc Lancamento - Dados do lancamento bancario que sera
+     * persistido.
+     * @throws java.sql.SQLException
+     */
     @Override
     public void salvarLancamentoBancario(Lancamento lanc) throws SQLException {
         try {
@@ -29,6 +45,15 @@ public class LancamentoDao implements InterfaceLancamentoDao {
         }
     }
 
+    /**
+     * Método para atualizar os dados de um lancamento bancario que foi
+     * persistido
+     *
+     * @author Tadeu
+     * @param lanc Lancamento - Dados do lancamento bancario que sera
+     * atualizado.
+     * @throws java.sql.SQLException
+     */
     @Override
     public void atualizarLancamentoBancario(Lancamento lanc) throws SQLException {
         try {
@@ -41,6 +66,14 @@ public class LancamentoDao implements InterfaceLancamentoDao {
         }
     }
 
+    /**
+     * Método para excluir um lancamento bancario atrave de seu ID
+     *
+     * @author Tadeu
+     * @param idLancamento long - ID do lancamento bancario que sera excluido
+     * atualizado.
+     * @throws java.sql.SQLException
+     */
     @Override
     public void excluirLancamento(long idLancamento) throws SQLException {
         try {
@@ -53,6 +86,18 @@ public class LancamentoDao implements InterfaceLancamentoDao {
         }
     }
 
+    /**
+     * Método para pesquisar lancamentos bancarios persistidos dentro de um
+     * determinado periodo
+     *
+     * @author Tadeu
+     * @param dataInicial Date - Data do inicio do periodo que sera consultado
+     * @param dataFinal Date - Data do termino do periodo que sera consultado
+     * atualizado.
+     * @return List<Lancamento> - Objeto que contem os lancamentos bancarios
+     * consultados dentro do periodo
+     * @throws java.sql.SQLException
+     */
     @Override
     public List<Lancamento> pesquisarLancamentoBancarioPorPeriodo(Date dataInicial, Date dataFinal) throws SQLException {
         StringBuilder sql = new StringBuilder();
@@ -66,6 +111,16 @@ public class LancamentoDao implements InterfaceLancamentoDao {
         return resultados;
     }
 
+    /**
+     * Método para pesquisar lancamentos bancarios persistidos atraves do campo
+     * observacao
+     *
+     * @author Tadeu
+     * @param observacao String - Observacao do lancamento bancario
+     * @return List<Lancamento> - Objeto que contem os lancamentos bancarios
+     * consultados atraves do campo de observacao.
+     * @throws java.sql.SQLException
+     */
     @Override
     public List<Lancamento> pesquisarLancamentoBancarioPorObservacao(String observacao) throws SQLException {
 
@@ -85,6 +140,16 @@ public class LancamentoDao implements InterfaceLancamentoDao {
         }
     }
 
+    /**
+     * Método para pesquisar lancamentos bancarios persistidos atraves do tipo
+     * do lancamento
+     *
+     * @author Tadeu
+     * @param tipoLancamento TipoLancamentoEnum - Tipo do lancamento bancario
+     * @return List<Lancamento> - Objeto que contem os lancamentos bancarios
+     * consultados atraves do tipo.
+     * @throws java.sql.SQLException
+     */
     @Override
     public List<Lancamento> pesquisarLancamentoBancarioPorTipoDeLancamento(TipoLancamentoEnum tipoLancamento) throws SQLException {
 
@@ -104,6 +169,16 @@ public class LancamentoDao implements InterfaceLancamentoDao {
         }
     }
 
+    /**
+     * Método para pesquisar lancamentos bancarios persistidos atraves da conta
+     * corrente
+     *
+     * @author Tadeu
+     * @param idContaCorrente long - ID da conta corrente
+     * @return List<Lancamento> - Objeto que contem os lancamentos bancarios
+     * consultados atraves da conta.
+     * @throws java.sql.SQLException
+     */
     @Override
     public List<Lancamento> pesquisarLancamentoBancarioPorContaBancaria(long idContaCorrente) throws SQLException {
 

@@ -1,12 +1,19 @@
 package logic.treinamento.request;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * Classe responsavel pela gestão dos dados recebidos via WebService que dizem
+ * respeito ao cadastro de uma nova conta corrente.
+ *
+ * @since 1.0
+ * @author Tadeu
+ * @version 1.0
+ */
 @XmlRootElement(name = "SalvarCadastroContaCorrenteRequisicao")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CadastroContaCorrenteRequisicao implements Serializable {
@@ -19,9 +26,6 @@ public class CadastroContaCorrenteRequisicao implements Serializable {
 
     @XmlElement
     private int banco;
-
-    @XmlElement
-    private BigDecimal saldo = BigDecimal.ZERO;
 
     public String getTitular() {
         return titular;
@@ -45,13 +49,5 @@ public class CadastroContaCorrenteRequisicao implements Serializable {
 
     public void setBanco(int banco) {
         this.banco = banco;
-    }
-
-    public BigDecimal getSaldo() {
-        return saldo;
-    }
-
-    public void setSaldo(BigDecimal saldo) {
-        this.saldo = saldo;
     }
 }

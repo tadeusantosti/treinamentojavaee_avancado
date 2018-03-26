@@ -25,6 +25,14 @@ import logic.treinamento.request.LancamentoBancarioAtualizacaoRequisicao;
 import logic.treinamento.request.LancamentoBancarioRequisicao;
 import utilitarios.Formatadores;
 
+/**
+ * Classe responsavel pela gestão do controle das contas correntes e seus
+ * respectivos lancamentos.
+ *
+ * @since 1.0
+ * @author Tadeu
+ * @version 2.0
+ */
 @Stateless
 public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
 
@@ -37,6 +45,14 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
     @Inject
     private RastreioLancamentoBancarioMovimentacaoLocal rastreio;
 
+    /**
+     * Método para salvar o lancamento bancario.
+     *
+     * @author Tadeu
+     * @param ContasDoMesRequisicao LancamentoBancarioRequisicao - Dados do
+     * lancamento bancario que sera salvo.
+     * @throws java.lang.Exception
+     */
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void salvarLancamentoBancario(@Observes LancamentoBancarioRequisicao ContasDoMesRequisicao) throws Exception {
@@ -57,6 +73,15 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
         }
     }
 
+    /**
+     * Método para atualizar os dados de um lancamento bancario.
+     *
+     * @author Tadeu
+     * @param atualizarLancamentoRequisicao
+     * LancamentoBancarioAtualizacaoRequisicao - Dados do lancamento bancario
+     * que sera atualizado.
+     * @throws java.lang.Exception
+     */
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void atualizarLancamentoBancario(@Observes LancamentoBancarioAtualizacaoRequisicao atualizarLancamentoRequisicao) throws Exception {
@@ -64,11 +89,7 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
         Lancamento lanc = new Lancamento();
         lanc.setId(atualizarLancamentoRequisicao.getId());
         lanc.setObservacao(atualizarLancamentoRequisicao.getObservacaoAtualizada());
-        lanc.setValor(atualizarLancamentoRequisicao.getValorAtualizado());
-        lanc.setTipoLancamento(TipoLancamentoEnum.getByCodigo(atualizarLancamentoRequisicao.getIdTipoLancamentoAtualizado()));
         lanc.setData(Formatadores.validarDatasInformadas(atualizarLancamentoRequisicao.getDataAtualizada()).get(0));
-        lanc.setIdContaCorrente(atualizarLancamentoRequisicao.getIdContaCorrente());
-
         String retornoValidacao = validarCamposObrigatoriosAtualizacao(lanc);
 
         if (retornoValidacao.equals("")) {
@@ -78,6 +99,13 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
         }
     }
 
+    /**
+     * Método para excluir os dados de um lancamento bancario.
+     *
+     * @author Tadeu
+     * @param idLancamento long - ID do lancamento bancario que sera atualizado.
+     * @throws java.sql.SQLException
+     */
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void excluirLancamentoBancario(@Observes long idLancamento) throws SQLException {
@@ -89,21 +117,54 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
         }
     }
 
+    /**
+     * Método para consultar lancamentos bancarios atraves de um determinado
+     * periodo.
+     *
+     * @author Tadeu
+     * @param dataInicial String - Data de inicio do periodo que sera pesquisado
+     * os lancamentos.
+     * @param dataFinal String - Data Final do periodo que sera pesquisado os
+     * lancamentos.
+     * @return List<Lancamento> - Objeto que contem os lancamentos que foram
+     * localizados na consulta.
+     * @throws java.lang.Exception
+     */
     @Override
     public List<Lancamento> pesquisarLancamentoBancarioPorPeriodo(String dataInicial, String dataFinal) throws Exception {
         List<Date> datas = Formatadores.validarDatasInformadas(dataInicial, dataFinal);
         return lancamentoDao.pesquisarLancamentoBancarioPorPeriodo(datas.get(0), datas.get(1));
     }
 
+    /**
+     * Método para consultar lancamentos bancarios atraves da descricao da
+     * observacao do lancamento.
+     *
+     * @author Tadeu
+     * @param observacao String - Observacao do lancamento bancario.
+     * @return List<Lancamento> - Objeto que contem os lancamentos que foram
+     * localizados na consulta.
+     * @throws java.sql.SQLException
+     */
     @Override
-    public List<Lancamento> pesquisarLancamentoBancarioPorNome(@Observes String nome) throws SQLException {
-        if (!nome.isEmpty()) {
-            return lancamentoDao.pesquisarLancamentoBancarioPorObservacao(nome);
+    public List<Lancamento> pesquisarLancamentoBancarioPorObservacao(@Observes String observacao) throws SQLException {
+        if (!observacao.isEmpty()) {
+            return lancamentoDao.pesquisarLancamentoBancarioPorObservacao(observacao);
         } else {
             return null;
         }
     }
 
+    /**
+     * Método para consultar lancamentos bancarios atraves do tipo do lancamento
+     * bancario.
+     *
+     * @author Tadeu
+     * @param idtipolancamento int - ID do tipo do lancamento bancario.
+     * @return List<Lancamento> - Objeto que contem os lancamentos que foram
+     * localizados na consulta.
+     * @throws java.sql.SQLException
+     */
     @Override
     public List<Lancamento> pesquisarLancamentoBancarioPorTipoDeLancamento(int idtipolancamento) throws SQLException {
         if (!validarTipoLancamentoInformado(TipoLancamentoEnum.getByCodigo(idtipolancamento))) {
@@ -113,6 +174,15 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
         }
     }
 
+    /**
+     * Método para validar os campos obrigatorios para salvar o lancamento
+     * bancario.
+     *
+     * @author Tadeu
+     * @param lanc Lancamento - Objeto que carrega as informacoes do lancamento
+     * bancario.
+     * @return String - Objeto que contem o resultado da validacao.
+     */
     @Override
     public String validarCamposObrigatorios(Lancamento lanc) {
 
@@ -134,30 +204,48 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
 
     }
 
+    /**
+     * Método para validar os campos obrigatorios para atualizar o lancamento
+     * bancario.
+     *
+     * @author Tadeu
+     * @param lanc Lancamento - Objeto que carrega as informacoes do lancamento
+     * bancario.
+     * @return String - Objeto que contem o resultado da validacao.
+     */
     private String validarCamposObrigatoriosAtualizacao(Lancamento lanc) {
 
         if (lanc.getId() < 0) {
             return "E necessario informar o codigo do lancamento !";
         } else if (lanc.getObservacao().isEmpty()) {
             return "E necessario informar uma observacao para o lancamento !";
-        } else if (lanc.getValor().compareTo(BigDecimal.ZERO) <= 0) {
-            return "E necessario informar um valor !";
-        } else if (validarTipoLancamentoInformado(lanc.getTipoLancamento())) {
-            return "E necessario informar um tipo de lancamento !";
         } else if (lanc.getData() == null) {
             return "E necessario informar a data do lancamento !";
-        } else if (lanc.getIdContaCorrente() <= 0) {
-            return "E necessario informar o codigo da sua conta corrente !";
         } else {
             return "";
         }
 
     }
 
+    /**
+     * Método para validar o tipo do lancamento que esta sendo informado.
+     *
+     * @author Tadeu
+     * @param tipoLancamento TipoLancamentoEnum - Tipo do lancamento.
+     * @return boolean - Resultado da validacao.
+     */
     private boolean validarTipoLancamentoInformado(TipoLancamentoEnum tipoLancamento) {
-        return tipoLancamento.getId() < 0;
+        return TipoLancamentoEnum.values().equals(tipoLancamento.getId());
     }
 
+    /**
+     * Método para salvar a Conta Corrente.
+     *
+     * @author Tadeu
+     * @param contaCorrenteRequisicao CadastroContaCorrenteRequisicao - Dados da
+     * conta corrente que sera salva.
+     * @throws java.lang.Exception
+     */
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void salvarContaCorrente(@Observes CadastroContaCorrenteRequisicao contaCorrenteRequisicao) throws Exception {
@@ -173,6 +261,13 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
         }
     }
 
+    /**
+     * Método para excluir uma Conta Corrente.
+     *
+     * @author Tadeu
+     * @param idContaCorrente long - ID da conta corrente que sera excluida.
+     * @throws java.lang.Exception
+     */
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void excluirContaCorrente(@Observes long idContaCorrente) throws Exception {
@@ -181,6 +276,29 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
         }
     }
 
+    /**
+     * Método para inativar uma Conta Corrente.
+     *
+     * @author Tadeu
+     * @param idContaCorrente long - ID da conta corrente que sera inativada.
+     * @throws java.lang.Exception
+     */
+    @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public void inativarContaCorrente(@Observes long idContaCorrente) throws Exception {
+        if (idContaCorrente > 0) {
+            contaCorrenteDao.inativarContaCorrente(idContaCorrente);
+        }
+    }
+
+    /**
+     * Método para atualizar dados da Conta Corrente.
+     *
+     * @author Tadeu
+     * @param contaCorrenteRequisicao AtualizarCadastroContaCorrenteRequisicao -
+     * Dados da conta corrente que sera atualizada.
+     * @throws java.lang.Exception
+     */
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     @Override
     public void atualizarDadosContaCorrente(@Observes AtualizarCadastroContaCorrenteRequisicao contaCorrenteRequisicao) throws Exception {
@@ -194,6 +312,14 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
         }
     }
 
+    /**
+     * Método para consultar o saldo atual da Conta Corrente.
+     *
+     * @author Tadeu
+     * @param idContaCorrente long - ID da conta corrente.
+     * @return BigDecimal - Saldo da conta corrente
+     * @throws java.lang.Exception
+     */
     @Override
     public BigDecimal verSaldoContaCorrente(long idContaCorrente) throws Exception {
         if (idContaCorrente > 0) {
@@ -204,6 +330,15 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
         }
     }
 
+    /**
+     * Método para validar os campos obrigatorios para salvar uma conta
+     * corrente.
+     *
+     * @author Tadeu
+     * @param conta ContaCorrente - Objeto que carrega os dados da conta
+     * corrente.
+     * @return String - Resultado da validacao
+     */
     @Override
     public String validarCamposObrigatoriosCadastrarContaCorrente(ContaCorrente conta) {
 
@@ -223,6 +358,15 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
 
     }
 
+    /**
+     * Método para validar os campos obrigatorios para atualizar uma conta
+     * corrente.
+     *
+     * @author Tadeu
+     * @param contaCorrenteRequisicao AtualizarCadastroContaCorrenteRequisicao -
+     * Objeto que carrega os dados da conta corrente.
+     * @return String - Resultado da validacao
+     */
     private String validarDadosAntesAtualizarContaCorrente(AtualizarCadastroContaCorrenteRequisicao contaCorrenteRequisicao) throws Exception {
 
         if (contaCorrenteRequisicao.getIdContaCorrente() <= 0) {
@@ -242,24 +386,47 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
         }
     }
 
+    /**
+     * Método para pesquisar contas correntes atraves do ID.
+     *
+     * @author Tadeu
+     * @param idContaCorrente long - ID da conta corrente.
+     * @return ContaCorrente - Objeto que contem os dados da conta corrente
+     * consultada.
+     * @throws java.sql.SQLException
+     */
     @Override
     public ContaCorrente pesquisarContasCorrentesPorId(long idContaCorrente) throws SQLException {
         return contaCorrenteDao.pesquisarContasCorrentesPorId(idContaCorrente);
     }
 
+    /**
+     * Método para atualizar o saldo da conta corrente.
+     *
+     * @author Tadeu
+     * @param lanc Lancamento - Dados do lancamento que impactou no saldo da
+     * conta corrente.
+     * @throws java.sql.SQLException
+     */
     @Override
     public void atualizarSaldoContaCorrente(Lancamento lanc) throws SQLException {
         ContaCorrente conta = pesquisarContasCorrentesPorId(lanc.getIdContaCorrente());
-        if (lanc.getTipoLancamento() == TipoLancamentoEnum.SAQUE
-                || lanc.getTipoLancamento() == TipoLancamentoEnum.TRANSFERENCIA) {
+        if (lanc.getTipoLancamento() == TipoLancamentoEnum.SAQUE || lanc.getTipoLancamento() == TipoLancamentoEnum.TRANSFERENCIA) {
             conta.setSaldo(conta.getSaldo().subtract(lanc.getValor()));
         } else {
             conta.setSaldo(conta.getSaldo().add(lanc.getValor()));
         }
-
         contaCorrenteDao.atualizarDadosContaCorrente(conta);
     }
 
+    /**
+     * Método para consultar os lancamentos bancarios ligados a conta corrente
+     *
+     * @author Tadeu
+     * @param idContaCorrente long - ID da conta corrente.
+     * @return List<Lancamento> - Objeto que contem os lancamentos vinculados a
+     * conta informada
+     */
     @Override
     public List<Lancamento> consultarLancametosBancariosVinculadosContaCorrente(@Observes long idContaCorrente) {
         Map<Long, List<Lancamento>> mapaContasLancamentos = rastreio.getMapaContasLancamentos();

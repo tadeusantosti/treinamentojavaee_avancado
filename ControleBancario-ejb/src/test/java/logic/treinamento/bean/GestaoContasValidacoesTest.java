@@ -23,16 +23,30 @@ public class GestaoContasValidacoesTest extends TestCase {
     @Inject
     InterfaceLancamentoDao gestaoContasDao;
 
-    /**
-     * Teste responsavel por validar o metodo que verifica o campo de data
-     * recebido no serviço.
-     * ------------------------------------------------------------------------
-     * Preparacao do cenario: -Foi informado uma data vazia.
-     * ------------------------------------------------------------------------
-     * Resultado Esperado: -Metodo validador retorna uma mensagem ao requisitor:
-     * A data deve ser informada!
-     *
-     * @throws Exception
+    /** <H3>Teste de Validacao do campo DATA Vazia</H3>
+     * <br>
+     * <br>
+     * <p>
+     * Objetivo do teste: Teste responsavel por validar o metodo que verifica o
+     * campo de data recebido no serviço.</p>
+     * <br>
+     * <p>
+     * <b>Configuração inicial para a realização dos testes: </b> <br>
+     * Foi informado uma data vazia.</p>
+     * <br>
+     * <p>
+     * <b>Relação de cenários com sua descrição, os passos executados e os
+     * resultados esperados. *</b> </p>
+     * <ul>
+     * <li> <i> Cenário 1: Informar uma data vazia ao metodo validador. <i><br>
+     * Resultado esperado: Metodo validador retorna uma mensagem ao requisitor:
+     * A data deve ser informada!<br>
+     * </ul>
+     * <br>
+     * <p>
+     * @since 1.0
+     * @author Tadeu
+     * @version 2.0 </p>
      */
     @Test
     public void testValidarDataVazia() throws Exception {
@@ -43,16 +57,30 @@ public class GestaoContasValidacoesTest extends TestCase {
         }
     }
 
-    /**
-     * Teste responsavel por validar o metodo que verifica o campo de data
-     * recebido no serviço.
-     * ------------------------------------------------------------------------
-     * Preparacao do cenario: -Foi informado uma data nula.
-     * ------------------------------------------------------------------------
-     * Resultado Esperado: -Metodo validador retorna uma mensagem ao requisitor:
-     * A data deve ser informada!
-     *
-     * @throws Exception
+    /** <H3>Teste de Validacao do campo DATA Nula</H3>
+     * <br>
+     * <br>
+     * <p>
+     * Objetivo do teste: Teste responsavel por validar o metodo que verifica o
+     * campo de data recebido no serviço.</p>
+     * <br>
+     * <p>
+     * <b>Configuração inicial para a realização dos testes: </b> <br>
+     * Foi informado uma data nula.</p>
+     * <br>
+     * <p>
+     * <b>Relação de cenários com sua descrição, os passos executados e os
+     * resultados esperados. *</b> </p>
+     * <ul>
+     * <li> <i> Cenário 1: Informar uma data nula ao metodo validador. <i><br>
+     * Resultado esperado: Metodo validador retorna uma mensagem ao requisitor:
+     * A data deve ser informada!<br>
+     * </ul>
+     * <br>
+     * <p>
+     * @since 1.0
+     * @author Tadeu
+     * @version 2.0 </p>
      */
     @Test
     public void testValidarDataNula() throws Exception {
@@ -63,17 +91,32 @@ public class GestaoContasValidacoesTest extends TestCase {
         }
     }
 
-    /**
-     * Teste responsavel por validar o metodo que verifica o campo de data
-     * recebido no serviço.
-     * ------------------------------------------------------------------------
-     * Preparacao do cenario: -Foi informado uma data em um formato nao esperado
-     * pelo serviço.
-     * ------------------------------------------------------------------------
-     * Resultado Esperado: -Metodo validador retorna uma mensagem ao requisitor:
-     * Data no formato invalido!
-     *
-     * @throws Exception
+    /** <H3>Teste de Validacao do formato da DATA recebida no campo DATA no
+     * WebService</H3>
+     * <br>
+     * <br>
+     * <p>
+     * Objetivo do teste: Teste responsavel por validar o metodo que verifica o
+     * campo de data recebido no serviço.</p>
+     * <br>
+     * <p>
+     * <b>Configuração inicial para a realização dos testes: </b> <br>
+     * Foi informado uma data com um formato invalido.</p>
+     * <br>
+     * <p>
+     * <b>Relação de cenários com sua descrição, os passos executados e os
+     * resultados esperados. *</b> </p>
+     * <ul>
+     * <li> <i> Cenário 1: Informar uma data com um formato nao esperado ao
+     * metodo validador. <i><br>
+     * Resultado esperado: Metodo validador retorna uma mensagem ao requisitor:
+     * Data no formato invalido!<br>
+     * </ul>
+     * <br>
+     * <p>
+     * @since 1.0
+     * @author Tadeu
+     * @version 2.0 </p>
      */
     @Test
     public void testValidarFormatoData() throws Exception {
@@ -84,17 +127,32 @@ public class GestaoContasValidacoesTest extends TestCase {
         }
     }
 
-    /**
-     * Teste responsavel por validar o metodo que verifica os campos de data
-     * inicial e final recebidas no serviço.
-     * ------------------------------------------------------------------------
-     * Preparacao do cenario: -Foi informado uma data inicial superior à data
-     * final.
-     * ------------------------------------------------------------------------
-     * Resultado Esperado: -Metodo validador retorna uma mensagem ao requisitor:
-     * A data inicial nao pode ser maior que a data final!!
-     *
-     * @throws Exception
+    /** <H3>Teste de Validacao das data informadas para a consulta por
+     * periodo</H3>
+     * <br>
+     * <br>
+     * <p>
+     * Objetivo do teste: Teste responsavel por validar o metodo que verifica os
+     * campos de data inicial e final recebidas no serviço.</p>
+     * <br>
+     * <p>
+     * <b>Configuração inicial para a realização dos testes: </b> <br>
+     * Foi informado uma data inicial superior à data final..</p>
+     * <br>
+     * <p>
+     * <b>Relação de cenários com sua descrição, os passos executados e os
+     * resultados esperados. *</b> </p>
+     * <ul>
+     * <li> <i> Cenário 1: Informar uma data inicial superior a data final do
+     * periodo. <i><br>
+     * Resultado esperado: Metodo validador retorna uma mensagem ao requisitor:
+     * A data inicial nao pode ser maior que a data final!<br>
+     * </ul>
+     * <br>
+     * <p>
+     * @since 1.0
+     * @author Tadeu
+     * @version 2.0 </p>
      */
     @Test
     public void testValidarPeriodoData() throws Exception {
@@ -105,17 +163,44 @@ public class GestaoContasValidacoesTest extends TestCase {
         }
     }
 
-    /**
-     * Teste responsavel por validar o metodo que verifica os campos
-     * obrigatorios recebidos pelo serviço.
-     * ------------------------------------------------------------------------
-     * Preparacao do cenario: -Foram informados sequencialmente todos os campos
-     * nulos ou vazis que sao obrigatorios para o uso de alguns serviços do
-     * sistema.
-     * ------------------------------------------------------------------------
-     * Resultado Esperado: -Metodo validador retorna uma mensagem ao requisitor
-     * de acordo com cada campo validado.
-     *
+    /** <H3>Teste de Validacao dos campos obrigatorios para o cadastro de um
+     * novo lancamento bancario</H3>
+     * <br>
+     * <br>
+     * <p>
+     * Objetivo do teste: Teste responsavel por validar o metodo que verifica os
+     * campos obrigatorios recebidos pelo serviço.</p>
+     * <br>
+     * <p>
+     * <b>Configuração inicial para a realização dos testes: </b> <br>
+     * Foram informados sequencialmente todos os campos nulos ou vazis que sao
+     * obrigatorios para o cadastro de um novo lancamento bancario.</p>
+     * <br>
+     * <p>
+     * <b>Relação de cenários com sua descrição, os passos executados e os
+     * resultados esperados. *</b> </p>
+     * <ul>
+     * <li> <i> Cenário 1: Nao informar nada no campo OBSERVACAO. <i><br>
+     * Resultado esperado: Metodo validador retorna a seguinte mensagem: E
+     * necessario informar uma observacao para o lancamento ! <br>
+     * <li> <i> Cenário 2: Nao informar nada no campo VALOR. <i><br>
+     * Resultado esperado: Metodo validador retorna a seguinte mensagem: E
+     * necessario informar um valor ! <br>
+     * <li> <i> Cenário 3: Nao informar nada no campo TIPO LANCAMENTO. <i><br>
+     * Resultado esperado: Metodo validador retorna a seguinte mensagem: E
+     * necessario informar um tipo de lancamento Valido ! <br>
+     * <li> <i> Cenário 4: Nao informar nada no campo DATA. <i><br>
+     * Resultado esperado: Metodo validador retorna a seguinte mensagem: E
+     * necessario informar a data do lancamento ! <br>
+     * <li> <i> Cenário 5: Nao informar nada no campo ID CONTA CORRENTE. <i><br>
+     * Resultado esperado: Metodo validador retorna a seguinte mensagem: E
+     * necessario informar o codigo da sua conta corrente ! <br>
+     * </ul>
+     * <br>
+     * <p>
+     * @since 1.0
+     * @author Tadeu
+     * @version 2.0 </p>
      */
     @Test
     public void testValidarCamposObrigatorios() {
@@ -132,12 +217,42 @@ public class GestaoContasValidacoesTest extends TestCase {
         assertEquals("E necessario informar a data do lancamento !", gestaoContaBean.validarCamposObrigatorios(lanc));
 
         lanc.setData(new Date(new java.util.Date().getTime()));
-        assertEquals("E necessario informar o codigo da sua conta corrente !",  gestaoContaBean.validarCamposObrigatorios(lanc));
-        
+        assertEquals("E necessario informar o codigo da sua conta corrente !", gestaoContaBean.validarCamposObrigatorios(lanc));
+
         lanc.setIdContaCorrente(3);
         assertEquals("", gestaoContaBean.validarCamposObrigatorios(lanc));
     }
 
+    /** <H3>Teste de Validacao dos campos obrigatorios para o cadastro de uma
+     * nova Conta Corrente</H3>
+     * <br>
+     * <br>
+     * <p>
+     * Objetivo do teste: Teste responsavel por validar o metodo que verifica os
+     * campos obrigatorios recebidos pelo serviço.</p>
+     * <br>
+     * <p>
+     * <b>Configuração inicial para a realização dos testes: </b> <br>
+     * Foram informados sequencialmente todos os campos nulos ou vazis que sao
+     * obrigatorios para o cadastro de uma nova conta corrente.</p>
+     * <br>
+     * <p>
+     * <b>Relação de cenários com sua descrição, os passos executados e os
+     * resultados esperados. *</b> </p>
+     * <ul>
+     * <li> <i> Cenário 1: Nao informar nada no campo TITULAR. <i><br>
+     * Resultado esperado: Metodo validador retorna a seguinte mensagem: E necessario informar o nome do titular da conta! <br>
+     * <li> <i> Cenário 2: Nao informar nada no campo CODIGO DO BANCO. <i><br>
+     * Resultado esperado: Metodo validador retorna a seguinte mensagem: E necessario informar um codigo de banco Valido ! <br>
+     * <li> <i> Cenário 3: Nao informar nada no campo CODIGO DA AGENCIA. <i><br>
+     * Resultado esperado: Metodo validador retorna a seguinte mensagem: E necessario informar um codigo de agenica Valido ! <br>
+     * </ul>
+     * <br>
+     * <p>
+     * @since 1.0
+     * @author Tadeu
+     * @version 2.0 </p>
+     */
     @Test
     public void testValidarCamposObrigatoriosCadastrarContaCorrente() {
         ContaCorrente conta = new ContaCorrente();

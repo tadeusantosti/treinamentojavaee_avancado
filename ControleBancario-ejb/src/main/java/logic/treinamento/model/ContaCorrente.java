@@ -13,6 +13,14 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+/**
+ * Classe responsavel por representar os dados da entidade conta corrente
+ * persistidos no banco de dados.
+ *
+ * @since 1.0
+ * @author Tadeu
+ * @version 1.0
+ */
 @Entity
 @Table(name = "ContaCorrente")
 public class ContaCorrente implements Serializable {
@@ -89,5 +97,5 @@ public class ContaCorrente implements Serializable {
     public void setSituacao(boolean situacao) {
         this.situacao = situacao;
     }
-    
+
 }
