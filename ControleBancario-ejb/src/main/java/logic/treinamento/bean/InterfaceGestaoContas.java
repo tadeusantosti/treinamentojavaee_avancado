@@ -10,6 +10,7 @@ import logic.treinamento.model.Lancamento;
 import logic.treinamento.request.AtualizarCadastroContaCorrenteRequisicao;
 import logic.treinamento.request.CadastroContaCorrenteRequisicao;
 import logic.treinamento.request.LancamentoBancarioAtualizacaoRequisicao;
+import logic.treinamento.request.LancamentoBancarioExclusaoRequisicao;
 import logic.treinamento.request.LancamentoBancarioRequisicao;
 
 @Local
@@ -23,7 +24,7 @@ public interface InterfaceGestaoContas {
 
     public List<Lancamento> pesquisarLancamentoBancarioPorPeriodo(String dataInicial, String dataFinal) throws Exception;
 
-    public void excluirLancamentoBancario(long idLancamento) throws Exception;
+    public void excluirLancamentoBancario(LancamentoBancarioExclusaoRequisicao lancamentoRemocao) throws Exception;
 
     public void atualizarLancamentoBancario(LancamentoBancarioAtualizacaoRequisicao atualizarLancamentoRequisicao) throws Exception;
 

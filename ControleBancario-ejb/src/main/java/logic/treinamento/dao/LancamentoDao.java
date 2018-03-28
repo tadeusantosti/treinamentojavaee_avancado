@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import utilitarios.Formatadores;
 
 /**
@@ -37,7 +38,7 @@ public class LancamentoDao implements InterfaceLancamentoDao {
     public void salvarLancamentoBancario(Lancamento lanc) throws SQLException {
         try {
             em.getTransaction().begin();
-            em.persist(lanc);
+            em.merge(lanc);
             em.getTransaction().commit();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -77,7 +78,7 @@ public class LancamentoDao implements InterfaceLancamentoDao {
     @Override
     public void excluirLancamento(long idLancamento) throws SQLException {
         try {
-            em.getTransaction().begin();
+            em.getTransaction().begin();                     
             em.remove(em.getReference(Lancamento.class, idLancamento));
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -123,17 +124,13 @@ public class LancamentoDao implements InterfaceLancamentoDao {
      */
     @Override
     public List<Lancamento> pesquisarLancamentoBancarioPorObservacao(String observacao) throws SQLException {
-
-        StringBuilder sql = new StringBuilder();
-        List<Lancamento> resultados = null;
-
+        StringBuilder sql = new StringBuilder();  
         try {
             sql.append("\n SELECT l FROM Lancamento l");
             sql.append(" WHERE l.observacao LIKE '%").append(observacao).append("%' ORDER BY l.id");
-            String jpql = sql.toString();
-            Query query = em.createQuery(jpql);
-            resultados = query.getResultList();
-            return resultados;
+            String jpql = sql.toString();            
+            TypedQuery<Lancamento> query = em.createQuery(jpql, Lancamento.class); 
+            return query.getResultList();
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;

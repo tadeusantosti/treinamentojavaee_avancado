@@ -22,6 +22,7 @@ import logic.treinamento.model.TipoLancamentoEnum;
 import logic.treinamento.request.AtualizarCadastroContaCorrenteRequisicao;
 import logic.treinamento.request.CadastroContaCorrenteRequisicao;
 import logic.treinamento.request.LancamentoBancarioAtualizacaoRequisicao;
+import logic.treinamento.request.LancamentoBancarioExclusaoRequisicao;
 import logic.treinamento.request.LancamentoBancarioRequisicao;
 import utilitarios.Formatadores;
 
@@ -90,10 +91,12 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
         lanc.setId(atualizarLancamentoRequisicao.getId());
         lanc.setObservacao(atualizarLancamentoRequisicao.getObservacaoAtualizada());
         lanc.setData(Formatadores.validarDatasInformadas(atualizarLancamentoRequisicao.getDataAtualizada()).get(0));
+        lanc.setIdContaCorrente(atualizarLancamentoRequisicao.getIdContaCorrente());
+        lanc.setValor(BigDecimal.ZERO);
         String retornoValidacao = validarCamposObrigatoriosAtualizacao(lanc);
 
         if (retornoValidacao.equals("")) {
-            lancamentoDao.atualizarLancamentoBancario(lanc);
+            lancamentoDao.atualizarLancamentoBancario(lanc);            
             atualizarSaldoContaCorrente(lanc);
             rastreio.registrarAlteracaoContaCorrente(lanc);
         }
@@ -108,9 +111,9 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
      */
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void excluirLancamentoBancario(@Observes long idLancamento) throws SQLException {
-        if (idLancamento >= 0) {
-            lancamentoDao.excluirLancamento(idLancamento);
+    public void excluirLancamentoBancario(@Observes LancamentoBancarioExclusaoRequisicao lancamentoRemocao) throws SQLException {
+        if (lancamentoRemocao.getIdLancamento() >= 0) {
+            lancamentoDao.excluirLancamento(lancamentoRemocao.getIdLancamento());
             System.out.println("Lancamento Excluido com Sucesso!");
         } else {
             System.out.println("E necessario informar o codigo do lancamento!");

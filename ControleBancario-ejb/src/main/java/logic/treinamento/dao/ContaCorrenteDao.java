@@ -71,9 +71,13 @@ public class ContaCorrenteDao implements InterfaceContaCorrente {
     @Override
     public ContaCorrente pesquisarContasCorrentesPorId(long idContaCorrente) throws SQLException {
         ContaCorrente conta = em.find(ContaCorrente.class, idContaCorrente);
+        if (conta != null) {
         em.merge(conta);
-        em.refresh(conta);
+        em.refresh(conta);            
         return conta;
+        } else {
+            return null;
+        }
     }
 
     /**

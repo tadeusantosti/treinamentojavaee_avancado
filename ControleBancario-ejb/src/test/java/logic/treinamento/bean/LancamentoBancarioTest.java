@@ -14,9 +14,11 @@ import logic.treinamento.model.BancoEnum;
 import logic.treinamento.model.TipoLancamentoEnum;
 import logic.treinamento.model.ContaCorrente;
 import logic.treinamento.model.Lancamento;
-import logic.treinamento.observer.EventosGestaoContas;
+import logic.treinamento.observer.GestaoEventosContaCorrente;
+import logic.treinamento.observer.GestaoEventosLancamentoBancario;
 import logic.treinamento.request.CadastroContaCorrenteRequisicao;
 import logic.treinamento.request.LancamentoBancarioAtualizacaoRequisicao;
+import logic.treinamento.request.LancamentoBancarioExclusaoRequisicao;
 import logic.treinamento.request.LancamentoBancarioRequisicao;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +35,10 @@ public class LancamentoBancarioTest {
     InterfaceLancamentoDao gestaoContasDao;
 
     @Inject
-    EventosGestaoContas eventosGestaoContas;
+    GestaoEventosLancamentoBancario eventoLancamentoBancario;
+
+    @Inject
+    GestaoEventosContaCorrente eventosContaCorrente;
 
     @Inject
     InterfaceContaCorrente contaCorrenteDao;
@@ -43,41 +48,59 @@ public class LancamentoBancarioTest {
 
     @Before
     public void setup() throws Exception {
+        LancamentoBancarioExclusaoRequisicao lancamentoRemocao = new LancamentoBancarioExclusaoRequisicao();
 
         List<Lancamento> registrosPararemoverAntesTeste = gestaoContaBean.pesquisarLancamentoBancarioPorObservacao("Albert");
         if (!registrosPararemoverAntesTeste.isEmpty()) {
             for (Lancamento lancamento : registrosPararemoverAntesTeste) {
-                eventosGestaoContas.excluirLancamentoBancario(lancamento.getId());
+                lancamentoRemocao.setIdLancamento(lancamento.getId());
+                eventoLancamentoBancario.excluirLancamentoBancario(lancamentoRemocao);
             }
         }
 
         List<Lancamento> registrosPararemoverAntesTeste1 = gestaoContaBean.pesquisarLancamentoBancarioPorObservacao("Charles Darwin");
         if (!registrosPararemoverAntesTeste1.isEmpty()) {
             for (Lancamento lancamento : registrosPararemoverAntesTeste1) {
-                eventosGestaoContas.excluirLancamentoBancario(lancamento.getId());
+                lancamentoRemocao.setIdLancamento(lancamento.getId());
+                eventoLancamentoBancario.excluirLancamentoBancario(lancamentoRemocao);
             }
         }
 
         List<ContaCorrente> registrosContaCorrente = contaCorrenteDao.pesquisarTodasContasCorrentes();
         if (!registrosContaCorrente.isEmpty()) {
             for (ContaCorrente contaCorrente : registrosContaCorrente) {
-                contaCorrenteDao.excluirContaCorrente(contaCorrente.getId());
+                eventosContaCorrente.excluirContaCorrente(contaCorrente.getId());
             }
         }
     }
 
-    /**
-     * Teste responsavel por validar o serviço de lançamento de contas do mês e
-     * consultar o lançamento salvo através de parte do nome do cliente.
-     * ------------------------------------------------------------------------
-     * Preparacao do cenario: -Foi informado todos os campos principais
-     * necessarios para a correta inclusao dos dados
-     * ------------------------------------------------------------------------
-     * Resultado Esperado: -Sistema persistiu o lancamento de conta em bando de
-     * dados e consultou corretamente os dados salvos informando apenas parte do
-     * nome do cliente
-     *
-     * @throws Exception
+    /** <H3>Teste de Criacao e Consulta de um Lançamento Bancario</H3>
+     * <br>
+     * <br>
+     * <p>
+     * Objetivo do teste: Validar o serviço de lançamento de contas do mês e
+     * consultar o lançamento salvo através de parte do nome do cliente.</p>
+     * <br>
+     * <p>
+     * <b>Configuração inicial para a realização dos testes: </b> <br>
+     * Foi informado todos os campos principais necessarios para a correta
+     * inclusao dos dados</p>
+     * <br>
+     * <p>
+     * <b>Relação de cenários com sua descrição, os passos executados e os
+     * resultados esperados. *</b> </p>
+     * <ul>
+     * <li> <i> Cenário 1: Salvar um lancamento bancario <i><br>
+     * Resultado esperado: Sistema persistiu o lancamento bancario na base.
+     * <li> <i> Cenário 2: Consultar o lancamento bancario salvo<i><br>
+     * Resultado esperado: Sistema consultou corretamente os dados salvos
+     * informando apenas parte da descricao da obserrvacao<br>
+     * </ul>
+     * <br>
+     * <p>
+     * @since 1.0
+     * @author Tadeu
+     * @version 2.0 </p>
      */
     @Test
     public void testSalvarLancamentoBancario() throws Exception {
@@ -86,7 +109,7 @@ public class LancamentoBancarioTest {
         cc.setAgencia(AgenciaEnum.ARARAS.getId());
         cc.setBanco(BancoEnum.BRADESCO.getId());
         cc.setTitular("Son Gohan");
-        eventosGestaoContas.salvarContaCorrente(cc);
+        eventosContaCorrente.salvarContaCorrente(cc);
 
         List<ContaCorrente> contas = contaCorrenteDao.pesquisarTodasContasCorrentes();
 
@@ -108,7 +131,7 @@ public class LancamentoBancarioTest {
         lancRequisicao.setData(Formatadores.formatoDataInterface.format(new java.util.Date()));
         lancRequisicao.setIdTipoLancamento(TipoLancamentoEnum.DEPOSITO.getId());
         lancRequisicao.setIdContaCorrente(contas.get(0).getId());
-        eventosGestaoContas.salvarLacamentoBancario(lancRequisicao);
+        eventoLancamentoBancario.salvarLacamentoBancario(lancRequisicao);
 
         List<Lancamento> lancNovo = gestaoContaBean.pesquisarLancamentoBancarioPorObservacao("Albert");
 
@@ -124,18 +147,30 @@ public class LancamentoBancarioTest {
         }
     }
 
-    /**
-     * Teste responsavel por atualizar os dados de um lancamento persistido na
-     * base de dados.
-     * ------------------------------------------------------------------------
-     * Preparacao do cenario: -Foi incluido um lancamento na base de dados.
-     * -Foram informados novas informações e requisitado o serviço de
-     * atualizacao dos dados no sistema
-     * ------------------------------------------------------------------------
-     * Resultado Esperado: -Sistema atualizou o lancamento em bando de dados de
-     * acordo com a novas informações.
-     *
-     * @throws Exception
+    /** <H3>Teste de Atualizacao de um Lançamento Bancario</H3>
+     * <br>
+     * <br>
+     * <p>
+     * Objetivo do teste: Atualizar os dados de um lancamento bancario
+     * persistido na base de dados.</p>
+     * <br>
+     * <p>
+     * <b>Configuração inicial para a realização dos testes: </b> <br>
+     * Foi incluido um lancamento bancario na base de dados</p>
+     * <br>
+     * <p>
+     * <b>Relação de cenários com sua descrição, os passos executados e os
+     * resultados esperados. *</b> </p>
+     * <ul>
+     * <li> <i> Cenário 1: Atualizar dados um lancamento bancario <i><br>
+     * Resultado esperado: Sistema atualizou os dados do lancamento bancario
+     * corretamente.
+     * </ul>
+     * <br>
+     * <p>
+     * @since 1.0
+     * @author Tadeu
+     * @version 2.0 </p>
      */
     @Test
     public void testAtualizarDadosLancamentoBancario() throws Exception {
@@ -143,7 +178,7 @@ public class LancamentoBancarioTest {
         cc.setAgencia(AgenciaEnum.ARARAS.getId());
         cc.setBanco(BancoEnum.BRADESCO.getId());
         cc.setTitular("Son Gohan");
-        eventosGestaoContas.salvarContaCorrente(cc);
+        eventosContaCorrente.salvarContaCorrente(cc);
 
         List<ContaCorrente> contas = contaCorrenteDao.pesquisarTodasContasCorrentes();
 
@@ -165,7 +200,7 @@ public class LancamentoBancarioTest {
         lancRequisicao.setData(Formatadores.formatoDataInterface.format(new java.util.Date()));
         lancRequisicao.setIdTipoLancamento(TipoLancamentoEnum.DEPOSITO.getId());
         lancRequisicao.setIdContaCorrente(contas.get(0).getId());
-        eventosGestaoContas.salvarLacamentoBancario(lancRequisicao);
+        eventoLancamentoBancario.salvarLacamentoBancario(lancRequisicao);
 
         List<Lancamento> lancNovo = gestaoContaBean.pesquisarLancamentoBancarioPorObservacao("Albert");
 
@@ -185,10 +220,12 @@ public class LancamentoBancarioTest {
         novaData.add(Calendar.DAY_OF_MONTH, 2);
 
         LancamentoBancarioAtualizacaoRequisicao atualizarLancamentoRequisicao = new LancamentoBancarioAtualizacaoRequisicao();
-        atualizarLancamentoRequisicao.setId(lancNovo.get(0).getId());        
+        atualizarLancamentoRequisicao.setId(lancNovo.get(0).getId());
         atualizarLancamentoRequisicao.setObservacaoAtualizada("Transferencia para a conta corrente do Charles Darwin");
         atualizarLancamentoRequisicao.setDataAtualizada(Formatadores.formatoDataInterface.format(novaData.getTime()));
-        eventosGestaoContas.atualizarLancamentoBancario(atualizarLancamentoRequisicao);
+        atualizarLancamentoRequisicao.setIdContaCorrente(contas.get(0).getId());
+        //eventoLancamentoBancario.atualizarLancamentoBancario(atualizarLancamentoRequisicao);        
+        gestaoContaBean.atualizarLancamentoBancario(atualizarLancamentoRequisicao);
 
         List<Lancamento> lancamentoAtualizado = gestaoContaBean.pesquisarLancamentoBancarioPorObservacao("Charles");
 
@@ -202,15 +239,30 @@ public class LancamentoBancarioTest {
         }
     }
 
-    /**
-     * Teste responsavel por excluir os dados de um lancamento persistido na
-     * base de dados.
-     * ------------------------------------------------------------------------
-     * Preparacao do cenario: -Foi incluido um lancamento na base de dados.
-     * ------------------------------------------------------------------------
-     * Resultado Esperado: -Sistema excluiu os dados do lancamento corretamente.
-     *
-     * @throws Exception
+    /** <H3>Teste de Exclusao de um Lançamento Bancario</H3>
+     * <br>
+     * <br>
+     * <p>
+     * Objetivo do teste: Excluir os dados de um lancamento bancario persistido
+     * na base de dados.</p>
+     * <br>
+     * <p>
+     * <b>Configuração inicial para a realização dos testes: </b> <br>
+     * Foi incluido um lancamento bancario na base de dados</p>
+     * <br>
+     * <p>
+     * <b>Relação de cenários com sua descrição, os passos executados e os
+     * resultados esperados. *</b> </p>
+     * <ul>
+     * <li> <i> Cenário 1: Excluir os dados um lancamento bancario <i><br>
+     * Resultado esperado: Sistema excluiu os dados do lancamento bancario
+     * corretamente.
+     * </ul>
+     * <br>
+     * <p>
+     * @since 1.0
+     * @author Tadeu
+     * @version 2.0 </p>
      */
     @Test
     public void testExcluirLancamentoBancario() throws Exception {
@@ -218,7 +270,7 @@ public class LancamentoBancarioTest {
         cc.setAgencia(AgenciaEnum.ARARAS.getId());
         cc.setBanco(BancoEnum.BRADESCO.getId());
         cc.setTitular("Son Gohan");
-        eventosGestaoContas.salvarContaCorrente(cc);
+        eventosContaCorrente.salvarContaCorrente(cc);
 
         List<ContaCorrente> contas = contaCorrenteDao.pesquisarTodasContasCorrentes();
 
@@ -240,7 +292,7 @@ public class LancamentoBancarioTest {
         lancRequisicao.setData(Formatadores.formatoDataInterface.format(new java.util.Date()));
         lancRequisicao.setIdTipoLancamento(TipoLancamentoEnum.DEPOSITO.getId());
         lancRequisicao.setIdContaCorrente(contas.get(0).getId());
-        eventosGestaoContas.salvarLacamentoBancario(lancRequisicao);
+        eventoLancamentoBancario.salvarLacamentoBancario(lancRequisicao);
 
         List<Lancamento> lancNovo = gestaoContaBean.pesquisarLancamentoBancarioPorObservacao("Albert");
 
@@ -254,8 +306,9 @@ public class LancamentoBancarioTest {
         } else {
             fail("O lancamento bancario nao foi salvo!");
         }
-
-        eventosGestaoContas.excluirLancamentoBancario(lancNovo.get(0).getId());
+        LancamentoBancarioExclusaoRequisicao lancamentoRemocao = new LancamentoBancarioExclusaoRequisicao();
+        lancamentoRemocao.setIdLancamento(lancNovo.get(0).getId());
+        eventoLancamentoBancario.excluirLancamentoBancario(lancamentoRemocao);
 
         List<Lancamento> lancExcluido = gestaoContaBean.pesquisarLancamentoBancarioPorObservacao("Albert");
 
@@ -264,17 +317,33 @@ public class LancamentoBancarioTest {
         }
     }
 
-    /**
-     * Teste responsavel por pesquisar os dados de um lancamento persistido na
-     * base de dados atraves do tipo do lancamento.
-     * ------------------------------------------------------------------------
-     * Preparacao do cenario: -Foi incluido um lancamento na base de dados com o
-     * tipo de lancamento SAQUE.
-     * ------------------------------------------------------------------------
-     * Resultado Esperado: -Sistema consultou corretamente o registro atraves do
-     * tipo de lancamento informado (SAQUE)
-     *
-     * @throws Exception
+    /** <H3>Teste de Consulta de Lançamentos Bancarios atraves do tipo de
+     * lancamento</H3>
+     * <br>
+     * <br>
+     * <p>
+     * Objetivo do teste: Pesquisar os dados de um lancamento persistido na base
+     * de dados atraves do tipo do lancamento..</p>
+     * <br>
+     * <p>
+     * <b>Configuração inicial para a realização dos testes: </b> <br>
+     * Foi incluido um lancamento bancario na base de dados com o tipo de
+     * lancamento SAQUE</p>
+     * <br>
+     * <p>
+     * <b>Relação de cenários com sua descrição, os passos executados e os
+     * resultados esperados. *</b> </p>
+     * <ul>
+     * <li> <i> Cenário 1: Consultar os dados um lancamento bancario atraves do
+     * tipo<i><br>
+     * Resultado esperado: Sistema recuperou os dados do lancamento bancario
+     * atraves do tipo informado.
+     * </ul>
+     * <br>
+     * <p>
+     * @since 1.0
+     * @author Tadeu
+     * @version 2.0 </p>
      */
     @Test
     public void testPesquisarLancamentoBancarioPorTipoDeLancamento() throws Exception {
@@ -282,7 +351,7 @@ public class LancamentoBancarioTest {
         cc.setAgencia(AgenciaEnum.ARARAS.getId());
         cc.setBanco(BancoEnum.BRADESCO.getId());
         cc.setTitular("Son Gohan");
-        eventosGestaoContas.salvarContaCorrente(cc);
+        eventosContaCorrente.salvarContaCorrente(cc);
 
         List<ContaCorrente> contas = contaCorrenteDao.pesquisarTodasContasCorrentes();
 
@@ -304,7 +373,7 @@ public class LancamentoBancarioTest {
         lancRequisicao.setData(Formatadores.formatoDataInterface.format(new java.util.Date()));
         lancRequisicao.setIdTipoLancamento(TipoLancamentoEnum.SAQUE.getId());
         lancRequisicao.setIdContaCorrente(contas.get(0).getId());
-        eventosGestaoContas.salvarLacamentoBancario(lancRequisicao);
+        eventoLancamentoBancario.salvarLacamentoBancario(lancRequisicao);
 
         List<Lancamento> lancamentoDeSaque = gestaoContaBean.pesquisarLancamentoBancarioPorTipoDeLancamento(TipoLancamentoEnum.SAQUE.getId());
 
@@ -320,17 +389,32 @@ public class LancamentoBancarioTest {
         }
     }
 
-    /**
-     * Teste responsavel por pesquisar os dados de lancamentos persistidos na
-     * base de dados informando apenas um periodo.
-     * ------------------------------------------------------------------------
-     * Preparacao do cenario: -Foram inseridos na base de dados dois lancamentos
-     * distintos.
-     * ------------------------------------------------------------------------
-     * Resultado Esperado: -Sistema consultou os lancamentos corretamente
-     * atraves do serviço de consulta por periodo.
-     *
-     * @throws Exception
+    /** <H3>Teste de Consulta de Lançamentos Bancarios atraves de um
+     * periodo</H3>
+     * <br>
+     * <br>
+     * <p>
+     * Objetivo do teste: Pesquisar os dados de um lancamento persistido na base
+     * de dados atraves de um determniado periodo..</p>
+     * <br>
+     * <p>
+     * <b>Configuração inicial para a realização dos testes: </b> <br>
+     * Foram inseridos na base de dados dois lancamentos distintos.</p>
+     * <br>
+     * <p>
+     * <b>Relação de cenários com sua descrição, os passos executados e os
+     * resultados esperados. *</b> </p>
+     * <ul>
+     * <li> <i> Cenário 1: Consultar os dados um lancamento bancario atraves do
+     * tipo<i><br>
+     * Resultado esperado: Sistema recuperou os dados do lancamento bancario
+     * atraves do periodo informado.
+     * </ul>
+     * <br>
+     * <p>
+     * @since 1.0
+     * @author Tadeu
+     * @version 2.0 </p>
      */
     @Test
     public void testPesquisarLancamentoBancarioPorPeriodo() throws Exception {
@@ -338,7 +422,7 @@ public class LancamentoBancarioTest {
         cc.setAgencia(AgenciaEnum.ARARAS.getId());
         cc.setBanco(BancoEnum.BRADESCO.getId());
         cc.setTitular("Son Gohan");
-        eventosGestaoContas.salvarContaCorrente(cc);
+        eventosContaCorrente.salvarContaCorrente(cc);
 
         List<ContaCorrente> contas = contaCorrenteDao.pesquisarTodasContasCorrentes();
 
@@ -360,7 +444,7 @@ public class LancamentoBancarioTest {
         lancRequisicao.setData(Formatadores.formatoDataInterface.format(new java.util.Date()));
         lancRequisicao.setIdTipoLancamento(TipoLancamentoEnum.DEPOSITO.getId());
         lancRequisicao.setIdContaCorrente(contas.get(0).getId());
-        eventosGestaoContas.salvarLacamentoBancario(lancRequisicao);
+        eventoLancamentoBancario.salvarLacamentoBancario(lancRequisicao);
 
         Calendar novaData = Calendar.getInstance();
         novaData.setTime(Formatadores.formatoDataInterface.parse(lancRequisicao.getData()));
@@ -371,7 +455,7 @@ public class LancamentoBancarioTest {
         lancDoisRequisicao.setValor(new BigDecimal(4242.31));
         lancDoisRequisicao.setData(Formatadores.formatoDataInterface.format(novaData.getTime()));
         lancDoisRequisicao.setIdTipoLancamento(TipoLancamentoEnum.SAQUE.getId());
-        eventosGestaoContas.salvarLacamentoBancario(lancDoisRequisicao);
+        eventoLancamentoBancario.salvarLacamentoBancario(lancDoisRequisicao);
 
         novaData.add(Calendar.DAY_OF_MONTH, 10);
         List<Lancamento> lancamentoDeSaque = gestaoContaBean.pesquisarLancamentoBancarioPorPeriodo(Formatadores.formatoDataInterface.format(new java.util.Date()), Formatadores.formatoDataInterface.format(novaData.getTime().getTime()));

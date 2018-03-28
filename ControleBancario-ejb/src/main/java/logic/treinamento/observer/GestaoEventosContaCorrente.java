@@ -7,8 +7,6 @@ import javax.inject.Inject;
 import logic.treinamento.bean.InterfaceGestaoContas;
 import logic.treinamento.request.AtualizarCadastroContaCorrenteRequisicao;
 import logic.treinamento.request.CadastroContaCorrenteRequisicao;
-import logic.treinamento.request.LancamentoBancarioAtualizacaoRequisicao;
-import logic.treinamento.request.LancamentoBancarioRequisicao;
 
 /**
  * Classe responsavel pela gestão dos metodos invocados atraves de eventos
@@ -19,16 +17,7 @@ import logic.treinamento.request.LancamentoBancarioRequisicao;
  * @version 1.0
  */
 @Stateless
-public class EventosGestaoContas implements Serializable {
-
-    @Inject
-    Event<LancamentoBancarioRequisicao> eventoSalvarLancamentoBancario;
-
-    @Inject
-    Event<LancamentoBancarioAtualizacaoRequisicao> eventoAtualizarLancamentoBancario;
-
-    @Inject
-    Event<Long> eventoExcluirLancamentoBancario;
+public class GestaoEventosContaCorrente implements Serializable {
 
     @Inject
     Event<CadastroContaCorrenteRequisicao> eventoSalvarContaCorrente;
@@ -44,39 +33,6 @@ public class EventosGestaoContas implements Serializable {
 
     @Inject
     InterfaceGestaoContas GestaoContasBean;
-
-    /**
-     * Método de chamada do evento para salvar um lancamento bancario
-     *
-     * @author Tadeu
-     * @param lancamento LancamentoBancarioRequisicao - Dados do lancamento
-     * bancario que sera salvo.
-     */
-    public void salvarLacamentoBancario(LancamentoBancarioRequisicao lancamento) {
-        eventoSalvarLancamentoBancario.fire(lancamento);
-    }
-
-    /**
-     * Método de chamada do evento para atualizar um lancamento bancario
-     *
-     * @author Tadeu
-     * @param atualizarLancamentoRequisicao
-     * LancamentoBancarioAtualizacaoRequisicao - Dados do lancamento bancario
-     * que sera atualizado.
-     */
-    public void atualizarLancamentoBancario(LancamentoBancarioAtualizacaoRequisicao atualizarLancamentoRequisicao) {
-        eventoAtualizarLancamentoBancario.fire(atualizarLancamentoRequisicao);
-    }
-
-    /**
-     * Método de chamada do evento para excluir um lancamento bancario
-     *
-     * @author Tadeu
-     * @param idLancamento long - ID do lancamento bancario que sera excluido.
-     */
-    public void excluirLancamentoBancario(long idLancamento) {
-        eventoExcluirLancamentoBancario.fire(idLancamento);
-    }
 
     /**
      * Método de chamada do evento para salvar uma nova conta corrente

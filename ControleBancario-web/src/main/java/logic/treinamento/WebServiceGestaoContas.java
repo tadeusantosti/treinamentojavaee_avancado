@@ -10,10 +10,12 @@ import javax.jws.WebService;
 import javax.ws.rs.core.Response;
 import logic.treinamento.bean.InterfaceGestaoContas;
 import logic.treinamento.model.Lancamento;
-import logic.treinamento.observer.EventosGestaoContas;
+import logic.treinamento.observer.GestaoEventosContaCorrente;
+import logic.treinamento.observer.GestaoEventosLancamentoBancario;
 import logic.treinamento.request.AtualizarCadastroContaCorrenteRequisicao;
 import logic.treinamento.request.CadastroContaCorrenteRequisicao;
 import logic.treinamento.request.LancamentoBancarioAtualizacaoRequisicao;
+import logic.treinamento.request.LancamentoBancarioExclusaoRequisicao;
 import logic.treinamento.request.LancamentoBancarioRequisicao;
 
 @WebService(name = "gestaoContas")
@@ -22,15 +24,17 @@ public class WebServiceGestaoContas {
     @Inject
     private InterfaceGestaoContas gestaoContaBean;
     @Inject
-    EventosGestaoContas eventosGestaoContas;
+    GestaoEventosLancamentoBancario eventosLancamentoBancario;
+    @Inject
+    GestaoEventosContaCorrente eventosContaCorrente;
 
     @WebMethod(operationName = "cadastrarLancamentoBancario")
     @WebResult(name = "respostaCadastro")
     public String salvarLancamentoBancario(@WebParam(name = "requisicao") LancamentoBancarioRequisicao cadastroLancamentoBancarioRequisicao) throws Exception {
         try {
-            eventosGestaoContas.salvarLacamentoBancario(cadastroLancamentoBancarioRequisicao);
+            eventosLancamentoBancario.salvarLacamentoBancario(cadastroLancamentoBancarioRequisicao);
             return Response.Status.OK.getReasonPhrase();
-        } catch (Exception e) {            
+        } catch (Exception e) {
             return Response.Status.EXPECTATION_FAILED.getReasonPhrase();
         }
     }
@@ -39,9 +43,9 @@ public class WebServiceGestaoContas {
     @WebResult(name = "respostaAtualizacaoCadastro")
     public String atualizarLancamentoBancario(@WebParam(name = "nome") LancamentoBancarioAtualizacaoRequisicao atualizarLancamentoBancarioRequisicao) throws Exception {
         try {
-            eventosGestaoContas.atualizarLancamentoBancario(atualizarLancamentoBancarioRequisicao);
+            eventosLancamentoBancario.atualizarLancamentoBancario(atualizarLancamentoBancarioRequisicao);
             return Response.Status.OK.getReasonPhrase();
-        } catch (Exception e) {            
+        } catch (Exception e) {
             return Response.Status.EXPECTATION_FAILED.getReasonPhrase();
         }
     }
@@ -50,9 +54,11 @@ public class WebServiceGestaoContas {
     @WebResult(name = "respostaExclusaoCadastro")
     public String excluirLancamentoBancario(@WebParam(name = "idLancamento") int idLancamento) throws Exception {
         try {
-            eventosGestaoContas.excluirLancamentoBancario(idLancamento);
+            LancamentoBancarioExclusaoRequisicao lancamento = new LancamentoBancarioExclusaoRequisicao();
+            lancamento.setIdLancamento(idLancamento);
+            eventosLancamentoBancario.excluirLancamentoBancario(lancamento);
             return Response.Status.OK.getReasonPhrase();
-        } catch (Exception e) {            
+        } catch (Exception e) {
             return Response.Status.EXPECTATION_FAILED.getReasonPhrase();
         }
 
@@ -80,9 +86,9 @@ public class WebServiceGestaoContas {
     @WebResult(name = "resposta")
     public String salvarContaCorrente(@WebParam(name = "requisicao") CadastroContaCorrenteRequisicao cadastroContaCorrenteRequisicao) throws Exception {
         try {
-            eventosGestaoContas.salvarContaCorrente(cadastroContaCorrenteRequisicao);
+            eventosContaCorrente.salvarContaCorrente(cadastroContaCorrenteRequisicao);
             return Response.Status.OK.getReasonPhrase();
-        } catch (Exception e) {            
+        } catch (Exception e) {
             return Response.Status.EXPECTATION_FAILED.getReasonPhrase();
         }
     }
@@ -91,41 +97,41 @@ public class WebServiceGestaoContas {
     @WebResult(name = "resposta")
     public String atualizarCadastroContaCorrente(@WebParam(name = "requisicao") AtualizarCadastroContaCorrenteRequisicao cadastroContaCorrenteRequisicao) throws Exception {
         try {
-            eventosGestaoContas.atualizarDadosContaCorrente(cadastroContaCorrenteRequisicao);
+            eventosContaCorrente.atualizarDadosContaCorrente(cadastroContaCorrenteRequisicao);
             return Response.Status.OK.getReasonPhrase();
-        } catch (Exception e) {            
+        } catch (Exception e) {
             return Response.Status.EXPECTATION_FAILED.getReasonPhrase();
         }
     }
-    
+
     @WebMethod(operationName = "excluirContaContaCorrente")
     @WebResult(name = "resposta")
     public String excluirCadastroContaCorrente(@WebParam(name = "idContaCorrente") int idContaCorrente) throws Exception {
         try {
-            eventosGestaoContas.excluirContaCorrente(idContaCorrente);
+            eventosContaCorrente.excluirContaCorrente(idContaCorrente);
             return Response.Status.OK.getReasonPhrase();
-        } catch (Exception e) {            
+        } catch (Exception e) {
             return Response.Status.EXPECTATION_FAILED.getReasonPhrase();
         }
     }
-    
-    @WebMethod(operationName = "excluirContaContaCorrente")
+
+    @WebMethod(operationName = "inativarContaContaCorrente")
     @WebResult(name = "resposta")
     public String inativarCadastroContaCorrente(@WebParam(name = "idContaCorrente") int idContaCorrente) throws Exception {
         try {
-            eventosGestaoContas.inativarContaCorrente(idContaCorrente);
+            eventosContaCorrente.inativarContaCorrente(idContaCorrente);
             return Response.Status.OK.getReasonPhrase();
-        } catch (Exception e) {            
+        } catch (Exception e) {
             return Response.Status.EXPECTATION_FAILED.getReasonPhrase();
         }
     }
-    
+
     @WebMethod(operationName = "verSaldoContaCorrente")
     @WebResult(name = "Saldo")
     public BigDecimal visualizarSadoAtualContaCorrentePorID(@WebParam(name = "codigoContaCorrente") long codigoContaCorrente) throws Exception {
         return gestaoContaBean.verSaldoContaCorrente(codigoContaCorrente);
     }
-    
+
     @WebMethod(operationName = "consultarLogContaCorrente")
     @WebResult(name = "LogLancamentosBancarios")
     public List<Lancamento> consultarLancametosBancariosVinculadosContaCorrente(@WebParam(name = "codigoContaCorrente") long codigoContaCorrente) throws Exception {

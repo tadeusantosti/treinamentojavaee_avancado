@@ -15,8 +15,10 @@ import logic.treinamento.model.BancoEnum;
 import logic.treinamento.model.TipoLancamentoEnum;
 import logic.treinamento.model.ContaCorrente;
 import logic.treinamento.model.Lancamento;
-import logic.treinamento.observer.EventosGestaoContas;
+import logic.treinamento.observer.GestaoEventosContaCorrente;
+import logic.treinamento.observer.GestaoEventosLancamentoBancario;
 import logic.treinamento.request.CadastroContaCorrenteRequisicao;
+import logic.treinamento.request.LancamentoBancarioExclusaoRequisicao;
 import logic.treinamento.request.LancamentoBancarioRequisicao;
 import org.junit.Assert;
 import org.junit.Before;
@@ -34,7 +36,10 @@ public class ContaCorrenteTest {
     InterfaceLancamentoDao gestaoContasDao;
 
     @Inject
-    EventosGestaoContas eventosGestaoContas;
+    GestaoEventosLancamentoBancario eventoLancamentoBancario;
+
+    @Inject
+    GestaoEventosContaCorrente eventosLancamentoContaCorrente;
 
     @Inject
     InterfaceContaCorrente contaCorrenteDao;
@@ -44,25 +49,27 @@ public class ContaCorrenteTest {
 
     @Before
     public void setup() throws Exception {
-
+        LancamentoBancarioExclusaoRequisicao lancamentoRemocao = new LancamentoBancarioExclusaoRequisicao();
         List<Lancamento> registrosPararemoverAntesTeste = gestaoContaBean.pesquisarLancamentoBancarioPorObservacao("Albert");
         if (!registrosPararemoverAntesTeste.isEmpty()) {
             for (Lancamento lancamento : registrosPararemoverAntesTeste) {
-                eventosGestaoContas.excluirLancamentoBancario(lancamento.getId());
+                lancamentoRemocao.setIdLancamento(lancamento.getId());
+                eventoLancamentoBancario.excluirLancamentoBancario(lancamentoRemocao);
             }
         }
 
         List<Lancamento> registrosPararemoverAntesTeste1 = gestaoContaBean.pesquisarLancamentoBancarioPorObservacao("Charles Darwin");
         if (!registrosPararemoverAntesTeste1.isEmpty()) {
             for (Lancamento lancamento : registrosPararemoverAntesTeste1) {
-                eventosGestaoContas.excluirLancamentoBancario(lancamento.getId());
+                lancamentoRemocao.setIdLancamento(lancamento.getId());
+                eventoLancamentoBancario.excluirLancamentoBancario(lancamentoRemocao);
             }
         }
 
         List<ContaCorrente> registrosContaCorrente = contaCorrenteDao.pesquisarTodasContasCorrentes();
         if (!registrosContaCorrente.isEmpty()) {
             for (ContaCorrente contaCorrente : registrosContaCorrente) {
-                eventosGestaoContas.excluirContaCorrente(contaCorrente.getId());
+                eventosLancamentoContaCorrente.excluirContaCorrente(contaCorrente.getId());
             }
         }
     }
@@ -103,7 +110,7 @@ public class ContaCorrenteTest {
         cc.setAgencia(AgenciaEnum.ARARAS.getId());
         cc.setBanco(BancoEnum.BRADESCO.getId());
         cc.setTitular("Son Gohan");
-        eventosGestaoContas.salvarContaCorrente(cc);
+        eventosLancamentoContaCorrente.salvarContaCorrente(cc);
 
         List<ContaCorrente> contas = contaCorrenteDao.pesquisarTodasContasCorrentes();
 
@@ -125,7 +132,7 @@ public class ContaCorrenteTest {
         lancRequisicaoDeposito.setData(Formatadores.formatoDataInterface.format(new java.util.Date()));
         lancRequisicaoDeposito.setIdTipoLancamento(TipoLancamentoEnum.DEPOSITO.getId());
         lancRequisicaoDeposito.setIdContaCorrente(contas.get(0).getId());
-        eventosGestaoContas.salvarLacamentoBancario(lancRequisicaoDeposito);
+        eventoLancamentoBancario.salvarLacamentoBancario(lancRequisicaoDeposito);
 
         List<Lancamento> lancNovo = gestaoContaBean.pesquisarLancamentoBancarioPorObservacao("Albert");
         ContaCorrente conta = gestaoContaBean.pesquisarContasCorrentesPorId(lancNovo.get(0).getIdContaCorrente());
@@ -154,7 +161,7 @@ public class ContaCorrenteTest {
         lancRequisicaoSaque.setData(Formatadores.formatoDataInterface.format(new java.util.Date()));
         lancRequisicaoSaque.setIdTipoLancamento(TipoLancamentoEnum.SAQUE.getId());
         lancRequisicaoSaque.setIdContaCorrente(contas.get(0).getId());
-        eventosGestaoContas.salvarLacamentoBancario(lancRequisicaoSaque);
+        eventoLancamentoBancario.salvarLacamentoBancario(lancRequisicaoSaque);
 
         ContaCorrente contaAtualizada = gestaoContaBean.pesquisarContasCorrentesPorId(lancNovo.get(0).getIdContaCorrente());
         assertEquals(contaAtualizada.getSaldo(), lancRequisicaoDeposito.getValor().subtract(lancRequisicaoSaque.getValor()).setScale(2, RoundingMode.HALF_UP));
