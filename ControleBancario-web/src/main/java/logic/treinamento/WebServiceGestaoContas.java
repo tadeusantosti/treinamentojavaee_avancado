@@ -9,6 +9,7 @@ import javax.jws.WebResult;
 import javax.jws.WebService;
 import javax.ws.rs.core.Response;
 import logic.treinamento.bean.InterfaceGestaoContas;
+import logic.treinamento.model.ContaCorrente;
 import logic.treinamento.model.Lancamento;
 import logic.treinamento.observer.GestaoEventosContaCorrente;
 import logic.treinamento.observer.GestaoEventosLancamentoBancario;
@@ -115,17 +116,6 @@ public class WebServiceGestaoContas {
         }
     }
 
-    @WebMethod(operationName = "inativarContaContaCorrente")
-    @WebResult(name = "resposta")
-    public String inativarCadastroContaCorrente(@WebParam(name = "idContaCorrente") int idContaCorrente) throws Exception {
-        try {
-            eventosContaCorrente.inativarContaCorrente(idContaCorrente);
-            return Response.Status.OK.getReasonPhrase();
-        } catch (Exception e) {
-            return Response.Status.EXPECTATION_FAILED.getReasonPhrase();
-        }
-    }
-
     @WebMethod(operationName = "verSaldoContaCorrente")
     @WebResult(name = "Saldo")
     public BigDecimal visualizarSadoAtualContaCorrentePorID(@WebParam(name = "codigoContaCorrente") long codigoContaCorrente) throws Exception {
@@ -135,6 +125,12 @@ public class WebServiceGestaoContas {
     @WebMethod(operationName = "consultarLogContaCorrente")
     @WebResult(name = "LogLancamentosBancarios")
     public List<Lancamento> consultarLancametosBancariosVinculadosContaCorrente(@WebParam(name = "codigoContaCorrente") long codigoContaCorrente) throws Exception {
-        return gestaoContaBean.consultarLancametosBancariosVinculadosContaCorrente(codigoContaCorrente);
+        return gestaoContaBean.obterLancametosBancariosVinculadosContaCorrenteAtravesRastreio(codigoContaCorrente);
+    }
+    
+    @WebMethod(operationName = "consultarCadastroContaCorrente")
+    @WebResult(name = "ContaCorrenteCadastrada")
+    public ContaCorrente consultarCadastroContaCorrente(@WebParam(name = "codigoContaCorrente") long codigoContaCorrente) throws Exception {
+        return gestaoContaBean.pesquisarContasCorrentesPorId(codigoContaCorrente);
     }
 }

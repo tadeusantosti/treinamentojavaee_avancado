@@ -17,12 +17,15 @@ import logic.treinamento.model.ContaCorrente;
 import logic.treinamento.model.Lancamento;
 import logic.treinamento.observer.GestaoEventosContaCorrente;
 import logic.treinamento.observer.GestaoEventosLancamentoBancario;
+import logic.treinamento.request.AtualizarCadastroContaCorrenteRequisicao;
 import logic.treinamento.request.CadastroContaCorrenteRequisicao;
 import logic.treinamento.request.LancamentoBancarioExclusaoRequisicao;
 import logic.treinamento.request.LancamentoBancarioRequisicao;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import utilitarios.Formatadores;
 
@@ -46,6 +49,9 @@ public class ContaCorrenteTest {
 
     @Inject
     RastreioLancamentoBancarioMovimentacaoLocal rastreioBean;
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Before
     public void setup() throws Exception {
@@ -74,13 +80,14 @@ public class ContaCorrenteTest {
         }
     }
 
-    /** <H3> Teste de Criação e Atualizacao dos dados de uma Conta Corrente
+    /** <H3> Teste de Criação e Atualizacao do saldo de uma Conta Corrente
+     * atraves de lancamentos bancarios
      * </H3>
      * <br>
      * <br>
      * <p>
-     * Objetivo do teste: Garantir que o sistema esteja criando e atualizando os
-     * dados de uma conta corrente.</p>
+     * Objetivo do teste: Garantir que o sistema esteja criando e atualizando o
+     * saldo de uma conta corrente atraves de lancaemntos bancarios.</p>
      * <br>
      * <p>
      * <b>Configuração inicial para a realização dos testes: </b> <br>
@@ -93,10 +100,11 @@ public class ContaCorrenteTest {
      * <li> <i> Cenário 1: Cadastrar uma nova conta corrente. <i><br>
      * Resultado esperado: Sistema casdastrou uma nova conta corrente,
      * persistindo os dados em banco. <br>
-     * <li> <i> Cenário 2: Atualizar os dados da conta corrente que foi criada.
+     * <li> <i> Cenário 2: Atualizar o saldo da conta corrente que atraves de um
+     * lancamento bancario.
      * <i> <li>
-     * Resultado esperado: Sistema atualizou os dados da conta corrente com
-     * sucesso. <br>
+     * Resultado esperado: Sistema atualizou o saldo da conta corrente de aoordo
+     * com o valor do lancamento bancario. <br>
      * </ul>
      * <br>
      * <p>
@@ -105,7 +113,7 @@ public class ContaCorrenteTest {
      * @version 2.0 </p>
      */
     @Test
-    public void testCriacaoAtualizacaoContaCorrente() throws Exception {
+    public void testAtualizacaoSaldoContaCorrente() throws Exception {
         CadastroContaCorrenteRequisicao cc = new CadastroContaCorrenteRequisicao();
         cc.setAgencia(AgenciaEnum.ARARAS.getId());
         cc.setBanco(BancoEnum.BRADESCO.getId());
@@ -165,10 +173,90 @@ public class ContaCorrenteTest {
 
         ContaCorrente contaAtualizada = gestaoContaBean.pesquisarContasCorrentesPorId(lancNovo.get(0).getIdContaCorrente());
         assertEquals(contaAtualizada.getSaldo(), lancRequisicaoDeposito.getValor().subtract(lancRequisicaoSaque.getValor()).setScale(2, RoundingMode.HALF_UP));
+        assertEquals(contaAtualizada.getSaldo(), gestaoContaBean.verSaldoContaCorrente(contaAtualizada.getId()).setScale(2, RoundingMode.HALF_UP));
 
         mapa = rastreioBean.getMapaContasLancamentos();
         Assert.assertNotNull(mapa);
         assertEquals(2, mapa.get(conta.getId()).size());
 
+    }
+
+    /** <H3> Teste de Atualizacao dos dados de uma Conta Corrente
+     * </H3>
+     * <br>
+     * <br>
+     * <p>
+     * Objetivo do teste: Garantir que o sistema esteja criando e atualizando os
+     * dados de uma conta corrente.</p>
+     * <br>
+     * <p>
+     * <b>Configuração inicial para a realização dos testes: </b> <br>
+     * Foi criado um objeto contaCorrente contendo os dados ficticios.</p>
+     * <br>
+     * <p>
+     * <b>Relação de cenários com sua descrição, os passos executados e os
+     * resultados esperados. *</b> </p>
+     * <ul>
+     * <li> <i> Cenário 1: Cadastrar uma nova conta corrente. <i><br>
+     * Resultado esperado: Sistema casdastrou uma nova conta corrente,
+     * persistindo os dados em banco. <br>
+     * <li> <i> Cenário 2: Atualizar os dados da conta corrente que foi criada.
+     * <i> <li>
+     * Resultado esperado: Sistema atualizou os dados da conta corrente com
+     * sucesso. <br>
+     * </ul>
+     * <br>
+     * <p>
+     * @since 1.0
+     * @author Tadeu
+     * @version 2.0 </p>
+     */
+    @Test
+    public void testAtualizacaoDadosContaCorrente() throws Exception {
+        CadastroContaCorrenteRequisicao cc = new CadastroContaCorrenteRequisicao();
+        cc.setAgencia(AgenciaEnum.ARARAS.getId());
+        cc.setBanco(BancoEnum.BRADESCO.getId());
+        cc.setTitular("Son Gohan");
+        eventosLancamentoContaCorrente.salvarContaCorrente(cc);
+
+        List<ContaCorrente> contas = contaCorrenteDao.pesquisarTodasContasCorrentes();
+
+        if (!contas.isEmpty()) {
+            for (ContaCorrente conta : contas) {
+                assertTrue(BigDecimal.ZERO.compareTo(conta.getSaldo()) == 0);
+                assertEquals(cc.getAgencia(), conta.getAgencia().getId());
+                assertEquals(cc.getBanco(), conta.getBanco().getId());
+                assertEquals(cc.getTitular(), conta.getTitular());
+                assertTrue(conta.isSituacao());
+            }
+        } else {
+            fail("A conta corrente nao foi cadastrada!");
+        }
+
+        AtualizarCadastroContaCorrenteRequisicao acc = new AtualizarCadastroContaCorrenteRequisicao();
+        acc.setIdContaCorrente(contas.get(0).getId());
+        acc.setAgencia(AgenciaEnum.ARARAS.getId());
+        acc.setBanco(BancoEnum.ITAU.getId());
+        acc.setTitular("Son Gohan GOKU");
+        eventosLancamentoContaCorrente.atualizarDadosContaCorrente(acc);
+
+        ContaCorrente contaAtualizada = contaCorrenteDao.pesquisarContasCorrentesPorId(acc.getIdContaCorrente());
+
+        if (contaAtualizada != null) {
+            assertTrue(BigDecimal.ZERO.compareTo(contaAtualizada.getSaldo()) == 0);
+            assertEquals(acc.getAgencia(), contaAtualizada.getAgencia().getId());
+            assertEquals(acc.getBanco(), contaAtualizada.getBanco().getId());
+            assertEquals(acc.getTitular(), contaAtualizada.getTitular());
+            assertTrue(contaAtualizada.isSituacao());
+        } else {
+            fail("A conta corrente nao foi atualizada!");
+        }
+    }
+
+    @Test
+    public void testExcecaoVerSaldoContaCorrente() throws Exception {
+        thrown.expect(Exception.class);
+        thrown.expectMessage("E necessario informar o codigo da conta!");
+        gestaoContaBean.verSaldoContaCorrente(0);
     }
 }

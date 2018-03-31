@@ -96,7 +96,7 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
         String retornoValidacao = validarCamposObrigatoriosAtualizacao(lanc);
 
         if (retornoValidacao.equals("")) {
-            lancamentoDao.atualizarLancamentoBancario(lanc);            
+            lancamentoDao.atualizarLancamentoBancario(lanc);
             atualizarSaldoContaCorrente(lanc);
             rastreio.registrarAlteracaoContaCorrente(lanc);
         }
@@ -112,11 +112,11 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void excluirLancamentoBancario(@Observes LancamentoBancarioExclusaoRequisicao lancamentoRemocao) throws SQLException {
-        if (lancamentoRemocao.getIdLancamento() >= 0) {
+        if (lancamentoRemocao.getIdLancamento() > 0) {
             lancamentoDao.excluirLancamento(lancamentoRemocao.getIdLancamento());
             System.out.println("Lancamento Excluido com Sucesso!");
         } else {
-            System.out.println("E necessario informar o codigo do lancamento!");
+            throw new SQLException("E necessario informar o codigo do lancamento!");
         }
     }
 
@@ -170,7 +170,7 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
      */
     @Override
     public List<Lancamento> pesquisarLancamentoBancarioPorTipoDeLancamento(int idtipolancamento) throws SQLException {
-        if (!validarTipoLancamentoInformado(TipoLancamentoEnum.getByCodigo(idtipolancamento))) {
+        if (validarTipoLancamentoInformado(TipoLancamentoEnum.getByCodigo(idtipolancamento))) {
             return lancamentoDao.pesquisarLancamentoBancarioPorTipoDeLancamento(TipoLancamentoEnum.getByCodigo(idtipolancamento));
         } else {
             return null;
@@ -216,9 +216,9 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
      * bancario.
      * @return String - Objeto que contem o resultado da validacao.
      */
-    private String validarCamposObrigatoriosAtualizacao(Lancamento lanc) {
+    public String validarCamposObrigatoriosAtualizacao(Lancamento lanc) {
 
-        if (lanc.getId() < 0) {
+        if (lanc.getId() <= 0) {
             return "E necessario informar o codigo do lancamento !";
         } else if (lanc.getObservacao().isEmpty()) {
             return "E necessario informar uma observacao para o lancamento !";
@@ -238,7 +238,7 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
      * @return boolean - Resultado da validacao.
      */
     private boolean validarTipoLancamentoInformado(TipoLancamentoEnum tipoLancamento) {
-        return TipoLancamentoEnum.values().equals(tipoLancamento.getId());
+        return tipoLancamento != null && TipoLancamentoEnum.getByCodigo(tipoLancamento.getId()) != null;
     }
 
     /**
@@ -280,21 +280,6 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
     }
 
     /**
-     * Método para inativar uma Conta Corrente.
-     *
-     * @author Tadeu
-     * @param idContaCorrente long - ID da conta corrente que sera inativada.
-     * @throws java.lang.Exception
-     */
-    @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void inativarContaCorrente(@Observes long idContaCorrente) throws Exception {
-        if (idContaCorrente > 0) {
-            contaCorrenteDao.inativarContaCorrente(idContaCorrente);
-        }
-    }
-
-    /**
      * Método para atualizar dados da Conta Corrente.
      *
      * @author Tadeu
@@ -306,11 +291,12 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
     @Override
     public void atualizarDadosContaCorrente(@Observes AtualizarCadastroContaCorrenteRequisicao contaCorrenteRequisicao) throws Exception {
         ContaCorrente cc = new ContaCorrente();
+        cc.setId(contaCorrenteRequisicao.getIdContaCorrente());
         cc.setAgencia(AgenciaEnum.getByCodigo(contaCorrenteRequisicao.getAgencia()));
         cc.setBanco(BancoEnum.getByCodigo(contaCorrenteRequisicao.getBanco()));
         cc.setTitular(contaCorrenteRequisicao.getTitular());
         cc.setSaldo(contaCorrenteRequisicao.getSaldo());
-        if (!validarDadosAntesAtualizarContaCorrente(contaCorrenteRequisicao).isEmpty()) {
+        if (validarDadosAntesAtualizarContaCorrente(contaCorrenteRequisicao).isEmpty()) {
             contaCorrenteDao.atualizarDadosContaCorrente(cc);
         }
     }
@@ -370,7 +356,7 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
      * Objeto que carrega os dados da conta corrente.
      * @return String - Resultado da validacao
      */
-    private String validarDadosAntesAtualizarContaCorrente(AtualizarCadastroContaCorrenteRequisicao contaCorrenteRequisicao) throws Exception {
+    public String validarDadosAntesAtualizarContaCorrente(AtualizarCadastroContaCorrenteRequisicao contaCorrenteRequisicao) throws Exception {
 
         if (contaCorrenteRequisicao.getIdContaCorrente() <= 0) {
             return "E necessario informar o ID da conta!";
@@ -431,9 +417,17 @@ public class GestaoContasBean implements InterfaceGestaoContas, Serializable {
      * conta informada
      */
     @Override
-    public List<Lancamento> consultarLancametosBancariosVinculadosContaCorrente(@Observes long idContaCorrente) {
+    public List<Lancamento> obterLancametosBancariosVinculadosContaCorrenteAtravesRastreio(long idContaCorrente) {
         Map<Long, List<Lancamento>> mapaContasLancamentos = rastreio.getMapaContasLancamentos();
         return mapaContasLancamentos.get(idContaCorrente);
+    }    
+    
+    @Override
+     public List<Lancamento> consultarLancametosBancariosVinculadosContaCorrente(long idContaCorrente) throws SQLException {
+         if (idContaCorrente > 0) {
+             return lancamentoDao.pesquisarLancamentoBancarioPorContaBancaria(idContaCorrente);
+         } else {
+             return null;
+         }
     }
-
 }

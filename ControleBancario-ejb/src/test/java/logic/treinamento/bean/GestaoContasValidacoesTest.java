@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import logic.treinamento.model.Lancamento;
 import logic.treinamento.model.TipoLancamentoEnum;
+import logic.treinamento.request.AtualizarCadastroContaCorrenteRequisicao;
 import utilitarios.Formatadores;
 
 @RunWith(WeldJUnit4Runner.class)
@@ -241,11 +242,14 @@ public class GestaoContasValidacoesTest extends TestCase {
      * resultados esperados. *</b> </p>
      * <ul>
      * <li> <i> Cenário 1: Nao informar nada no campo TITULAR. <i><br>
-     * Resultado esperado: Metodo validador retorna a seguinte mensagem: E necessario informar o nome do titular da conta! <br>
+     * Resultado esperado: Metodo validador retorna a seguinte mensagem: E
+     * necessario informar o nome do titular da conta! <br>
      * <li> <i> Cenário 2: Nao informar nada no campo CODIGO DO BANCO. <i><br>
-     * Resultado esperado: Metodo validador retorna a seguinte mensagem: E necessario informar um codigo de banco Valido ! <br>
+     * Resultado esperado: Metodo validador retorna a seguinte mensagem: E
+     * necessario informar um codigo de banco Valido ! <br>
      * <li> <i> Cenário 3: Nao informar nada no campo CODIGO DA AGENCIA. <i><br>
-     * Resultado esperado: Metodo validador retorna a seguinte mensagem: E necessario informar um codigo de agenica Valido ! <br>
+     * Resultado esperado: Metodo validador retorna a seguinte mensagem: E
+     * necessario informar um codigo de agenica Valido ! <br>
      * </ul>
      * <br>
      * <p>
@@ -266,6 +270,124 @@ public class GestaoContasValidacoesTest extends TestCase {
 
         conta.setAgencia(AgenciaEnum.OSASCO);
         assertEquals("", gestaoContaBean.validarCamposObrigatoriosCadastrarContaCorrente(conta));
+    }
+
+    /** <H3>Teste de Validacao dos campos obrigatorios para a atualização de um
+     * lancamento bancario</H3>
+     * <br>
+     * <br>
+     * <p>
+     * Objetivo do teste: Teste responsavel por validar o metodo que verifica os
+     * campos obrigatorios recebidos pelo serviço para atualizacao do lancamento
+     * bancario.</p>
+     * <br>
+     * <p>
+     * <b>Configuração inicial para a realização dos testes: </b> <br>
+     * Foram informados sequencialmente todos os campos nulos ou vazis que sao
+     * obrigatorios para o cadastro de uma nova conta corrente.</p>
+     * <br>
+     * <p>
+     * <b>Relação de cenários com sua descrição, os passos executados e os
+     * resultados esperados. *</b> </p>
+     * <ul>
+     * <li> <i> Cenário 1: Informar um ID menor ou igual a zeroa. <i><br>
+     * Resultado esperado: Metodo validador retorna a seguinte mensagem: E
+     * necessario informar o codigo do lancamento ! <br>
+     * <li> <i> Cenário 2: Nao informar nada no campo OBSERVACAO. <i><br>
+     * Resultado esperado: Metodo validador retorna a seguinte mensagem: E
+     * necessario informar uma observacao para o lancamento ! <br>
+     * <li> <i> Cenário 3: Nao informar nada no campo DATA. <i><br>
+     * Resultado esperado: Metodo validador retorna a seguinte mensagem: E
+     * necessario informar a data do lancamento ! <br>
+     * </ul>
+     * <br>
+     * <p>
+     * @since 1.0
+     * @author Tadeu
+     * @version 2.0 </p>
+     */
+    @Test
+    public void testValidarCamposObrigatoriosAtualizacao() {
+        Lancamento lanc = new Lancamento();
+        lanc.setId(0);
+
+        assertEquals("E necessario informar o codigo do lancamento !", gestaoContaBean.validarCamposObrigatoriosAtualizacao(lanc));
+
+        lanc.setId(1);
+        lanc.setObservacao("");
+        assertEquals("E necessario informar uma observacao para o lancamento !", gestaoContaBean.validarCamposObrigatoriosAtualizacao(lanc));
+
+        lanc.setId(1);
+        lanc.setObservacao("Teste de validacao");
+        assertEquals("E necessario informar a data do lancamento !", gestaoContaBean.validarCamposObrigatoriosAtualizacao(lanc));
+    }
+
+    /** <H3>Teste de Validacao dos campos obrigatorios para a atualização dos
+     * dados de uma conta corrente</H3>
+     * <br>
+     * <br>
+     * <p>
+     * Objetivo do teste: Teste responsavel por validar o metodo que verifica os
+     * campos obrigatorios recebidos pelo serviço para atualizacao dos dados de
+     * uma conta corrente.</p>
+     * <br>
+     * <p>
+     * <b>Configuração inicial para a realização dos testes: </b> <br>
+     * Foram informados sequencialmente todos os campos nulos ou vazis que sao
+     * obrigatorios para o cadastro de uma nova conta corrente.</p>
+     * <br>
+     * <p>
+     * <b>Relação de cenários com sua descrição, os passos executados e os
+     * resultados esperados. *</b> </p>
+     * <ul>
+     * <li> <i> Cenário 1: Informar um ID menor ou igual a zeroa. <i><br>
+     * Resultado esperado: Metodo validador retorna a seguinte mensagem: E
+     * necessario informar o ID da conta! <br>
+     * <li> <i> Cenário 2: Nao informar nada no campo TITULAR. <i><br>
+     * Resultado esperado: Metodo validador retorna a seguinte mensagem: E
+     * necessario informar o nome do titular da conta! <br>
+     * <li> <i> Cenário 3: Nao informar nada no campo BANCO. <i><br>
+     * Resultado esperado: Metodo validador retorna a seguinte mensagem: E
+     * necessario informar um codigo de banco Valido ! <br>
+     * <li> <i> Cenário 4: Nao informar nada no campo AGENCIA. <i><br>
+     * Resultado esperado: Metodo validador retorna a seguinte mensagem: E
+     * necessario informar um codigo de agenica Valido ! <br>
+     * <li> <i> Cenário 5: Informar todos os campos necessarios. <i><br>
+     * Resultado esperado: Metodo validador retorna a seguinte mensagem
+     * vazia<br>
+     * </ul>
+     * <br>
+     * <p>
+     * @since 1.0
+     * @author Tadeu
+     * @version 2.0 </p>
+     */
+    @Test
+    public void testValidarDadosAntesAtualizarContaCorrente() throws Exception {
+        AtualizarCadastroContaCorrenteRequisicao contaCorrenteRequisicao = new AtualizarCadastroContaCorrenteRequisicao();
+
+        contaCorrenteRequisicao.setIdContaCorrente(0);
+        assertEquals("E necessario informar o ID da conta!", gestaoContaBean.validarDadosAntesAtualizarContaCorrente(contaCorrenteRequisicao));
+
+        contaCorrenteRequisicao.setIdContaCorrente(99);
+        assertEquals("E necessario informar o nome do titular da conta!", gestaoContaBean.validarDadosAntesAtualizarContaCorrente(contaCorrenteRequisicao));
+
+        contaCorrenteRequisicao.setIdContaCorrente(99);
+        contaCorrenteRequisicao.setTitular("Son Gohan");
+        contaCorrenteRequisicao.setBanco(0);
+        assertEquals("E necessario informar um codigo de banco Valido !", gestaoContaBean.validarDadosAntesAtualizarContaCorrente(contaCorrenteRequisicao));
+
+        contaCorrenteRequisicao.setIdContaCorrente(99);
+        contaCorrenteRequisicao.setTitular("Son Gohan");
+        contaCorrenteRequisicao.setBanco(BancoEnum.SANTANDER.getId());
+        contaCorrenteRequisicao.setAgencia(0);
+        assertEquals("E necessario informar um codigo de agenica Valido !", gestaoContaBean.validarDadosAntesAtualizarContaCorrente(contaCorrenteRequisicao));
+
+        contaCorrenteRequisicao.setIdContaCorrente(99);
+        contaCorrenteRequisicao.setTitular("Son Gohan");
+        contaCorrenteRequisicao.setBanco(BancoEnum.SANTANDER.getId());
+        contaCorrenteRequisicao.setAgencia(AgenciaEnum.OSASCO.getId());
+        assertEquals("", gestaoContaBean.validarDadosAntesAtualizarContaCorrente(contaCorrenteRequisicao));
     }
 
 }

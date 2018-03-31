@@ -14,8 +14,6 @@ public interface InterfaceContaCorrente {
 
     public ContaCorrente pesquisarContasCorrentesPorId(long idContaCorrente) throws SQLException;
 
-    public void inativarContaCorrente(long idContaCorrente) throws SQLException;
-
     public void excluirContaCorrente(long idContaCorrente) throws SQLException;
 
     public void atualizarDadosContaCorrente(ContaCorrente conta) throws SQLException;

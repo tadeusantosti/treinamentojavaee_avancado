@@ -21,7 +21,9 @@ import logic.treinamento.request.LancamentoBancarioAtualizacaoRequisicao;
 import logic.treinamento.request.LancamentoBancarioExclusaoRequisicao;
 import logic.treinamento.request.LancamentoBancarioRequisicao;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import utilitarios.Formatadores;
 
@@ -45,6 +47,9 @@ public class LancamentoBancarioTest {
 
     @Inject
     RastreioLancamentoBancarioMovimentacaoLocal rastreioBean;
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Before
     public void setup() throws Exception {
@@ -137,6 +142,19 @@ public class LancamentoBancarioTest {
 
         if (!lancNovo.isEmpty()) {
             for (Lancamento lancamentoConsultado : lancNovo) {
+                assertEquals(lancRequisicao.getObservacao(), lancamentoConsultado.getObservacao());
+                assertEquals(lancRequisicao.getValor().doubleValue(), lancamentoConsultado.getValor().doubleValue());
+                assertEquals(lancRequisicao.getData(), Formatadores.formatoDataInterface.format(lancamentoConsultado.getData()));
+                assertEquals(TipoLancamentoEnum.getByCodigo(lancRequisicao.getIdTipoLancamento()), lancamentoConsultado.getTipoLancamento());
+            }
+        } else {
+            fail("O lancamento bancario nao foi salvo!");
+        }
+        
+        
+        List<Lancamento> resultadoConsulta = gestaoContaBean.consultarLancametosBancariosVinculadosContaCorrente(lancNovo.get(0).getIdContaCorrente());
+          if (!resultadoConsulta.isEmpty()) {
+            for (Lancamento lancamentoConsultado : resultadoConsulta) {
                 assertEquals(lancRequisicao.getObservacao(), lancamentoConsultado.getObservacao());
                 assertEquals(lancRequisicao.getValor().doubleValue(), lancamentoConsultado.getValor().doubleValue());
                 assertEquals(lancRequisicao.getData(), Formatadores.formatoDataInterface.format(lancamentoConsultado.getData()));
@@ -478,6 +496,156 @@ public class LancamentoBancarioTest {
             }
         } else {
             fail("O lancamento bancario nao foi encontrado!");
+        }
+    }
+
+    /** <H3>Teste de Exceção na Exclusao de um Lançamento Bancario</H3>
+     * <br>
+     * <br>
+     * <p>
+     * Objetivo do teste: Forçar uma falha no processo de excluir os dados de um
+     * lancamento bancario persistido na base de dados.</p>
+     * <br>
+     * <p>
+     * <b>Configuração inicial para a realização dos testes: </b> <br>
+     * Foi incluido um lancamento bancario na base de dados</p>
+     * <br>
+     * <p>
+     * <b>Relação de cenários com sua descrição, os passos executados e os
+     * resultados esperados. *</b> </p>
+     * <ul>
+     * <li> <i> Cenário 1: Não informar o ID do lancamento bancario que deveria
+     * ser excluido<i><br>
+     * Resultado esperado: Sistema apresentou uma exceçao ao tentar excluir o
+     * lancamento bancario sem informar o ID.
+     * </ul>
+     * <br>
+     * <p>
+     * @since 2.0
+     * @author Tadeu
+     * @version 1.0 </p>
+     */
+    @Test
+    public void testValidarCodigoLancamentoInformadoAntesExcluir() throws Exception {
+        CadastroContaCorrenteRequisicao cc = new CadastroContaCorrenteRequisicao();
+        cc.setAgencia(AgenciaEnum.ARARAS.getId());
+        cc.setBanco(BancoEnum.BRADESCO.getId());
+        cc.setTitular("Son Gohan");
+        eventosContaCorrente.salvarContaCorrente(cc);
+
+        List<ContaCorrente> contas = contaCorrenteDao.pesquisarTodasContasCorrentes();
+
+        if (!contas.isEmpty()) {
+            for (ContaCorrente conta : contas) {
+                assertTrue(BigDecimal.ZERO.compareTo(conta.getSaldo()) == 0);
+                assertEquals(cc.getAgencia(), conta.getAgencia().getId());
+                assertEquals(cc.getBanco(), conta.getBanco().getId());
+                assertEquals(cc.getTitular(), conta.getTitular());
+                assertTrue(conta.isSituacao());
+            }
+        } else {
+            fail("A conta corrente nao foi cadastrada!");
+        }
+
+        LancamentoBancarioRequisicao lancRequisicao = new LancamentoBancarioRequisicao();
+        lancRequisicao.setObservacao("Deposito na conta corrente do Albert Einstein");
+        lancRequisicao.setValor(new BigDecimal(1234.56));
+        lancRequisicao.setData(Formatadores.formatoDataInterface.format(new java.util.Date()));
+        lancRequisicao.setIdTipoLancamento(TipoLancamentoEnum.DEPOSITO.getId());
+        lancRequisicao.setIdContaCorrente(contas.get(0).getId());
+        eventoLancamentoBancario.salvarLacamentoBancario(lancRequisicao);
+
+        List<Lancamento> lancNovo = gestaoContaBean.pesquisarLancamentoBancarioPorObservacao("Albert");
+
+        if (!lancNovo.isEmpty()) {
+            for (Lancamento lancamentoConsultado : lancNovo) {
+                assertEquals(lancRequisicao.getObservacao(), lancamentoConsultado.getObservacao());
+                assertEquals(lancRequisicao.getValor().doubleValue(), lancamentoConsultado.getValor().doubleValue());
+                assertEquals(lancRequisicao.getData(), Formatadores.formatoDataInterface.format(lancamentoConsultado.getData()));
+                assertEquals(TipoLancamentoEnum.getByCodigo(lancRequisicao.getIdTipoLancamento()), lancamentoConsultado.getTipoLancamento());
+            }
+        } else {
+            fail("O lancamento bancario nao foi salvo!");
+        }
+        LancamentoBancarioExclusaoRequisicao lancamentoRemocao = new LancamentoBancarioExclusaoRequisicao();
+        lancamentoRemocao.setIdLancamento(0);
+
+        thrown.expect(javax.enterprise.event.ObserverException.class);
+        eventoLancamentoBancario.excluirLancamentoBancario(lancamentoRemocao);
+    }
+
+    /** <H3>Teste de retorno vazio caso nao seja informado nenhuma
+     * observacao</H3>
+     * <br>
+     * <br>
+     * <p>
+     * Objetivo do teste: Garantir que o metodo resposavel por pesquisar
+     * lancamentos bancarios retorne uma lista nula caso o usuario nao informe
+     * nenhuma informacao no campo de pesquisar (observacao) .</p>
+     * <br>
+     * <p>
+     * <b>Configuração inicial para a realização dos testes: </b> <br>
+     * Foi executado o metodo de consulta de lancamentos bancarios por
+     * observacao</p>
+     * <br>
+     * <p>
+     * <b>Relação de cenários com sua descrição, os passos executados e os
+     * resultados esperados. *</b> </p>
+     * <ul>
+     * <li> <i> Cenário 1: Executar o metodo de consulta de lancamentos
+     * bancarios por observacao nao informando nehuma informacao<i><br>
+     * Resultado esperado: Sistema retornou um objeto vazio.
+     * </ul>
+     * <br>
+     * <p>
+     * @since 2.0
+     * @author Tadeu
+     * @version 1.0 </p>
+     */
+    @Test
+    public void testValidarRetornoNuloPesquisarLancamentoBancarioPorObservacaoSemInformarNenhumaDescricao() throws Exception {
+
+        List<Lancamento> resultadoDaPesquisa = gestaoContaBean.pesquisarLancamentoBancarioPorObservacao("");
+
+        if (resultadoDaPesquisa != null) {
+            fail("Este metodo nao deveria retornar nada!");
+        }
+    }
+
+    /** <H3>Teste de retorno vazio caso nao seja informado um tipo de lancamento
+     * inexistente</H3>
+     * <br>
+     * <br>
+     * <p>
+     * Objetivo do teste: Garantir que o metodo resposavel por pesquisar
+     * lancamentos bancarios retorne uma lista nula caso o usuario informe um
+     * codigo inexistente para o tipo de lancamento bancario.</p>
+     * <br>
+     * <p>
+     * <b>Configuração inicial para a realização dos testes: </b> <br>
+     * Foi executado o metodo de consulta de lancamentos bancarios por tipo</p>
+     * <br>
+     * <p>
+     * <b>Relação de cenários com sua descrição, os passos executados e os
+     * resultados esperados. *</b> </p>
+     * <ul>
+     * <li> <i> Cenário 1: Executar o metodo de pesquisa de lancamentos
+     * bancarios informando um tipo de lancamento inexistente<i><br>
+     * Resultado esperado: Sistema retornou um objeto vazio.
+     * </ul>
+     * <br>
+     * <p>
+     * @since 2.0
+     * @author Tadeu
+     * @version 1.0 </p>
+     */
+    @Test
+    public void testValidarRetornoNuloPesquisarLancamentoBancarioPorTipoDeLancamentoInformandoIdInexistente() throws Exception {
+
+        List<Lancamento> resultadoDaPesquisa = gestaoContaBean.pesquisarLancamentoBancarioPorTipoDeLancamento(0);
+
+        if (resultadoDaPesquisa != null) {
+            fail("Este metodo nao deveria retornar nada!");
         }
     }
 }

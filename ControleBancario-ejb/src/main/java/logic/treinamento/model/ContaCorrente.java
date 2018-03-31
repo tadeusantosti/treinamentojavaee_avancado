@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -27,6 +28,7 @@ public class ContaCorrente implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idContaCorrente", unique = true, nullable = false)
     private long id;
 
     @OneToMany(mappedBy = "conta", cascade = CascadeType.ALL)

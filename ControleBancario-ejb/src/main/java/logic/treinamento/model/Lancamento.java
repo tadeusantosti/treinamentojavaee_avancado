@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -28,7 +29,9 @@ public class Lancamento implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", unique = true, nullable = false)
     private long id;
+
     private String observacao, dataGUI;
     private Date data;
     private BigDecimal valor;
@@ -37,7 +40,7 @@ public class Lancamento implements Serializable {
     private TipoLancamentoEnum tipoLancamento;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_contacorrente")
+    @JoinColumn(name = "idContaCorrente", insertable = false, updatable = false)
     private ContaCorrente conta;
 
     private long idContaCorrente;

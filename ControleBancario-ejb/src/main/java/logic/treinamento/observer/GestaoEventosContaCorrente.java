@@ -26,9 +26,6 @@ public class GestaoEventosContaCorrente implements Serializable {
     Event<Long> eventoExcluirContaCorrente;
 
     @Inject
-    Event<Long> eventoInativarContaCorrente;
-
-    @Inject
     Event<AtualizarCadastroContaCorrenteRequisicao> eventoAtualizarContaCorrente;
 
     @Inject
@@ -53,16 +50,6 @@ public class GestaoEventosContaCorrente implements Serializable {
      */
     public void excluirContaCorrente(long idContaCorrente) {
         eventoExcluirContaCorrente.fire(idContaCorrente);
-    }
-
-    /**
-     * Método de chamada do evento para inativar uma conta corrente
-     *
-     * @author Tadeu
-     * @param idContaCorrente long - ID da cobta corrente que sera inativada.
-     */
-    public void inativarContaCorrente(long idContaCorrente) {
-        eventoInativarContaCorrente.fire(idContaCorrente);
     }
 
     /**

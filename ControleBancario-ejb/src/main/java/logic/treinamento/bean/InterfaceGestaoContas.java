@@ -44,7 +44,11 @@ public interface InterfaceGestaoContas {
 
     public void atualizarDadosContaCorrente(AtualizarCadastroContaCorrenteRequisicao contaCorrenteRequisicao) throws Exception;
 
-    public List<Lancamento> consultarLancametosBancariosVinculadosContaCorrente(long idContaCorrente);
+    public List<Lancamento> obterLancametosBancariosVinculadosContaCorrenteAtravesRastreio(long idContaCorrente);
 
-    public void inativarContaCorrente(@Observes long idContaCorrente) throws Exception;
+    public String validarCamposObrigatoriosAtualizacao(Lancamento lanc);
+
+    public String validarDadosAntesAtualizarContaCorrente(AtualizarCadastroContaCorrenteRequisicao contaCorrenteRequisicao) throws Exception;
+
+    public List<Lancamento> consultarLancametosBancariosVinculadosContaCorrente(long idContaCorrente) throws SQLException;
 }

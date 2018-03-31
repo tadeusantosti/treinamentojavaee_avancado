@@ -9,7 +9,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import utilitarios.Formatadores;
 
 /**
@@ -78,7 +77,7 @@ public class LancamentoDao implements InterfaceLancamentoDao {
     @Override
     public void excluirLancamento(long idLancamento) throws SQLException {
         try {
-            em.getTransaction().begin();                     
+            em.getTransaction().begin();
             em.remove(em.getReference(Lancamento.class, idLancamento));
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -105,7 +104,11 @@ public class LancamentoDao implements InterfaceLancamentoDao {
         List<Lancamento> resultados = null;
 
         sql.append("\n SELECT l FROM Lancamento l");
-        sql.append(" WHERE l.data BETWEEN '").append(Formatadores.formatoDataBanco.format(dataInicial)).append("' AND '").append(Formatadores.formatoDataBanco.format(dataFinal)).append("' ORDER BY l.id");
+        sql.append(" WHERE l.data BETWEEN '");
+        sql.append(Formatadores.formatoDataBanco.format(dataInicial));
+        sql.append("' AND '");
+        sql.append(Formatadores.formatoDataBanco.format(dataFinal));
+        sql.append("' ORDER BY l.id");
         String jpql = sql.toString();
         Query query = em.createQuery(jpql);
         resultados = query.getResultList();
@@ -117,19 +120,22 @@ public class LancamentoDao implements InterfaceLancamentoDao {
      * observacao
      *
      * @author Tadeu
-     * @param observacao String - Observacao do lancamento bancario
+     * @param observacaoLancamentoBancario String - Observacao do lancamento
+     * bancario
      * @return List<Lancamento> - Objeto que contem os lancamentos bancarios
      * consultados atraves do campo de observacao.
      * @throws java.sql.SQLException
      */
     @Override
-    public List<Lancamento> pesquisarLancamentoBancarioPorObservacao(String observacao) throws SQLException {
-        StringBuilder sql = new StringBuilder();  
+    public List<Lancamento> pesquisarLancamentoBancarioPorObservacao(String observacaoLancamentoBancario) throws SQLException {
+        StringBuilder sql = new StringBuilder();
         try {
             sql.append("\n SELECT l FROM Lancamento l");
-            sql.append(" WHERE l.observacao LIKE '%").append(observacao).append("%' ORDER BY l.id");
-            String jpql = sql.toString();            
-            TypedQuery<Lancamento> query = em.createQuery(jpql, Lancamento.class); 
+            sql.append(" WHERE l.observacao LIKE '%");
+            sql.append(observacaoLancamentoBancario);
+            sql.append("%' ORDER BY l.id");
+            String jpql = sql.toString();
+            Query query = em.createQuery(jpql);
             return query.getResultList();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -184,11 +190,10 @@ public class LancamentoDao implements InterfaceLancamentoDao {
 
         try {
             sql.append("\n SELECT l FROM Lancamento l");
-            sql.append("\n JOIN ContaCorrente cc ON cc.id = l.id_contacorrente");
-            sql.append(" WHERE cc.situacao = TRUE");
-            sql.append(" AND cc.id = ").append(idContaCorrente);
+            sql.append("\n JOIN l.conta as cc");
+            sql.append(" WHERE cc.id = :idContaCorrente");
             String jpql = sql.toString();
-            Query query = em.createQuery(jpql);
+            Query query = em.createQuery(jpql).setParameter("idContaCorrente", idContaCorrente);
             resultados = query.getResultList();
             return resultados;
         } catch (Exception ex) {

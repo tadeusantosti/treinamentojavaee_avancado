@@ -101,27 +101,6 @@ public class ContaCorrenteDao implements InterfaceContaCorrente {
     }
 
     /**
-     * Método para inativar uma conta corrente.
-     *
-     * @author Tadeu
-     * @param idContaCorrente long - ID da conta corrente que sera inativada
-     * @throws java.sql.SQLException
-     */
-    @Override
-    public void inativarContaCorrente(long idContaCorrente) throws SQLException {
-        try {
-            ContaCorrente contaCorrente = pesquisarContasCorrentesPorId(idContaCorrente);
-            contaCorrente.setSituacao(false);
-
-            em.getTransaction().begin();
-            em.merge(contaCorrente);
-            em.getTransaction().commit();
-        } catch (SQLException ex) {
-            em.getTransaction().rollback();
-        }
-    }
-
-    /**
      * Método para atualizar dados de uma conta corrente.
      *
      * @author Tadeu
