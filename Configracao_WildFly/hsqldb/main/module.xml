@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<module xmlns="urn:jboss:module:1.5" name="org.hsqldb">
+    <resources>
+        <resource-root path="hsqldb-2.4.0.jar"/>
+    </resources>
+    <dependencies>        
+        <module name="javax.api" />
+        <module name="javax.mail.api" />
+        <module name="javax.servlet.api" />
+        <module name="javax.servlet.jsp.api" />
+        <module name="javax.transaction.api" />       
+    </dependencies>
+</module>
