@@ -127,8 +127,7 @@ public class ContaCorrenteTest {
                 assertTrue(BigDecimal.ZERO.compareTo(conta.getSaldo()) == 0);
                 assertEquals(cc.getAgencia(), conta.getAgencia().getId());
                 assertEquals(cc.getBanco(), conta.getBanco().getId());
-                assertEquals(cc.getTitular(), conta.getTitular());
-                assertTrue(conta.isSituacao());
+                assertEquals(cc.getTitular(), conta.getTitular());                
             }
         } else {
             fail("A conta corrente nao foi cadastrada!");
@@ -226,8 +225,7 @@ public class ContaCorrenteTest {
                 assertTrue(BigDecimal.ZERO.compareTo(conta.getSaldo()) == 0);
                 assertEquals(cc.getAgencia(), conta.getAgencia().getId());
                 assertEquals(cc.getBanco(), conta.getBanco().getId());
-                assertEquals(cc.getTitular(), conta.getTitular());
-                assertTrue(conta.isSituacao());
+                assertEquals(cc.getTitular(), conta.getTitular());                
             }
         } else {
             fail("A conta corrente nao foi cadastrada!");
@@ -246,8 +244,7 @@ public class ContaCorrenteTest {
             assertTrue(BigDecimal.ZERO.compareTo(contaAtualizada.getSaldo()) == 0);
             assertEquals(acc.getAgencia(), contaAtualizada.getAgencia().getId());
             assertEquals(acc.getBanco(), contaAtualizada.getBanco().getId());
-            assertEquals(acc.getTitular(), contaAtualizada.getTitular());
-            assertTrue(contaAtualizada.isSituacao());
+            assertEquals(acc.getTitular(), contaAtualizada.getTitular());            
         } else {
             fail("A conta corrente nao foi atualizada!");
         }

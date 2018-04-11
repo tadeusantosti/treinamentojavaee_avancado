@@ -124,7 +124,6 @@ public class LancamentoBancarioTest {
                 assertEquals(cc.getAgencia(), conta.getAgencia().getId());
                 assertEquals(cc.getBanco(), conta.getBanco().getId());
                 assertEquals(cc.getTitular(), conta.getTitular());
-                assertTrue(conta.isSituacao());
             }
         } else {
             fail("A conta corrente nao foi cadastrada!");
@@ -150,10 +149,9 @@ public class LancamentoBancarioTest {
         } else {
             fail("O lancamento bancario nao foi salvo!");
         }
-        
-        
+
         List<Lancamento> resultadoConsulta = gestaoContaBean.consultarLancametosBancariosVinculadosContaCorrente(lancNovo.get(0).getIdContaCorrente());
-          if (!resultadoConsulta.isEmpty()) {
+        if (!resultadoConsulta.isEmpty()) {
             for (Lancamento lancamentoConsultado : resultadoConsulta) {
                 assertEquals(lancRequisicao.getObservacao(), lancamentoConsultado.getObservacao());
                 assertEquals(lancRequisicao.getValor().doubleValue(), lancamentoConsultado.getValor().doubleValue());
@@ -206,7 +204,6 @@ public class LancamentoBancarioTest {
                 assertEquals(cc.getAgencia(), conta.getAgencia().getId());
                 assertEquals(cc.getBanco(), conta.getBanco().getId());
                 assertEquals(cc.getTitular(), conta.getTitular());
-                assertTrue(conta.isSituacao());
             }
         } else {
             fail("A conta corrente nao foi cadastrada!");
@@ -298,7 +295,6 @@ public class LancamentoBancarioTest {
                 assertEquals(cc.getAgencia(), conta.getAgencia().getId());
                 assertEquals(cc.getBanco(), conta.getBanco().getId());
                 assertEquals(cc.getTitular(), conta.getTitular());
-                assertTrue(conta.isSituacao());
             }
         } else {
             fail("A conta corrente nao foi cadastrada!");
@@ -379,7 +375,6 @@ public class LancamentoBancarioTest {
                 assertEquals(cc.getAgencia(), conta.getAgencia().getId());
                 assertEquals(cc.getBanco(), conta.getBanco().getId());
                 assertEquals(cc.getTitular(), conta.getTitular());
-                assertTrue(conta.isSituacao());
             }
         } else {
             fail("A conta corrente nao foi cadastrada!");
@@ -450,7 +445,6 @@ public class LancamentoBancarioTest {
                 assertEquals(cc.getAgencia(), conta.getAgencia().getId());
                 assertEquals(cc.getBanco(), conta.getBanco().getId());
                 assertEquals(cc.getTitular(), conta.getTitular());
-                assertTrue(conta.isSituacao());
             }
         } else {
             fail("A conta corrente nao foi cadastrada!");
@@ -541,7 +535,6 @@ public class LancamentoBancarioTest {
                 assertEquals(cc.getAgencia(), conta.getAgencia().getId());
                 assertEquals(cc.getBanco(), conta.getBanco().getId());
                 assertEquals(cc.getTitular(), conta.getTitular());
-                assertTrue(conta.isSituacao());
             }
         } else {
             fail("A conta corrente nao foi cadastrada!");
